@@ -1,0 +1,18 @@
+int integer1 = 1;
+float decimal1=2.0;
+bool truth1 = integer1 <> decimal1;
+bool truth2 = integer1>=decimal1;
+
+if (truth) then {
+  for put class get get put;
+  /*for put class get get put;
+  */
+  integer1-1;//ambiguity
+
+  if(truth){};
+
+} else {
+  return program();
+  >= == =1;
+  < > <= 0.3;
+}
