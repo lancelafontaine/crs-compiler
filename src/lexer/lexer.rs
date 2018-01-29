@@ -34,3 +34,23 @@ impl Lexer {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use lexer::Lexer;
+
+    #[test]
+    fn test_lexer_new() {
+        let lexer = Lexer::new("source_example.txt");
+        assert_eq!(lexer.current_index, 0);
+    }
+    #[test]
+    fn test_next_token() {
+        let mut lexer = Lexer::new("source_example.txt");
+        let some_token = lexer.next_token();
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.lexeme, "int");
+        }
+    }
+}

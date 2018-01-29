@@ -257,6 +257,7 @@ impl StateTransition {
 #[cfg(test)]
 mod tests {
     use lexer::state_transition::StateTransition as st;
+    use lexer::lexer::Lexer;
 
     #[test]
     fn test_get_token_by_state_non_final_has_no_token() {
@@ -276,6 +277,19 @@ mod tests {
             assert_eq!(token.lexeme, "a");
         }
     }
+    #[test]
+    fn test_get_token_by_state_final_has_token_is_keyword() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let some_token = state_transition.get_token_by_state("if");
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.lexeme, "if");
+        }
+    }
+
     #[test]
     fn test_is_error_state_valid() {
         let state_transition = st {
@@ -324,6 +338,40 @@ mod tests {
         let is_backtrack = state_transition.is_backtrack_state();
         assert_eq!(is_backtrack, false);
     }
+    #[test]
+    fn test_column_for_for_transition_char_valid() {
+        let some_index = st::get_column_index_for_transition_char(' ');
+        assert_eq!(some_index.is_some(), true);
+        if let Some(index) = some_index {
+            assert_eq!(index, 1);
+        }
+    }
+    #[test]
+    fn test_column_for_for_transition_char_invalid_character() {
+        let index = st::get_column_index_for_transition_char('^');
+        assert_eq!(index.is_none(), true);
+    }
+    #[test]
+    fn test_transition_valid_intermediate_state() {
+        let mut state_transition = st::new();
+        let mut lexer = Lexer::new("source_example.txt");
+        assert_eq!(state_transition.current_state, 1);
+        state_transition.transition(&mut String::from("i"), &mut lexer);
+        assert_eq!(state_transition.current_state, 2);
+        assert_eq!(state_transition.is_error_state(), false);
+        assert_eq!(state_transition.is_final_state(), false);
+        assert_eq!(state_transition.is_backtrack_state(), false);
+    }
+    #[test]
+    fn test_generate_token() {
+        let mut state_transition = st::new();
+        let mut lexer = Lexer::new("source_example.txt");
+        assert_eq!(state_transition.current_state, 1);
+        let some_token = state_transition.generate_token(&mut lexer);
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.lexeme, "int");
+        }
+    }
 }
-
-
