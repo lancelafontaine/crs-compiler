@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use lexer::Token;
 use lexer::Lexer;
+use output;
 
 lazy_static! {
     static ref STATE_TRANSITION_TABLE:  [[usize; 28]; 46] = [
@@ -172,9 +173,25 @@ impl StateTransition {
         let c = lexer.source_buffer.char(lexer.current_index);
 
         // Transition to next state based on transition character
-        let column_index = StateTransition::get_column_index_for_transition_char(c);
-        let next_state = STATE_TRANSITION_TABLE[self.current_state][column_index];
-        self.current_state = next_state;
+        if let Some(column_index) = StateTransition::get_column_index_for_transition_char(c) {
+            let next_state = STATE_TRANSITION_TABLE[self.current_state][column_index];
+            self.current_state = next_state;
+        } else {
+            output::print_line_char_at_invalid_state(lexer);
+        }
+
+        if self.is_error_state() {
+            output::error(3);
+            if !self.is_backtrack_state() {
+                lexer.current_index -= 1;
+            }
+            output::print_line_char_at_invalid_state(lexer);
+            if !self.is_backtrack_state() {
+                lexer.current_index += 1;
+            }
+            self.current_state = 1;
+            token_buffer.clear();
+        }
 
         // Look at the next character for the next transition
         if !self.is_backtrack_state() {
@@ -191,7 +208,7 @@ impl StateTransition {
         }
     }
 
-    pub fn get_column_index_for_transition_char(c: char) -> usize {
+    pub fn get_column_index_for_transition_char(c: char) -> Option<usize> {
         // Default: 0 results in an error state
         let mut column_index = 0;
         for (chars, possible_column_index) in STATE_TRANSITION_CHARS_BY_COLUMN.iter() {
@@ -200,9 +217,10 @@ impl StateTransition {
             }
         }
         if column_index == 0 {
-            // TODO: ERROR
+            output::error(2); //recoverable
+            return None
         }
-        column_index
+        Some(column_index)
     }
 
     pub fn is_final_state(&self) -> bool {
@@ -224,7 +242,7 @@ impl StateTransition {
                 token_class = class;
             },
             None => {
-                //TODO: throw error
+                return None
             }
         };
 
@@ -235,3 +253,77 @@ impl StateTransition {
         Some(Token::new(String::from(token_class), String::from(token_buffer)))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use lexer::state_transition::StateTransition as st;
+
+    #[test]
+    fn test_get_token_by_state_non_final_has_no_token() {
+        let state_transition = st::new();
+        let some_token = state_transition.get_token_by_state(" ");
+        assert_eq!(some_token.is_none(), true);
+    }
+    #[test]
+    fn test_get_token_by_state_final_has_token() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let some_token = state_transition.get_token_by_state("a");
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< identifier >");
+            assert_eq!(token.lexeme, "a");
+        }
+    }
+    #[test]
+    fn test_is_error_state_valid() {
+        let state_transition = st {
+            current_state: 0 // error state
+        };
+        let is_error = state_transition.is_error_state();
+        assert_eq!(is_error, true);
+    }
+    #[test]
+    fn test_is_error_state_invalid() {
+        let state_transition = st {
+            current_state: 1 // initial state
+        };
+        let is_error = state_transition.is_error_state();
+        assert_eq!(is_error, false);
+    }
+    #[test]
+    fn test_is_final_state_valid() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let is_final = state_transition.is_final_state();
+        assert_eq!(is_final, true);
+    }
+    #[test]
+    fn test_is_final_state_invalid() {
+        let state_transition = st {
+            current_state: 1 // initial state
+        };
+        let is_final = state_transition.is_final_state();
+        assert_eq!(is_final, false);
+    }
+    #[test]
+    fn test_is_backtrack_state_valid() {
+        let state_transition = st {
+            current_state: 3 // identifier - backtrack state
+        };
+        let is_backtrack = state_transition.is_backtrack_state();
+        assert_eq!(is_backtrack, true);
+    }
+    #[test]
+    fn test_is_backtrack_state_invalid() {
+        let state_transition = st {
+            current_state: 1 // initial state
+        };
+        let is_backtrack = state_transition.is_backtrack_state();
+        assert_eq!(is_backtrack, false);
+    }
+}
+
+

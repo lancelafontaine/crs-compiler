@@ -15,4 +15,5 @@ if (truth) then {
   return program();
   >= == =1;
   < > <= 0.3;
+  ^ 0invalid_identifier
 }

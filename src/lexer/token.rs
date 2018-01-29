@@ -1,8 +1,8 @@
 use std::fmt;
 
 pub struct Token {
-    class: String,
-    lexeme: String
+    pub class: String,
+    pub lexeme: String
 }
 
 impl Token {
