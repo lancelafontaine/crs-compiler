@@ -26,3 +26,8 @@ run_test
 
 
 echo "Number of failed tests: $NUM_FAILING_TESTS"
+if [ "$NUM_FAILING_TESTS" == "0" ]; then
+  exit 0
+else
+  exit 1
+fi
