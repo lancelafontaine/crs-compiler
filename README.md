@@ -104,6 +104,7 @@ The current set of keywords available in the language are:
 - `program`
 - `int`
 - `float`
+- `bool`
 
 If an `<identifier,>` token is found, it must first be compared to the above list where a match would actually result in a `<keyword,>` token.
 
