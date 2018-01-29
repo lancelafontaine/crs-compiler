@@ -1,2 +1,2 @@
 mod error;
-pub use self::error::error;
+pub use self::error::*;

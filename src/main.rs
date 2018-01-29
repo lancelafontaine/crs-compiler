@@ -11,6 +11,7 @@ use std::path::Path;
 use std::process;
 use clap::{Arg, App};
 use lexer::Lexer;
+use output::{ErrorType, error};
 
 
 fn main() {
@@ -31,7 +32,9 @@ fn run() -> i32 {
     let input_file = arg_matches.value_of("input_file").unwrap();
 
     if !Path::new(input_file).exists() {
-        return output::error(1);
+        if let ErrorType::UnrecoverableError(code, _) = error(1) {
+            return code
+        }
     }
     let mut lex = Lexer::new(input_file);
 
