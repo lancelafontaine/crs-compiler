@@ -5,13 +5,12 @@ extern crate ropey;
 extern crate clap;
 
 pub mod output;
+pub mod lexer;
 
-use ropey::Rope;
-use std::fs::File;
-use std::io::{BufReader};
 use std::path::Path;
 use std::process;
 use clap::{Arg, App};
+use lexer::Lexer;
 
 
 fn main() {
@@ -34,13 +33,10 @@ fn run() -> i32 {
     if !Path::new(input_file).exists() {
         return output::error(1);
     }
+    let mut lex = Lexer::new(input_file);
 
-    let text = Rope::from_reader(
-        BufReader::new(File::open(input_file).unwrap())
-    ).unwrap();
-
-    for (i, c) in text.chars().enumerate() {
-        println!("{} - {}", i, c);
+    while let Some(token) = lex.next_token() {
+        println!("{}", token);
     }
-    return 0;
+    0
 }
