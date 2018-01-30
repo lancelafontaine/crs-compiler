@@ -170,6 +170,9 @@ impl StateTransition {
 
     pub fn transition(&mut self, token_buffer: &mut String, lexer: &mut Lexer) -> Option<Token> {
         // Get the transition character
+        if lexer.current_index >= lexer.source_buffer_length {
+            lexer.current_index -= 1;
+        }
         let c = lexer.source_buffer.char(lexer.current_index);
 
         // Transition to next state based on transition character
