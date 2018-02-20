@@ -4,5 +4,5 @@
 
 ## Documentation
 
-The compiler documentation can be read as [Markdown parsed by GitHub](/docs/src/SUMMARY.md) or as [HTML rendered by mdBook](https://cdn.rawgit.com/lancelafontaine/compiler/master/docs/rendered/index.html).
+The compiler documentation can be read as [Markdown parsed by GitHub](/docs/src/SUMMARY.md) or as [HTML rendered by mdBook](https://lancelafontaine.com/crs-compiler/docs/rendered/).
 

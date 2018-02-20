@@ -16,7 +16,7 @@ cargo run -- tests/lexer/source_example.crs
 
 ## Documentation
 
-The compiler documentation can be read as [Markdown parsed by GitHub](/docs/src/SUMMARY.md) or as [HTML rendered by mdBook](/docs/rendered).
+The compiler documentation can be read as [Markdown parsed by GitHub](/docs/src/SUMMARY.md) or as [HTML rendered by mdBook](https://lancelafontaine.com/crs-compiler/docs/rendered/).
 
 All documentation is written in markdown in `/docs/src`. The HTML version can be generated with [`mdbook`](https://github.com/rust-lang-nursery/mdBook) by running `mdbook build` in the root directory.
 
