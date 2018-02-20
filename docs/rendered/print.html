@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>crs compiler documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+    </head>
+    <body class="light">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme;
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            document.querySelector('html').classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="1-overview.html"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                        </div>
+
+                        <h1 class="menu-title">crs compiler documentation</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="print.html#crs-compiler" id="crs-compiler"><h1><code>crs</code> Compiler</h1></a>
+<p><code>crs</code> is a compiler implemented in Rust for a C++-like language, built for the <code>COMP 422 - Compiler Design</code> course at Concordia University. <a href="source_example.crs">Here</a>'s a sample program.</p>
+<a class="header" href="print.html#getting-started" id="getting-started"><h2>Getting Started</h2></a>
+<p>The nightly build of the Rust programming language is required to compile this project.</p>
+<p>First, install <a href="https://www.rust-lang.org/en-US/install.html"><code>rustup</code></a> and then run <code>rustup default nightly</code>.</p>
+<p>You can compile and run the entire project with the following command:</p>
+<pre><code class="language-bash">cargo run -- tests/lexer/source_example.crs
+</code></pre>
+<a class="header" href="print.html#documentation" id="documentation"><h2>Documentation</h2></a>
+<p>The compiler documentation can be read as <a href="/docs/src/SUMMARY.md">Markdown parsed by GitHub</a> or as <a href="/docs/rendered">HTML rendered by mdBook</a>.</p>
+<p>All documentation is written in markdown in <code>/docs/src</code>. The HTML version can be generated with <a href="https://github.com/rust-lang-nursery/mdBook"><code>mdbook</code></a> by running <code>mdbook build</code> in the root directory.</p>
+<a class="header" href="print.html#testing" id="testing"><h2>Testing</h2></a>
+<a class="header" href="print.html#unit-tests" id="unit-tests"><h3>Unit Tests</h3></a>
+<p>Unit tests for the compiler application can be run with:</p>
+<pre><code class="language-bash">cargo test
+</code></pre>
+<p><img src="assets/images/lexer_unit_tests.png" alt="Example output of unit tests" /></p>
+<a class="header" href="print.html#integration-tests" id="integration-tests"><h3>Integration Tests</h3></a>
+<p>Integration tests can be run using a simple bash script to query the output of commands:</p>
+<pre><code class="language-bash">./tests/lexer/lexer_integration_test.sh
+</code></pre>
+<p>These provide appropriate test cases that test for a wide variety of valid and invalid cases in the language.</p>
+<p><img src="assets/images/lexer_integration_tests.png" alt="Example output of integration tests" /></p>
+<a class="header" href="print.html#component-implementation-and-architecture-overview" id="component-implementation-and-architecture-overview"><h2>Component Implementation and Architecture Overview</h2></a>
+<p>The lexer is designed in a modular fashion in order to a clean separation of concerns.</p>
+<a class="header" href="print.html#main-function" id="main-function"><h3>Main Function</h3></a>
+<p>The main function's current responsibilities are to parse the command-line application's required arguments (the path to the source code file), ensure that the provided path exists, instantiate a single lexer for the entire duration of the lexical analysis, and call the <code>nextToken</code> function until the entire source code have been tokenized.</p>
+<a class="header" href="print.html#lexer" id="lexer"><h3>Lexer</h3></a>
+<p>The lexer's responsibility is to manage the progress of the lexical analysis of the source code. It buffers and streams the source code to be analyzed as tokens are extracted. It maintains state about the current index of the source code being accessed, and is effectively a data structure that is passed to the state transition functions. Every call to <code>nextToken</code> results in the instantiation of a new <code>StateTransition</code> object which handles all transitions between FSM states on character input until a valid token is identified.</p>
+<a class="header" href="print.html#state-transitions" id="state-transitions"><h3>State Transitions</h3></a>
+<p>The <code>StateTransition</code> module contains all information relating to transition internal state of the FSM on character input. It manages it's own internal state (the current and next states) as well as the lexer's state (which characters are being read at which index of the source code).</p>
+<p>The state transition table is a static two-dimensional array that encodes all possible transitions between all valid states. This is referred to when new characters are being read, which ultimately updates the current state and the position in the source code. The table also encodes information as to whether the current state is an error, final, or backtrack state, and the module is responsible for taking the appropriate action in these cases, which could include generating a token, modifying the buffer for the extracted lexeme, and reporting encountered error states.</p>
+<a class="header" href="print.html#token" id="token"><h3>Token</h3></a>
+<p>The token is a simple data structure that stores the token's class and extracted lexeme as strings in a struct. Further improvements would be to restrict the token's class to a set of defined <code>TokenClass</code> <code>enum</code> structures which encode peculiarities about certain classes (for example, comment and newline tokens), as opposed to arbitrary text input.</p>
+<a class="header" href="print.html#error-output" id="error-output"><h3>Error Output</h3></a>
+<p>An <code>ErrorType</code> enumeration is defined in the <code>output::error</code> module to differentiate between recoverable and unrecoverable errors. It is also responsible for defining all possible sorts of errors, as well as outputting basic error information to standard output.</p>
+<a class="header" href="print.html#source-line-output" id="source-line-output"><h3>Source Line Output</h3></a>
+<p>The <code>output::source_line</code> module is able to analyze the information in the lexer data structure containing the source code and the current point of analysis, and print relevant lines and characters to standard output when errors occur.</p>
+<a class="header" href="print.html#toolslibrariestechniques-chosen" id="toolslibrariestechniques-chosen"><h2>Tools/Libraries/Techniques Chosen</h2></a>
+<ul>
+<li>The <a href="http://atocc.de">AtoCC</a> RegExp Editor application was used for converting the regular expressions identified as part of the lexical specification into DFAs. Althought the tool was used in the constructed of the DFA shown above, the current application <em>does not</em> output the generated tokens as a file in the AtoCC format.</li>
+<li>The <a href="http://ivanzuzak.info/noam/webapps/fsm_simulator/">FSM simulator</a> website was used for a quick but less vigorous validation of the conversion of regular expressions to DFAs.</li>
+<li>The <a href="https://docs.rs/lazy_static/1.0.0/lazy_static/">lazy_static</a> Rust library was used in order to statically store the large state transition table with values known at compile-time.</li>
+<li>The <a href="https://docs.rs/ropey/0.6.3/ropey/">Ropey</a> library was used as a Rust library to buffer the source code using the rope data structure as it is being lexically analyzed, as well as keep track of lines and line numbers for when outputting errors. I was not able to find any other data structure that modeled the lexical analysis use case so appropriately.</li>
+<li>The <a href="https://clap.rs/">clap</a> Rust library was used for simple command-line argument parsing. It was chosen given that it is mature and well-regarded in the Rust ecosystem.</li>
+<li>The <a href="https://docs.rs/colored/1.6.0/colored/">colored</a> Rust library was used for prettier output during error reporting. It was chosen for it's ease of use and minimalism.</li>
+</ul>
+<p><img src="assets/images/fsa_simulator.png" alt="Example of using the FSM simulator website" /></p>
+<a class="header" href="print.html#crs-lexer" id="crs-lexer"><h1><code>crs</code> Lexer</h1></a>
+<a class="header" href="print.html#lexical-specification" id="lexical-specification"><h2>Lexical Specification</h2></a>
+<a class="header" href="print.html#deterministic-finite-automaton" id="deterministic-finite-automaton"><h3>Deterministic Finite Automaton</h3></a>
+<p>The following list of regular expressions were used in order to define our language's mechanism for recognizing patterns when tokenizing. For brevity's sake, a variant on the POSIX standard for regular expressions is shown.</p>
+<table><thead><tr><th align="center">Pattern Label </th><th align="center"> Simplified Expression </th><th align="center"> Final Regular Expression </th></tr></thead><tbody>
+<tr><td align="center"><code>letter</code></td><td align="center"><code>a..z¦A..Z</code></td><td align="center"><code>[a-zA-Z]</code></td></tr>
+<tr><td align="center"><code>digit</code></td><td align="center"> <code>0..9</code></td><td align="center"><code>[0-9]</code></td></tr>
+<tr><td align="center"><code>nonzero</code></td><td align="center"> <code>1..9</code></td><td align="center"><code>[1-9]</code></td></tr>
+<tr><td align="center"><code>alphanumeric</code></td><td align="center"> <code>letter ¦ digit ¦ _</code> </td><td align="center"><code>[a-zA-Z]¦[0-9]¦_</code></td></tr>
+<tr><td align="center"><code>identifier</code></td><td align="center"> <code>letter (alphanumeric)*</code></td><td align="center"> <code>[a-zA-Z]([a-zA-Z]¦[0-9]¦_)*</code></td></tr>
+<tr><td align="center"><code>fraction</code></td><td align="center"> <code>.digit* nonzero ¦ .0</code></td><td align="center"> <code>\.(([0-9]*[1-9])¦0)</code></td></tr>
+<tr><td align="center"><code>integer</code></td><td align="center"> <code>nonzero digit* ¦ 0</code></td><td align="center"> <code>(([1-9][0-9]*)¦0)</code></td></tr>
+<tr><td align="center"><code>float</code></td><td align="center"> <code>integer fraction (e (+¦-)? integer)?</code></td><td align="center"> <code>(([1-9][0-9]*)¦0)\.(([0-9]*[1-9])¦0)(e(+¦−)?(([1-9][0-9]*)¦0))?</code></td></tr>
+</tbody></table>
+<p>From the regular expressions for tokens defined above, as well as additional simpler language features, a deterministic finite automaton (DFA) was constructed. Tools such as <a href="http://atocc.de">AtoCC</a> and <a href="http://ivanzuzak.info/noam/webapps/fsm_simulator/">FSM Simulator</a> were used in order to confirm the validity of the regular expressions as finite state machines.</p>
+<p>The FSM diagram was created using <a href="https://www.draw.io/">draw.io</a> and can be modified by opening the <a href="assets/diagrams/lexer/lexer_dfa.xml">lexer_dfa.xml</a> file.</p>
+<p><img src="assets/diagrams/lexer/lexer_dfa_include.png" alt="DFA of lexer" /></p>
+<a class="header" href="print.html#state-transition-table" id="state-transition-table"><h2>State Transition Table</h2></a>
+<p>The automaton implementation uses a static <em>state transition table</em>. Any change in the lexical specification above requires rebuilding this table, but should not impact the implementation of the compiler significantly.</p>
+<p>The following legend defines some shortcuts for transition characters:</p>
+<table><thead><tr><th>Transition Label</th><th>List of Valid Characters</th><th>Regular Expression</th></tr></thead><tbody>
+<tr><td align="center"><code>whitespace</code></td><td align="center"> <code></code>, <code>\t</code>, <code>\r</code></td><td align="center"><code>(\ +\t+\r)</code></td></tr>
+<tr><td align="center"><code>newline</code></td><td align="center"> <code>\n</code> </td><td align="center"><code>\n</code></td></tr>
+<tr><td align="center"><code>letter</code></td><td align="center"> <code>a..z</code> and <code>A..Z</code> <em><em>except for <code>e</code></em></em> </td><td align="center"><code>(a+b+c+d+f+g+h+i+j+k+l+m+n+o+p+q+r+s+t+u+v+w+x+y+z)</code><br/><code>+</code><br/><code>(A+B+C+D+E+F+G+H+I+J+K+L+M+O+P+Q+R+S+T+U+V+W+X+Y+Z)</code></td></tr>
+<tr><td align="center"><code>digit</code></td><td align="center"> <code>0..9</code></td><td align="center"><code>(0+1+2+3+4+5+6+7+8+9)</code></td></tr>
+<tr><td align="center"><code>nonzero</code></td><td align="center"> <code>1..9</code></td><td align="center"><code>(1+2+3+4+5+6+7+8+9)</code></td></tr>
+</tbody></table>
+<p>This state transition table was constructed based on the above DFA. The first column indicates the current state. The last few columns indicate any peculiarities of that state. The remaining columns represent all possible input characters which correspond to transition functions.</p>
+<table><thead><tr><th align="center">Current State </th><th align="center"> <code>whitespace</code></th><th align="center"><code>newline</code></th><th align="center"><code>letter</code></th><th align="center"><code>e</code></th><th align="center"><code>nonzero</code></th><th align="center"> <code>0</code> </th><th align="center"><code>(</code></th><th align="center"><code>)</code></th><th align="center"><code>{</code></th><th align="center"><code>}</code></th><th align="center"><code>+</code></th><th align="center"><code>-</code></th><th align="center"><code>*</code></th><th align="center"><code>/</code></th><th align="center"><code>%</code></th><th align="center"><code>!</code></th><th align="center"><code>&amp;</code></th><th align="center"><code>¦</code></th><th align="center"><code>;</code></th><th align="center"><code>&gt;</code></th><th align="center"><code>&lt;</code></th><th align="center"><code>=</code></th><th align="center"><code>_</code></th><th align="center"><code>.</code></th><th align="center"> Final State </th><th> Backtrack Required </th><th> Error State </th><th> Token Class </th></tr></thead><tbody>
+<tr><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">1</td></tr>
+<tr></tr>
+<tr><td align="center">1</td><td align="center">1</td><td align="center">8</td><td align="center">2</td><td align="center">2</td><td align="center">45</td><td align="center">35</td><td align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">20</td><td align="center">21</td><td align="center">9</td><td align="center">4</td><td align="center">22</td><td align="center">27</td><td align="center">23</td><td align="center">25</td><td align="center">19</td><td align="center">28</td><td align="center">31</td><td align="center">16</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">2</td><td align="center">3</td><td align="center">3</td><td align="center">2</td><td align="center">2</td><td align="center">2</td><td align="center">2</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">0</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">3</td><td align="center">2</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">3</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;identifier,&gt;</code><br/><code>&lt;keyword,&gt;</code></td></tr>
+<tr><td align="center">4</td><td align="center">5</td><td align="center">5</td><td align="center">5</td><td align="center">5</td><td align="center">5</td><td align="center">5</td><td align="center">5</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">5</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;math_operator,/&gt;</code></td></tr>
+<tr><td align="center">6</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;open_multi_line_comment&gt;</code></td></tr>
+<tr><td align="center">7</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;single_line_comment&gt;</code></td></tr>
+<tr><td align="center">8</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;newline&gt;</code></td></tr>
+<tr><td align="center">9</td><td align="center">11</td><td align="center">11</td><td align="center">11</td><td align="center">11</td><td align="center">11</td><td align="center">11</td><td align="center">11</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">11</td><td align="center">0</td><td align="center">10</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">10</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;close_multi_line_comment&gt;</code></td></tr>
+<tr><td align="center">11</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;math_operator,*&gt;</code></td></tr>
+<tr><td align="center">12</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;open_parens&gt;</code></td></tr>
+<tr><td align="center">13</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;close_parens&gt;</code></td></tr>
+<tr><td align="center">14</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;open_curly_brace&gt;</code></td></tr>
+<tr><td align="center">15</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;close_curly_brace&gt;</code></td></tr>
+<tr><td align="center">16</td><td align="center">18</td><td align="center">18</td><td align="center">18</td><td align="center">18</td><td align="center">18</td><td align="center">18</td><td align="center">18</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">18</td><td align="center">0</td><td align="center">18</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">17</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">17</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,==&gt;</code></td></tr>
+<tr><td align="center">18</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;assignment_operator&gt;</code></td></tr>
+<tr><td align="center">19</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;semicolon&gt;</code></td></tr>
+<tr><td align="center">20</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;math_operator,+&gt;</code></td></tr>
+<tr><td align="center">21</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;math_operator,-&gt;</code></td></tr>
+<tr><td align="center">22</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;math_operator,%&gt;</code></td></tr>
+<tr><td align="center">23</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">24</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">24</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;logical_operator,and&gt;</code></td></tr>
+<tr><td align="center">25</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">26</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">26</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;logical_operator,or&gt;</code></td></tr>
+<tr><td align="center">27</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;logical_operator,not&gt;</code></td></tr>
+<tr><td align="center">28</td><td align="center">29</td><td align="center">29</td><td align="center">29</td><td align="center">29</td><td align="center">29</td><td align="center">29</td><td align="center">29</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">29</td><td align="center">0</td><td align="center">29</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">30</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">29</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,&gt;&gt;</code></td></tr>
+<tr><td align="center">30</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,&gt;=&gt;</code></td></tr>
+<tr><td align="center">31</td><td align="center">34</td><td align="center">34</td><td align="center">34</td><td align="center">34</td><td align="center">34</td><td align="center">34</td><td align="center">34</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">34</td><td align="center">0</td><td align="center">34</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">32</td><td align="center">0</td><td align="center">33</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">32</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,&lt;&gt;&gt;</code></td></tr>
+<tr><td align="center">33</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,&lt;=&gt;</code></td></tr>
+<tr><td align="center">34</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;relational_operator,&lt;&gt;</code></td></tr>
+<tr><td align="center">35</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">36</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">36</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">37</td><td align="center">37</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">37</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">39</td><td align="center">37</td><td align="center">38</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">38</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">37</td><td align="center">38</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">39</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">42</td><td align="center">41</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">40</td><td align="center">40</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">40</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">42</td><td align="center">41</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">41</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">42</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">0</td><td align="center">42</td><td align="center">42</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">43</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+<tr><td align="center">43</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;float,&gt;</code></td></tr>
+<tr><td align="center">44</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">1</td><td align="center">0</td><td align="center"><code>&lt;int,&gt;</code></td></tr>
+<tr><td align="center">45</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">0</td><td align="center">45</td><td align="center">45</td><td align="center">0</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">44</td><td align="center">0</td><td align="center">36</td><td align="center">0</td><td align="center">0</td><td align="center">0</td></tr>
+<tr></tr>
+</tbody></table>
+<p>Note that for rows which correspond to final states, the next transition function is never computed, given that arriving at a final state results in a return to the initial state (after backtracking if applicable). For simplicity's sake and in order to indicate a return to the start state, these rows are filled with <code>1</code>.</p>
+<a class="header" href="print.html#language-keywords" id="language-keywords"><h2>Language Keywords</h2></a>
+<p>The current set of keywords available in the language are:</p>
+<ul>
+<li><code>if</code></li>
+<li><code>then</code></li>
+<li><code>else</code></li>
+<li><code>for</code></li>
+<li><code>class</code></li>
+<li><code>get</code></li>
+<li><code>put</code></li>
+<li><code>return</code></li>
+<li><code>program</code></li>
+<li><code>int</code></li>
+<li><code>float</code></li>
+<li><code>bool</code></li>
+</ul>
+<p>If an <code>&lt;identifier,&gt;</code> token is found, it must first be compared to the above list where a match would actually result in a <code>&lt;keyword,&gt;</code> token.</p>
+<a class="header" href="print.html#lexical-errors" id="lexical-errors"><h2>Lexical Errors</h2></a>
+<p>The three types of errors generated by the lexer are:</p>
+<ul>
+<li><strong>Unrecoverable Error (1)</strong>: <code>The input file path provided does not exist on the filesystem.</code></li>
+<li><strong>Recoverable Error (2)</strong>: <code>Input character is unrecognized.</code></li>
+<li><strong>Recoverable Error (3)</strong>: <code>Invalid syntax: error state reached. Resetting FSM to initial state.</code></li>
+</ul>
+<p>Every undefined transition in the above DFA results in one of the two recoverable error types, as is demonstrated by the wide variety of integration tests.</p>
+<p>All recoverable errors display the line number and line when tokenizing the source code.</p>
+<p><img src="assets/images/recoverable_error_with_line_displayed.png" alt="Example of a recoverable error and the displayed line number" /></p>
+<p>The <em>panic mode</em> technique is used for error recovery, which involves skipping invalid input characters until valid program segments are encountered. An error is reported to the user, but the lexical analysis and identification of tokens continues afterwards.</p>
+<p>All error output is logged to both the console as well as the <code>error.log</code> file at the root of the repository whenever any lexical analysis occurs.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if (getComputedStyle(document.querySelector(".fa")).fontFamily !== "FontAwesome") {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = '_FontAwesome/css/font-awesome.css';
+                document.head.insertBefore(link, document.head.firstChild)
+            }
+        </script>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                window.print();
+            })
+        </script>
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

@@ -1,0 +1,1305 @@
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 5:
+class Utility : InheritedUtility {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 8:
+  int findMax(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 8:
+  int findMax(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 9:
+  int findMin(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 9:
+  int findMin(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 16:
+  maxValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 16:
+  maxValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 18:
+    if(array[idx] > maxValue) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 18:
+    if(array[idx] > maxValue) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 19:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 19:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 28:
+  minValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 28:
+  minValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 30:
+    if(array[idx] < maxValue + 1 / 8 or idx) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 30:
+    if(array[idx] < maxValue + 1 / 8 or idx) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 31:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 31:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 45:
+  int sample[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 45:
+  int sample[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 52:
+    get(sample[t]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 52:
+    get(sample[t]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 55:
+  maxValue = utility.findMax(sample);
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 56:
+  minValue = utility.findMin(sample);
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 5:
+class Utility : InheritedUtility {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 6:
+  int var1[4][5][7][8][9][1][0];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 8:
+  int findMax(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 8:
+  int findMax(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 9:
+  int findMin(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 9:
+  int findMin(int array[100]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 13:
+int Utility::findMax(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 16:
+  maxValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 16:
+  maxValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 18:
+    if(array[idx] > maxValue) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 18:
+    if(array[idx] > maxValue) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 19:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 19:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 25:
+int Utility::findMin(int array[100]){
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 28:
+  minValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 28:
+  minValue = array[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 30:
+    if(array[idx] < maxValue + 1 / 8 or idx) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 30:
+    if(array[idx] < maxValue + 1 / 8 or idx) then {
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 31:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 31:
+      maxValue = array[idx];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 45:
+  int sample[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 45:
+  int sample[100];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 50:
+  Utility arrayUtility[2][3][6][7];
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 52:
+    get(sample[t]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 52:
+    get(sample[t]);
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 53:
+    sample[t] = (sample[t] * randomize());
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 55:
+  maxValue = utility.findMax(sample);
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 56:
+  minValue = utility.findMin(sample);
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 57:
+  utility.var1[4][1][0][0][0][0][0] = 10;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 58:
+  arrayUtility[utility.var1[1][2][3][4][5][6][idx+maxValue]][1][1][1].var2 = 2.5;
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+ 0123
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+01.23
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+01.23
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+12.340
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+12.34e01
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+ _abc1 
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+1abc
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+ _1abc 
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+ _1abc 
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+&
+---------------------------------------------
+WARNING CODE 3
+Invalid syntax: error state reached. Resetting FSM to initial state.
+---------------------------------------------
+On line 1:
+|
+---------------------------------------------
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 1:
+😄
+---------------------------------------------
+ERROR CODE 1
+The input file path provided does not exist on the filesystem.
+---------------------------------------------

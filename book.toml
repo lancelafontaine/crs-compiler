@@ -1,0 +1,8 @@
+[book]
+title = "crs compiler documentation"
+src = "docs/src"
+
+[build]
+build-dir = "docs/rendered"
+create-missing = false
+
