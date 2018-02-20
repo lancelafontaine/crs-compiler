@@ -6,7 +6,7 @@ publish = false
 
 [dependencies]
 ropey = "0.6.2"
-clap = "2.29.2"
+quicli = "0.2"
 colored = "1.6.0"
 lazy_static = "0.1.16"
 
