@@ -1,4 +1,4 @@
-# `crs` Compiler
+# The `crs` Compiler
 
 `crs` is a compiler implemented in Rust for a C++-like language, built for the `COMP 422 - Compiler Design` course at Concordia University. [Here](source_example.crs)'s a sample program.
 
