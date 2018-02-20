@@ -37,7 +37,7 @@ cargo test
 Integration tests can be run using a simple bash script to query the output of commands:
 
 ```bash
-./tests/lexer_integration_test.sh
+./tests/lexer/lexer_integration_test.sh
 ```
 
 These provide appropriate test cases that test for a wide variety of valid and invalid cases in the language.

@@ -8,7 +8,7 @@ The following list of regular expressions were used in order to define our langu
 
 |Pattern Label | Simplified Expression | Final Regular Expression |
 |:----:|:----:|:----:|
-|`letter`|`a..z` | `A..Z`|`[a-zA-Z]`|
+|`letter`|`a..z¦A..Z`|`[a-zA-Z]`|
 |`digit`| `0..9`|`[0-9]`|
 |`nonzero`| `1..9`|`[1-9]`|
 |`alphanumeric`| `letter ¦ digit ¦ _` |`[a-zA-Z]¦[0-9]¦_`|
@@ -106,10 +106,6 @@ The current set of keywords available in the language are:
 - `bool`
 
 If an `<identifier,>` token is found, it must first be compared to the above list where a match would actually result in a `<keyword,>` token.
-
-## Sample Source Code
-
-TBD
 
 ## Lexical Errors
 
