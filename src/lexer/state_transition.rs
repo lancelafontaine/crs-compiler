@@ -357,7 +357,7 @@ mod tests {
     #[test]
     fn test_transition_valid_intermediate_state() {
         let mut state_transition = st::new();
-        let mut lexer = Lexer::new("source_example.txt");
+        let mut lexer = Lexer::new("tests/lexer/source_example.crs");
         assert_eq!(state_transition.current_state, 1);
         state_transition.transition(&mut String::from("i"), &mut lexer);
         assert_eq!(state_transition.current_state, 2);
@@ -368,7 +368,7 @@ mod tests {
     #[test]
     fn test_generate_token() {
         let mut state_transition = st::new();
-        let mut lexer = Lexer::new("source_example.txt");
+        let mut lexer = Lexer::new("tests/lexer/source_example.crs");
         assert_eq!(state_transition.current_state, 1);
         let some_token = state_transition.generate_token(&mut lexer);
         assert_eq!(some_token.is_some(), true);
