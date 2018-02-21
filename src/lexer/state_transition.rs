@@ -388,7 +388,7 @@ mod tests {
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
             assert_eq!(token.class, "< keyword >");
-            assert_eq!(token.lexeme, "int");
+            assert_eq!(token.lexeme, "class");
         }
     }
 }
