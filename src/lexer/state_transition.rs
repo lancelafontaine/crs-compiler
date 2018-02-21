@@ -263,8 +263,19 @@ impl StateTransition {
             }
         };
 
-        if token_class == "< identifier >" && LANGUAGE_KEYWORDS.contains(&token_buffer) {
-            token_class = "< keyword >";
+        if token_class == "< identifier >" {
+            if LANGUAGE_KEYWORDS.contains(&token_buffer) {
+                token_class = "< keyword >";
+            }
+            if token_buffer == "and" {
+                token_class = "< logical_operator, and >";
+            }
+            if token_buffer == "not" {
+                token_class = "< logical_operator, not >";
+            }
+            if token_buffer == "or" {
+                token_class = "< logical_operator, or >";
+            }
         }
 
         Some(Token::new(String::from(token_class), String::from(token_buffer)))
@@ -306,7 +317,42 @@ mod tests {
             assert_eq!(token.lexeme, "if");
         }
     }
-
+    #[test]
+    fn test_get_token_by_state_final_has_token_is_logical_keyword_and() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let some_token = state_transition.get_token_by_state("and");
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< logical_operator, and >");
+            assert_eq!(token.lexeme, "and");
+        }
+    }
+    #[test]
+    fn test_get_token_by_state_final_has_token_is_logical_keyword_or() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let some_token = state_transition.get_token_by_state("or");
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< logical_operator, or >");
+            assert_eq!(token.lexeme, "or");
+        }
+    }
+    #[test]
+    fn test_get_token_by_state_final_has_token_is_logical_keyword_not() {
+        let state_transition = st {
+            current_state: 3 // identifier - final state
+        };
+        let some_token = state_transition.get_token_by_state("not");
+        assert_eq!(some_token.is_some(), true);
+        if let Some(token) = some_token {
+            assert_eq!(token.class, "< logical_operator, not >");
+            assert_eq!(token.lexeme, "not");
+        }
+    }
     #[test]
     fn test_is_error_state_valid() {
         let state_transition = st {
