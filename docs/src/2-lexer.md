@@ -110,8 +110,13 @@ The current set of keywords available in the language are:
 - `int`
 - `float`
 - `bool`
+- `and`
+- `or`
+- `not`
 
-If an `<identifier,>` token is found, it must first be compared to the above list where a match would actually result in a `<keyword,>` token.
+If an `<identifier,>` token is found, it must first be compared to the above list where a match would actually result in a `keyword` token class, with the exception of `and`, `or` and `not`, which would result in a token class of  `logical_operator`.
+
+
 
 ## Lexical Errors
 
