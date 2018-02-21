@@ -41,8 +41,8 @@ This state transition table was constructed based on the above DFA. The first co
 |Current State | `whitespace`|`newline`|`letter`|`e`|`nonzero`| `0` |`(`|`)`|`{`|`}`|`+`|`-`|`*`|`/`|`%`|`!`|`&`|`¦`|`;`|`>`|`<`|`=`|`_`|`.`|`:`|`[`|`]`| Final State | Backtrack Required | Error State | Token Class |
 |:-------:|:-------:|:-----:|:------:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
 |0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|1||
-|1|1|8|2|2|45|35|12|13|14|15|20|21|9|4|22|27|23|25|19|28|31|16|0|0|46|49|50|0|0|0||
-|2|3|3|2|2|2|2|3|3|3|3|3|3|3|3|3|0|3|3|3|3|3|3|2|0|3|3|3|0|0|0||
+|1|1|8|2|2|45|35|12|13|14|15|20|21|9|4|22|27|23|25|19|28|31|16|0|51|46|49|50|0|0|0||
+|2|3|3|2|2|2|2|3|3|3|3|3|3|3|3|3|0|3|3|3|3|3|3|2|3|3|3|3|0|0|0||
 |3|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|`<identifier,>`<br/>`<keyword,>`|
 |4|5|5|5|5|5|5|5|0|0|0|0|5|6|7|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 |5|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|`<math_operator,/>`|
@@ -91,6 +91,7 @@ This state transition table was constructed based on the above DFA. The first co
 |48|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|`<inheritance_operator>`|
 |49|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|0|`<open_square_bracket>`|
 |50|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|0|`<close_square_bracket>`|
+|51|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|0|0|`<accessor_operator,.>`|
 
 Note that for rows which correspond to final states, the next transition function is never computed, given that arriving at a final state results in a return to the initial state (after backtracking if applicable). For simplicity's sake and in order to indicate a return to the start state, these rows are filled with `1`.
 
