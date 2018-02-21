@@ -2,6 +2,7 @@ use ropey::Rope;
 use std::fs::File;
 use std::io::{BufReader};
 use lexer::Token;
+use lexer::TokenClass;
 use lexer::StateTransition;
 
 
@@ -37,6 +38,7 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
     use lexer::Lexer;
+    use lexer::TokenClass;
 
     #[test]
     fn test_lexer_new() {
@@ -49,7 +51,7 @@ mod tests {
         let some_token = lexer.next_token();
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.class, TokenClass::Keyword);
             assert_eq!(token.lexeme, "class");
         }
     }

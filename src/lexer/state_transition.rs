@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use lexer::Token;
+use lexer::TokenClass;
 use lexer::Lexer;
 use output;
 
@@ -100,40 +101,40 @@ lazy_static! {
         m
     };
 
-    static ref TOKEN_BY_FINAL_STATE: HashMap<usize, &'static str> = {
+    static ref TOKEN_BY_FINAL_STATE: HashMap<usize, TokenClass> = {
         let mut m = HashMap::new();
-        m.insert(3, "< identifier >");
-        m.insert(5, "< math_operator, '/' >");
-        m.insert(6, "< open_multi_line_comment >");
-        m.insert(7, "< single_line_comment >");
-        m.insert(8, "< newline >");
-        m.insert(10, "< close_multi_line_comment >");
-        m.insert(11, "< math_operator, '*' >");
-        m.insert(12, "< open_parens >");
-        m.insert(13, "< close_parens >");
-        m.insert(14, "< open_curly_brace >");
-        m.insert(15, "< close_curly_brace >");
-        m.insert(17, "< relational_operator, '==' >");
-        m.insert(18, "< assignment_operator >");
-        m.insert(19, "< semicolon >");
-        m.insert(20, "< math_operator, '+' >");
-        m.insert(21, "< math_operator, '-' >");
-        m.insert(22, "< math_operator, '%' >");
-        m.insert(24, "< logical_operator, and >");
-        m.insert(26, "< logical_operator, or >");
-        m.insert(27, "< logical_operator, not >");
-        m.insert(29, "< relational_operator, '>' >");
-        m.insert(30, "< relational_operator, '>=' >");
-        m.insert(32, "< relational_operator, '<>' >");
-        m.insert(33, "< relational_operator, '<=' >");
-        m.insert(34, "< relational_operator, '<' >");
-        m.insert(43, "< float >");
-        m.insert(44, "< int >");
-        m.insert(47, "< scope_resolution_operator >");
-        m.insert(48, "< inheritance_operator >");
-        m.insert(49, "< open_square_bracket >");
-        m.insert(50, "< close_square_bracket >");
-        m.insert(51, "< accessor_operator, . >");
+        m.insert(3, TokenClass::Identifier);
+        m.insert(5, TokenClass::MathOperator);
+        m.insert(6, TokenClass::OpenMultiLineComment);
+        m.insert(7, TokenClass::SingleLineComment);
+        m.insert(8, TokenClass::NewLine);
+        m.insert(10, TokenClass::CloseMultiLineComment);
+        m.insert(11, TokenClass::MathOperator);
+        m.insert(12, TokenClass::OpenParens);
+        m.insert(13, TokenClass::CloseParens);
+        m.insert(14, TokenClass::OpenCurlyBrace);
+        m.insert(15, TokenClass::CloseCurlyBrace);
+        m.insert(17, TokenClass::RelationalOperator);
+        m.insert(18, TokenClass::AssignmentOperator);
+        m.insert(19, TokenClass::Semicolon);
+        m.insert(20, TokenClass::MathOperator);
+        m.insert(21, TokenClass::MathOperator);
+        m.insert(22, TokenClass::MathOperator);
+        m.insert(24, TokenClass::BinaryLogicalOperator);
+        m.insert(26, TokenClass::BinaryLogicalOperator);
+        m.insert(27, TokenClass::UnaryLogicalOperator);
+        m.insert(29, TokenClass::RelationalOperator);
+        m.insert(30, TokenClass::RelationalOperator);
+        m.insert(32, TokenClass::RelationalOperator);
+        m.insert(33, TokenClass::RelationalOperator);
+        m.insert(34, TokenClass::RelationalOperator);
+        m.insert(43, TokenClass::Float);
+        m.insert(44, TokenClass::Integer);
+        m.insert(47, TokenClass::ScopeResolutionOperator);
+        m.insert(48, TokenClass::InheritanceOperator);
+        m.insert(49, TokenClass::OpenSquareBracket);
+        m.insert(50, TokenClass::CloseSquareBracket);
+        m.insert(51, TokenClass::AccessorOperator);
         m
     };
 
@@ -253,32 +254,29 @@ impl StateTransition {
     }
 
     pub fn get_token_by_state(&self, token_buffer: &str) -> Option<Token> {
-        let mut token_class = "";
+        let mut token_class = TokenClass::UndefinedTokenClass;
         match TOKEN_BY_FINAL_STATE.get(&self.current_state) {
             Some(class) => {
-                token_class = class;
+                token_class = class.clone();
             },
             None => {
                 return None
             }
         };
 
-        if token_class == "< identifier >" {
+        if token_class == TokenClass::Identifier {
             if LANGUAGE_KEYWORDS.contains(&token_buffer) {
-                token_class = "< keyword >";
+                token_class = TokenClass::Keyword;
             }
-            if token_buffer == "and" {
-                token_class = "< logical_operator, and >";
+            if token_buffer == "and"  || token_buffer == "or" {
+                token_class = TokenClass::BinaryLogicalOperator;
             }
             if token_buffer == "not" {
-                token_class = "< logical_operator, not >";
-            }
-            if token_buffer == "or" {
-                token_class = "< logical_operator, or >";
+                token_class = TokenClass::UnaryLogicalOperator;
             }
         }
 
-        Some(Token::new(String::from(token_class), String::from(token_buffer)))
+        Some(Token::new(token_class, String::from(token_buffer)))
     }
 }
 
@@ -286,6 +284,7 @@ impl StateTransition {
 mod tests {
     use lexer::state_transition::StateTransition as st;
     use lexer::lexer::Lexer;
+    use lexer::TokenClass;
 
     #[test]
     fn test_get_token_by_state_non_final_has_no_token() {
@@ -301,7 +300,7 @@ mod tests {
         let some_token = state_transition.get_token_by_state("a");
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< identifier >");
+            assert_eq!(token.class, TokenClass::Identifier);
             assert_eq!(token.lexeme, "a");
         }
     }
@@ -313,7 +312,7 @@ mod tests {
         let some_token = state_transition.get_token_by_state("if");
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.class, TokenClass::Keyword);
             assert_eq!(token.lexeme, "if");
         }
     }
@@ -325,7 +324,7 @@ mod tests {
         let some_token = state_transition.get_token_by_state("and");
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< logical_operator, and >");
+            assert_eq!(token.class, TokenClass::BinaryLogicalOperator);
             assert_eq!(token.lexeme, "and");
         }
     }
@@ -337,7 +336,7 @@ mod tests {
         let some_token = state_transition.get_token_by_state("or");
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< logical_operator, or >");
+            assert_eq!(token.class, TokenClass::BinaryLogicalOperator);
             assert_eq!(token.lexeme, "or");
         }
     }
@@ -349,7 +348,7 @@ mod tests {
         let some_token = state_transition.get_token_by_state("not");
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< logical_operator, not >");
+            assert_eq!(token.class, TokenClass::UnaryLogicalOperator);
             assert_eq!(token.lexeme, "not");
         }
     }
@@ -433,7 +432,7 @@ mod tests {
         let some_token = state_transition.generate_token(&mut lexer);
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.class, TokenClass::Keyword);
             assert_eq!(token.lexeme, "class");
         }
     }
