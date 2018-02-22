@@ -168,15 +168,45 @@ impl StateTransition {
     }
 
     pub fn generate_token(&mut self, lexer: &mut Lexer) -> Option<Token> {
-        let mut some_token: Option<Token>;
+        let mut some_token: Option<Token> = None;
         let mut token_buffer = String::from("");
+
+        let mut in_multi_line_comment = false;
+        let mut in_single_line_comment = false;
 
         loop {
             if let Some(token) = self.transition(&mut token_buffer, lexer) {
-                some_token = Some(token);
+
                 if lexer.current_index >= lexer.source_buffer_length {
                     some_token = None;
+                    break;
                 }
+
+                if token.class == TokenClass::SingleLineComment {
+                    in_single_line_comment = true;
+                    continue
+                }
+
+                if token.class == TokenClass::NewLine {
+                    in_single_line_comment = false;
+                    // do not continue here, since newline may be a terminator
+                }
+
+                if token.class == TokenClass::OpenMultiLineComment {
+                    in_multi_line_comment = true;
+                    continue
+                }
+
+                if token.class == TokenClass::CloseMultiLineComment {
+                    in_multi_line_comment = false;
+                    continue
+                }
+
+                if in_multi_line_comment || in_single_line_comment {
+                    continue
+                }
+
+                some_token = Some(token);
                 break;
             }
         }
@@ -253,6 +283,21 @@ impl StateTransition {
         STATE_TRANSITION_TABLE[self.current_state][STATE_TRANSITION_LABELS_BY_COLUMN["error"]] == 1
     }
 
+    pub fn update_token_class_by_edge_case(&self, token_class: TokenClass, token_buffer: &str) -> TokenClass {
+        if token_class == TokenClass::Identifier {
+            if LANGUAGE_KEYWORDS.contains(&token_buffer) {
+                return TokenClass::Keyword;
+            }
+            if token_buffer == "and"  || token_buffer == "or" {
+                return TokenClass::BinaryLogicalOperator;
+            }
+            if token_buffer == "not" {
+                return TokenClass::UnaryLogicalOperator;
+            }
+        }
+        token_class
+    }
+
     pub fn get_token_by_state(&self, token_buffer: &str) -> Option<Token> {
         let mut token_class = TokenClass::UndefinedTokenClass;
         match TOKEN_BY_FINAL_STATE.get(&self.current_state) {
@@ -263,19 +308,7 @@ impl StateTransition {
                 return None
             }
         };
-
-        if token_class == TokenClass::Identifier {
-            if LANGUAGE_KEYWORDS.contains(&token_buffer) {
-                token_class = TokenClass::Keyword;
-            }
-            if token_buffer == "and"  || token_buffer == "or" {
-                token_class = TokenClass::BinaryLogicalOperator;
-            }
-            if token_buffer == "not" {
-                token_class = TokenClass::UnaryLogicalOperator;
-            }
-        }
-
+        token_class = self.update_token_class_by_edge_case(token_class, token_buffer);
         Some(Token::new(token_class, String::from(token_buffer)))
     }
 }

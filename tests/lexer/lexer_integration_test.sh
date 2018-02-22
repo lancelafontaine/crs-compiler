@@ -166,22 +166,6 @@ SOURCE_FILE="${SCRIPTPATH}/source_files/math_operator_mod.txt"
 EXPECTED_OUTPUT="Token { class: 'MathOperator', lexeme: '%' }"
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/open_multi_line_comment.txt"
-EXPECTED_OUTPUT="Token { class: 'OpenMultiLineComment', lexeme: '/\*' }"
-run_test
-
-SOURCE_FILE="${SCRIPTPATH}/source_files/single_line_comment.txt"
-EXPECTED_OUTPUT="Token { class: 'SingleLineComment', lexeme: '//' }"
-run_test
-
-SOURCE_FILE="${SCRIPTPATH}/source_files/newline.txt"
-EXPECTED_OUTPUT="Token { class: 'NewLine', lexeme: '' }"
-run_test
-
-SOURCE_FILE="${SCRIPTPATH}/source_files/close_multi_line_comment.txt"
-EXPECTED_OUTPUT="Token { class: 'CloseMultiLineComment', lexeme: '\*/' }"
-run_test
-
 SOURCE_FILE="${SCRIPTPATH}/source_files/open_parens.txt"
 EXPECTED_OUTPUT="Token { class: 'OpenParens', lexeme: '(' }"
 run_test
