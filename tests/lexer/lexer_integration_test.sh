@@ -194,24 +194,36 @@ SOURCE_FILE="${SCRIPTPATH}/source_files/semicolon.txt"
 EXPECTED_OUTPUT="Token { class: 'Semicolon', lexeme: ';' }"
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_and_invalid.txt"
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_&_invalid.txt"
 EXPECTED_OUTPUT="Invalid syntax: error state reached. Resetting FSM to initial state."
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_or_invalid.txt"
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_|_invalid.txt"
 EXPECTED_OUTPUT="Invalid syntax: error state reached. Resetting FSM to initial state."
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_and_valid.txt"
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_&&_valid.txt"
 EXPECTED_OUTPUT="Token { class: 'BinaryLogicalOperator', lexeme: '&&' }"
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_or_valid.txt"
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_keyword_and.txt"
+EXPECTED_OUTPUT="Token { class: 'BinaryLogicalOperator', lexeme: 'and' }"
+run_test
+
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_||_valid.txt"
 EXPECTED_OUTPUT="Token { class: 'BinaryLogicalOperator', lexeme: '||' }"
 run_test
 
-SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_not.txt"
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_keyword_or.txt"
+EXPECTED_OUTPUT="Token { class: 'BinaryLogicalOperator', lexeme: 'or' }"
+run_test
+
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_!.txt"
 EXPECTED_OUTPUT="Token { class: 'UnaryLogicalOperator', lexeme: '!' }"
+run_test
+
+SOURCE_FILE="${SCRIPTPATH}/source_files/logical_operator_keyword_not.txt"
+EXPECTED_OUTPUT="Token { class: 'UnaryLogicalOperator', lexeme: 'not' }"
 run_test
 
 SOURCE_FILE="${SCRIPTPATH}/source_files/relational_operator_>.txt"
