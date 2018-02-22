@@ -2,6 +2,7 @@ use ropey::Rope;
 use std::fs::File;
 use std::io::{BufReader};
 use lexer::Token;
+use lexer::TokenClass;
 use lexer::StateTransition;
 
 
@@ -25,11 +26,27 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Option<Token> {
-        let mut state_transition = StateTransition::new();
-        if let Some(token) = state_transition.generate_token(self) {
-            Some(token)
-        } else {
-            None
+        let mut token_generator = || -> Option<Token>{
+            let mut state_transition = StateTransition::new();
+            if let Some(token) = state_transition.generate_token(self) {
+                Some(token)
+            } else {
+                None
+            }
+        };
+
+        // Complexity delegated to this funciton to filter NewLine tokens
+        // Must be done by creating a new state_transition struct each time
+        loop {
+            let some_token = token_generator();
+            if let None = some_token {
+                return None
+            }
+            if let Some(token) = some_token {
+                if token.class != TokenClass::NewLine {
+                    return Some(token)
+                }
+            }
         }
     }
 }
@@ -37,6 +54,7 @@ impl Lexer {
 #[cfg(test)]
 mod tests {
     use lexer::Lexer;
+    use lexer::TokenClass;
 
     #[test]
     fn test_lexer_new() {
@@ -49,7 +67,7 @@ mod tests {
         let some_token = lexer.next_token();
         assert_eq!(some_token.is_some(), true);
         if let Some(token) = some_token {
-            assert_eq!(token.class, "< keyword >");
+            assert_eq!(token.class, TokenClass::Keyword);
             assert_eq!(token.lexeme, "class");
         }
     }
