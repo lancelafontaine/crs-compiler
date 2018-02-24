@@ -1,4 +1,4 @@
-# `crs` Lexer
+# `crs` Lexical Analysis
 
 ## Lexical Specification
 
