@@ -78,7 +78,7 @@ The `output::source_line` module is able to analyze the information in the lexer
 
 ## Tools/Libraries/Techniques Chosen
 
-- The [AtoCC](http://atocc.de) RegExp Editor application was used for converting the regular expressions identified as part of the lexical specification into DFAs. Althought the tool was used in the constructed of the DFA shown above, the current application *does not* output the generated tokens as a file in the AtoCC format.
+- The [AtoCC](http://atocc.de) RegExp and kfG Editor applications were used for converting the regular expressions identified as part of the lexical specification into DFAs, as well as ensuring the syntax CFG was converted to LL(1) for predictive parsing. Althought the tool was used in the constructed of the DFA shown above, the current application *does not* output the generated tokens as a file in the AtoCC format.
 - The [FSM simulator](http://ivanzuzak.info/noam/webapps/fsm_simulator/) website was used for a quick but less vigorous validation of the conversion of regular expressions to DFAs.
 - The [lazy_static](https://docs.rs/lazy_static/1.0.0/lazy_static/) Rust library was used in order to statically store the large state transition table with values known at compile-time.
 - The [Ropey](https://docs.rs/ropey/0.6.3/ropey/) library was used as a Rust library to buffer the source code using the rope data structure as it is being lexically analyzed, as well as keep track of lines and line numbers for when outputting errors. I was not able to find any other data structure that modeled the lexical analysis use case so appropriately.

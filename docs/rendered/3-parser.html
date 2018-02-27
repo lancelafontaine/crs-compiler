@@ -1,0 +1,537 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Syntactic Analysis - crs compiler documentation</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+    </head>
+    <body class="light">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme;
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            document.querySelector('html').classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="1-overview.html"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li><li><a href="3-parser.html" class="active"><strong aria-hidden="true">3.</strong> Syntactic Analysis</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                        </div>
+
+                        <h1 class="menu-title">crs compiler documentation</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="3-parser.html#crs-syntatic-analysis" id="crs-syntatic-analysis"><h1><code>crs</code> Syntatic Analysis</h1></a>
+<a class="header" href="3-parser.html#context-free-language-grammar-analysis" id="context-free-language-grammar-analysis"><h2>Context-Free Language Grammar Analysis</h2></a>
+<a class="header" href="3-parser.html#ebnf-grammar" id="ebnf-grammar"><h3>EBNF Grammar</h3></a>
+<p>The specification for the syntactic analysis of the language is shown with the productions below in EBNF syntax.</p>
+<table><thead><tr><th align="center"> LHS </th><th align="center"> → </th><th align="center"> RHS </th></tr></thead><tbody>
+<tr><td align="center"> <em>prog</em> </td><td align="center"> → </td><td align="center"> {<em>classDecl</em>} {<em>funcDef</em>} <code>program</code> <em>funcBody</em> <code>;</code></td></tr>
+<tr><td align="center"> <em>classDecl</em> </td><td align="center"> → </td><td align="center"> <code>class</code> <code>id</code> [<code>:</code> <code>id</code> {<code>,</code> <code>id</code>}] <code>{</code> {<em>varDecl</em>} {<em>funcDecl</em>} <code>}</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>funcDecl</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> <code>(</code> <em>fParams</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>funcHead</em> </td><td align="center"> → </td><td align="center"> <em>type</em> [ <code>id</code> <code>::</code> ] <code>id</code> <code>(</code> <em>fParams</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>funcDef</em> </td><td align="center"> → </td><td align="center"> <em>funcHead</em> <em>funcBody</em> <code>;</code> </td></tr>
+<tr><td align="center"> <em>funcBody</em> </td><td align="center"> → </td><td align="center"> <code>{</code> {<em>varDecl</em>} {<em>statement</em>} <code>}</code> </td></tr>
+<tr><td align="center"> <em>varDecl</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> {<em>arraySize</em>} <code>;</code> </td></tr>
+<tr><td align="center"> <em>statement</em> </td><td align="center"> → </td><td align="center"> <em>assignStat</em> | <br/> <code>if</code> <code>(</code> <em>expr</em> <code>)</code> <code>then</code> <em>statBlock</em> <code>;</code> | <br/> <code>for</code> <code>(</code> <em>type</em> <code>id</code> <em>assignOp</em> <em>expr</em> <code>;</code> <em>relExpr</em> <code>;</code> <em>assignStat</em>  <code>)</code> <em>statBlock</em> <code>;</code> | <br/> <code>get</code> <code>(</code> <em>variable</em> <code>)</code> <code>;</code> | <br/> <code>put</code> <code>(</code> <em>expr</em> <code>)</code> <code>;</code> | <br/> <code>return</code> <code>(</code> <em>expr</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>assignStat</em> </td><td align="center"> → </td><td align="center"> <em>variable</em> <em>assignOp</em> <em>expr</em> </td></tr>
+<tr><td align="center"> <em>statBlock</em> </td><td align="center"> → </td><td align="center"> <code>{</code> {<em>statement</em>} <code>}</code> | <em>statement</em> | ε </td></tr>
+<tr><td align="center"> <em>expr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> | <em>relExpr</em> </td></tr>
+<tr><td align="center"> <em>relExpr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> <em>relOp</em> <em>arithExpr</em> </td></tr>
+<tr><td align="center"> <em>arithExpr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> <em>addOp</em> <em>term</em> | <em>term</em> </td></tr>
+<tr><td align="center"> <em>sign</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> </td></tr>
+<tr><td align="center"> <em>term</em> </td><td align="center"> → </td><td align="center"> <em>term</em> <em>multOp</em> <em>factor</em> | <em>factor</em> </td></tr>
+<tr><td align="center"> <em>factor</em> </td><td align="center"> → </td><td align="center"> <em>variable</em> | <br/> <em>functionCall</em> | <br/> <code>intNum</code> | <br/> <code>floatNum</code> | <br/> <code>(</code> <em>arithExpr</em> <code>)</code> | <br/> (<code>not</code> | <code>!</code>) <em>factor</em> | <br/> <em>sign</em> <em>factor</em> </td></tr>
+<tr><td align="center"> <em>variable</em> </td><td align="center"> → </td><td align="center"> {<em>idnest</em>} <code>id</code> {<em>indice</em>} </td></tr>
+<tr><td align="center"> <em>functionCall</em> </td><td align="center"> → </td><td align="center"> {<em>idnest</em>} <code>id</code> <code>(</code> <em>aParams</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>idnest</em> </td><td align="center"> → </td><td align="center"> <code>id</code> {<em>indice</em>} <code>.</code> | <code>id</code> <code>(</code> <em>aParams</em> <code>)</code> <code>.</code> </td></tr>
+<tr><td align="center"> <em>indice</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <em>arithExpr</em> <code>]</code> </td></tr>
+<tr><td align="center"> <em>arraySize</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <code>intNum</code> <code>]</code> </td></tr>
+<tr><td align="center"> <em>type</em> </td><td align="center"> → </td><td align="center"> <code>int</code> | <code>float</code> | <code>id</code> </td></tr>
+<tr><td align="center"> <em>fParams</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> {<em>arraySize</em>} {<em>fParamsTail</em>} | ε </td></tr>
+<tr><td align="center"> <em>aParams</em> </td><td align="center"> → </td><td align="center"> <em>expr</em> {<em>aParamsTail</em>} | ε </td></tr>
+<tr><td align="center"> <em>fParamsTail</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>type</em> <code>id</code> {<em>arraySize</em>} </td></tr>
+<tr><td align="center"> <em>aParamsTail</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>expr</em> </td></tr>
+<tr><td align="center"> <em>assignOp</em> </td><td align="center"> → </td><td align="center"> <code>=</code> </td></tr>
+<tr><td align="center"> <em>relOp</em> </td><td align="center"> → </td><td align="center"> <code>==</code> | <code>&lt;&gt;</code> | <code>&lt;</code> | <code>&gt;</code> | <code>&lt;=</code> | <code>&gt;=</code> </td></tr>
+<tr><td align="center"> <em>addOp</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> | <code>or</code> | <code>¦¦</code> </td></tr>
+<tr><td align="center"> <em>multOp</em> </td><td align="center"> → </td><td align="center"> <code>*</code> | <code>/</code> | <code>and</code> | <code>&amp;&amp;</code> </td></tr>
+</tbody></table>
+<a class="header" href="3-parser.html#bnf-grammar" id="bnf-grammar"><h3>BNF Grammar</h3></a>
+<p>An EBNF grammar can be converted to a BNF grammar by applying the following rules:</p>
+<ul>
+<li>For every instance of {<em>X</em>}, extract it to a new nonterminal <em>Y</em> and add the production <em>Y</em> → <em>Y</em> <em>X</em> | ε.</li>
+<li>For every instance of [<em>X</em>], extract it to a new nonterminal <em>Y</em> and add the production <em>Y</em> → <em>X</em> | ε.</li>
+<li>For every instance of (<em>X</em>), extract it to a new nonterminal <em>Y</em> and add the production <em>Y</em> → <em>X</em>.</li>
+</ul>
+<p>The syntactic language specification in EBNF format was converted to a BNF grammar shown below.</p>
+<table><thead><tr><th> LHS </th><th> → </th><th> RHS </th></tr></thead><tbody>
+<tr><td align="center"> <em>prog</em> </td><td align="center"> → </td><td align="center"> <em>classDeclRecursion</em> <em>funcDefRecursion</em> <code>program</code> <em>funcBody</em> <code>;</code></td></tr>
+<tr><td align="center"> <em>classDeclRecursion</em> </td><td align="center"> → </td><td align="center"> <em>classDeclRecursion</em> <em>classDecl</em> | ε </td></tr>
+<tr><td align="center"> <em>classDecl</em> </td><td align="center"> → </td><td align="center"> <code>class</code> <code>id</code> <em>optionalInheritance</em> <code>{</code> <em>varDeclRecursion</em> <em>funcDeclRecursion</em> <code>}</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>optionalInheritance</em> </td><td align="center"> → </td><td align="center"> <code>:</code> <code>id</code> <em>MultipleSuperClasses</em> | ε</td></tr>
+<tr><td align="center"> <em>MultipleSuperClasses</em> </td><td align="center"> → </td><td align="center"> <em>MultipleSuperClasses</em> <code>,</code> <code>id</code> | ε </td></tr>
+<tr><td align="center"> <em>funcDeclRecursion</em> </td><td align="center"> → </td><td align="center"> <em>funcDeclRecursion</em> <em>funcDecl</em> | ε </td></tr>
+<tr><td align="center"> <em>funcDecl</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> <code>(</code> <em>fParams</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>funcHead</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <em>optionalNamespace</em> <code>id</code> <code>(</code> <em>fParams</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>optionalNamespace</em> </td><td align="center"> → </td><td align="center">  <code>id</code> <code>::</code> | ε</td></tr>
+<tr><td align="center"> <em>funcDefRecursion</em> </td><td align="center"> → </td><td align="center"> <em>funcDefRecursion</em> <em>funcDef</em> | ε </td></tr>
+<tr><td align="center"> <em>funcDef</em> </td><td align="center"> → </td><td align="center"> <em>funcHead</em> <em>funcBody</em> <code>;</code> </td></tr>
+<tr><td align="center"> <em>funcBody</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>varDeclRecursion</em> <em>statementRecursion</em> <code>}</code> </td></tr>
+<tr><td align="center"> <em>varDeclRecursion</em> </td><td align="center"> → </td><td align="center"> <em>varDeclRecursion</em> <em>varDecl</em> | ε </td></tr>
+<tr><td align="center"> <em>varDecl</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> <em>arraySizeRecursion</em> <code>;</code> </td></tr>
+<tr><td align="center"> <em>statementRecursion</em> </td><td align="center"> → </td><td align="center"> <em>statementRecursion</em> <em>statement</em> | ε </td></tr>
+<tr><td align="center"> <em>statement</em> </td><td align="center"> → </td><td align="center"> <em>assignStat</em> | <br/> <code>if</code> <code>(</code> <em>expr</em> <code>)</code> <code>then</code> <em>statBlock</em> <code>;</code> | <br/> <code>for</code> <code>(</code> <em>type</em> <code>id</code> <em>assignOp</em> <em>expr</em> <code>;</code> <em>relExpr</em> <code>;</code> <em>assignStat</em>  <code>)</code> <em>statBlock</em> <code>;</code> | <br/> <code>get</code> <code>(</code> <em>variable</em> <code>)</code> <code>;</code> | <br/> <code>put</code> <code>(</code> <em>expr</em> <code>)</code> <code>;</code> | <br/> <code>return</code> <code>(</code> <em>expr</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>assignStat</em> </td><td align="center"> → </td><td align="center"> <em>variable</em> <em>assignOp</em> <em>expr</em> </td></tr>
+<tr><td align="center"> <em>statBlock</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>statementRecursion</em> <code>}</code> | <em>statement</em> | ε </td></tr>
+<tr><td align="center"> <em>expr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> | <em>relExpr</em> </td></tr>
+<tr><td align="center"> <em>relExpr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> <em>relOp</em> <em>arithExpr</em> </td></tr>
+<tr><td align="center"> <em>arithExpr</em> </td><td align="center"> → </td><td align="center"> <em>arithExpr</em> <em>addOp</em> <em>term</em> | <em>term</em> </td></tr>
+<tr><td align="center"> <em>sign</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> </td></tr>
+<tr><td align="center"> <em>term</em> </td><td align="center"> → </td><td align="center"> <em>term</em> <em>multOp</em> <em>factor</em> | <em>factor</em> </td></tr>
+<tr><td align="center"> <em>factor</em> </td><td align="center"> → </td><td align="center"> <em>variable</em> | <br/> <em>functionCall</em> | <br/> <code>intNum</code> | <br/> <code>floatNum</code> | <br/> <code>(</code> <em>arithExpr</em> <code>)</code> | <br/> <em>negationOperator</em> <em>factor</em> | <br/> <em>sign</em> <em>factor</em> </td></tr>
+<tr><td align="center"> <em>negationOperator</em> </td><td align="center"> → </td><td align="center"> <code>not</code> | <code>!</code> </td></tr>
+<tr><td align="center"> <em>variable</em> </td><td align="center"> → </td><td align="center"> <em>idnestRecursion</em> <code>id</code> <em>indiceRecursion</em> </td></tr>
+<tr><td align="center"> <em>functionCall</em> </td><td align="center"> → </td><td align="center"> <em>idnestRecursion</em> <code>id</code> <code>(</code> <em>aParams</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>idnestRecursion</em> </td><td align="center"> → </td><td align="center"> <em>idnestRecursion</em> <em>idnest</em> | ε </td></tr>
+<tr><td align="center"> <em>idnest</em> </td><td align="center"> → </td><td align="center"> <code>id</code> <em>indiceRecursion</em> <code>.</code> | <code>id</code> <code>(</code> <em>aParams</em> <code>)</code> <code>.</code> </td></tr>
+<tr><td align="center"> <em>indiceRecursion</em> </td><td align="center"> → </td><td align="center"> <em>indiceRecursion</em> <em>indice</em> | ε </td></tr>
+<tr><td align="center"> <em>indice</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <em>arithExpr</em> <code>]</code> </td></tr>
+<tr><td align="center"> <em>arraySizeRecursion</em> </td><td align="center"> → </td><td align="center"> <em>arraySizeRecursion</em> <em>arraySize</em> | ε </td></tr>
+<tr><td align="center"> <em>arraySize</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <code>intNum</code> <code>]</code> </td></tr>
+<tr><td align="center"> <em>type</em> </td><td align="center"> → </td><td align="center"> <code>int</code> | <code>float</code> | <code>id</code> </td></tr>
+<tr><td align="center"> <em>fParams</em> </td><td align="center"> → </td><td align="center"> <em>type</em> <code>id</code> <em>arraySizeRecursion</em> <em>fParamsTailRecursion</em> | ε </td></tr>
+<tr><td align="center"> <em>aParams</em> </td><td align="center"> → </td><td align="center"> <em>expr</em> <em>aParamsTailRecursion</em> | ε </td></tr>
+<tr><td align="center"> <em>fParamsTailRecursion</em> </td><td align="center"> → </td><td align="center"> <em>fParamsTailRecursion</em> <em>fParamsTail</em> | ε </td></tr>
+<tr><td align="center"> <em>fParamsTail</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>type</em> <code>id</code> <em>arraySizeRecursion</em> </td></tr>
+<tr><td align="center"> <em>aParamsTailRecursion</em> </td><td align="center"> → </td><td align="center"> <em>aParamsTailRecursion</em> <em>aParamsTail</em> | ε </td></tr>
+<tr><td align="center"> <em>aParamsTail</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>expr</em> </td></tr>
+<tr><td align="center"> <em>assignOp</em> </td><td align="center"> → </td><td align="center"> <code>=</code> </td></tr>
+<tr><td align="center"> <em>relOp</em> </td><td align="center"> → </td><td align="center"> <code>==</code> | <code>&lt;&gt;</code> | <code>&lt;</code> | <code>&gt;</code> | <code>&lt;=</code> | <code>&gt;=</code> </td></tr>
+<tr><td align="center"> <em>addOp</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> | <code>or</code> | <code>¦¦</code> </td></tr>
+<tr><td align="center"> <em>multOp</em> </td><td align="center"> → </td><td align="center"> <code>*</code> | <code>/</code> | <code>and</code> | <code>&amp;&amp;</code> </td></tr>
+</tbody></table>
+<p>We can simplify the non-terminals of the language by following this legend:</p>
+<table><thead><tr><th> Previous Non-Terminal Symbol </th><th> New Non-Terminal Symbol </th></tr></thead><tbody>
+<tr><td align="center"> <em>prog</em> </td><td align="center"> <em>S</em> </td></tr>
+<tr><td align="center"> <em>classDeclRecursion</em> </td><td align="center"> <em>A</em> </td></tr>
+<tr><td align="center"> <em>funcDefRecursion</em> </td><td align="center"> <em>B</em> </td></tr>
+<tr><td align="center"> <em>funcBody</em> </td><td align="center"> <em>C</em> </td></tr>
+<tr><td align="center"> <em>classDecl</em> </td><td align="center"> <em>D</em> </td></tr>
+<tr><td align="center"> <em>optionalInheritance</em> </td><td align="center"> <em>E</em> </td></tr>
+<tr><td align="center"> <em>varDeclRecursion</em> </td><td align="center"> <em>F</em> </td></tr>
+<tr><td align="center"> <em>funcDeclRecursion</em> </td><td align="center"> <em>G</em> </td></tr>
+<tr><td align="center"> <em>MultipleSuperClasses</em> </td><td align="center"> <em>H</em> </td></tr>
+<tr><td align="center"> <em>funcDecl</em> </td><td align="center"> <em>I</em> </td></tr>
+<tr><td align="center"> <em>type</em> </td><td align="center"> <em>J</em> </td></tr>
+<tr><td align="center"> <em>fParams</em> </td><td align="center"> <em>K</em> </td></tr>
+<tr><td align="center"> <em>funcHead</em> </td><td align="center"> <em>L</em> </td></tr>
+<tr><td align="center"> <em>optionalNamespace</em> </td><td align="center"> <em>M</em> </td></tr>
+<tr><td align="center"> <em>funcDef</em> </td><td align="center"> <em>N</em> </td></tr>
+<tr><td align="center"> <em>statementRecursion</em> </td><td align="center"> <em>O</em> </td></tr>
+<tr><td align="center"> <em>varDecl</em> </td><td align="center"> <em>P</em> </td></tr>
+<tr><td align="center"> <em>arraySizeRecursion</em> </td><td align="center"> <em>Q</em> </td></tr>
+<tr><td align="center"> <em>statement</em> </td><td align="center"> <em>R</em> </td></tr>
+<tr><td align="center"> <em>assignStat</em> </td><td align="center"> <em>T</em> </td></tr>
+<tr><td align="center"> <em>expr</em> </td><td align="center"> <em>U</em> </td></tr>
+<tr><td align="center"> <em>statBlock</em> </td><td align="center"> <em>V</em> </td></tr>
+<tr><td align="center"> <em>assignOp</em> </td><td align="center"> <em>W</em> </td></tr>
+<tr><td align="center"> <em>relExpr</em> </td><td align="center"> <em>X</em> </td></tr>
+<tr><td align="center"> <em>variable</em> </td><td align="center"> <em>Y</em> </td></tr>
+<tr><td align="center"> <em>arithExpr</em> </td><td align="center"> <em>Z</em> </td></tr>
+<tr><td align="center"> <em>relOp</em> </td><td align="center"> <em>AA</em> </td></tr>
+<tr><td align="center"> <em>addOp</em> </td><td align="center"> <em>AB</em> </td></tr>
+<tr><td align="center"> <em>term</em> </td><td align="center"> <em>AC</em> </td></tr>
+<tr><td align="center"> <em>sign</em> </td><td align="center"> <em>AD</em> </td></tr>
+<tr><td align="center"> <em>multOp</em> </td><td align="center"> <em>AE</em> </td></tr>
+<tr><td align="center"> <em>factor</em> </td><td align="center"> <em>AF</em> </td></tr>
+<tr><td align="center"> <em>functionCall</em> </td><td align="center"> <em>AG</em> </td></tr>
+<tr><td align="center"> <em>negationOperator</em> </td><td align="center"> <em>AH</em> </td></tr>
+<tr><td align="center"> <em>idnestRecursion</em> </td><td align="center"> <em>AI</em> </td></tr>
+<tr><td align="center"> <em>indiceRecursion</em> </td><td align="center"> <em>AJ</em> </td></tr>
+<tr><td align="center"> <em>aParams</em> </td><td align="center"> <em>AK</em> </td></tr>
+<tr><td align="center"> <em>idnest</em> </td><td align="center"> <em>AL</em> </td></tr>
+<tr><td align="center"> <em>indice</em> </td><td align="center"> <em>AM</em> </td></tr>
+<tr><td align="center"> <em>arraySize</em> </td><td align="center"> <em>AN</em> </td></tr>
+<tr><td align="center"> <em>fParamsTailRecursion</em> </td><td align="center"> <em>AO</em> </td></tr>
+<tr><td align="center"> <em>aParamsTailRecursion</em> </td><td align="center"> <em>AP</em> </td></tr>
+<tr><td align="center"> <em>fParamsTail</em> </td><td align="center"> <em>AQ</em> </td></tr>
+<tr><td align="center"> <em>aParamsTail</em> </td><td align="center"> <em>AR</em> </td></tr>
+</tbody></table>
+<p>This results in the same BNF grammar but with single-letter non-terminal symbols.</p>
+<table><thead><tr><th align="center"> LHS </th><th> → </th><th> RHS </th></tr></thead><tbody>
+<tr><td align="center"> <em>S</em> </td><td align="center"> → </td><td align="center"> <em>A</em> <em>B</em> <code>program</code> <em>C</em> <code>;</code></td></tr>
+<tr><td align="center"> <em>A</em> </td><td align="center"> → </td><td align="center"> <em>A</em> <em>D</em> | ε </td></tr>
+<tr><td align="center"> <em>B</em> </td><td align="center"> → </td><td align="center"> <em>B</em> <em>N</em> | ε </td></tr>
+<tr><td align="center"> <em>C</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>F</em> <em>O</em> <code>}</code> </td></tr>
+<tr><td align="center"> <em>D</em> </td><td align="center"> → </td><td align="center"> <code>class</code> <code>id</code> <em>E</em> <code>{</code> <em>F</em> <em>G</em> <code>}</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>E</em> </td><td align="center"> → </td><td align="center"> <code>:</code> <code>id</code> <em>H</em> | ε</td></tr>
+<tr><td align="center"> <em>F</em> </td><td align="center"> → </td><td align="center"> <em>F</em> <em>P</em> | ε </td></tr>
+<tr><td align="center"> <em>G</em> </td><td align="center"> → </td><td align="center"> <em>G</em> <em>I</em> | ε </td></tr>
+<tr><td align="center"> <em>H</em> </td><td align="center"> → </td><td align="center"> <em>H</em> <code>,</code> <code>id</code> | ε </td></tr>
+<tr><td align="center"> <em>I</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <code>(</code> <em>K</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>J</em> </td><td align="center"> → </td><td align="center"> <code>int</code> | <code>float</code> | <code>id</code> </td></tr>
+<tr><td align="center"> <em>K</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <em>Q</em> <em>AO</em> | ε </td></tr>
+<tr><td align="center"> <em>L</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <em>M</em> <code>id</code> <code>(</code> <em>K</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>M</em> </td><td align="center"> → </td><td align="center">  <code>id</code> <code>::</code> | ε</td></tr>
+<tr><td align="center"> <em>N</em> </td><td align="center"> → </td><td align="center"> <em>L</em> <em>C</em> <code>;</code> </td></tr>
+<tr><td align="center"> <em>O</em> </td><td align="center"> → </td><td align="center"> <em>O</em> <em>R</em> | ε </td></tr>
+<tr><td align="center"> <em>P</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <em>Q</em> <code>;</code> </td></tr>
+<tr><td align="center"> <em>Q</em> </td><td align="center"> → </td><td align="center"> <em>Q</em> <em>AN</em> | ε </td></tr>
+<tr><td align="center"> <em>R</em> </td><td align="center"> → </td><td align="center"> <em>T</em> | <code>if</code> <code>(</code> <em>U</em> <code>)</code> <code>then</code> <em>V</em> <code>;</code> | <code>for</code> <code>(</code> <em>J</em> <code>id</code> <em>W</em> <em>U</em> <code>;</code> <em>X</em> <code>;</code> <em>T</em>  <code>)</code> <em>V</em> <code>;</code> | <br/> <code>get</code> <code>(</code> <em>Y</em> <code>)</code> <code>;</code> | <code>put</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> | <code>return</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> </td></tr>
+<tr><td align="center"> <em>T</em> </td><td align="center"> → </td><td align="center"> <em>Y</em> <em>W</em> <em>U</em> </td></tr>
+<tr><td align="center"> <em>U</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> | <em>X</em> </td></tr>
+<tr><td align="center"> <em>V</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>O</em> <code>}</code> | <em>R</em> | ε </td></tr>
+<tr><td align="center"> <em>W</em> </td><td align="center"> → </td><td align="center"> <code>=</code> </td></tr>
+<tr><td align="center"> <em>X</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> <em>AA</em> <em>Z</em> </td></tr>
+<tr><td align="center"> <em>Y</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <code>id</code> <em>AJ</em> </td></tr>
+<tr><td align="center"> <em>Z</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> <em>AB</em> <em>AC</em> | <em>AC</em> </td></tr>
+<tr><td align="center"> <em>AA</em> </td><td align="center"> → </td><td align="center"> <code>==</code> | <code>&lt;&gt;</code> | <code>&lt;</code> | <code>&gt;</code> | <code>&lt;=</code> | <code>&gt;=</code> </td></tr>
+<tr><td align="center"> <em>AB</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> | <code>or</code> | <code>¦¦</code> </td></tr>
+<tr><td align="center"> <em>AC</em> </td><td align="center"> → </td><td align="center"> <em>AC</em> <em>AE</em> <em>AF</em> | <em>AF</em> </td></tr>
+<tr><td align="center"> <em>AD</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> </td></tr>
+<tr><td align="center"> <em>AE</em> </td><td align="center"> → </td><td align="center"> <code>*</code> | <code>/</code> | <code>and</code> | <code>&amp;&amp;</code> </td></tr>
+<tr><td align="center"> <em>AF</em> </td><td align="center"> → </td><td align="center"> <em>Y</em> | <em>AG</em> | <code>intNum</code> | <code>floatNum</code> | <code>(</code> <em>Z</em> <code>)</code> | <em>AH</em> <em>AF</em> | <em>AD</em> <em>AF</em> </td></tr>
+<tr><td align="center"> <em>AG</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <code>id</code> <code>(</code> <em>AK</em> <code>)</code> </td></tr>
+<tr><td align="center"> <em>AH</em> </td><td align="center"> → </td><td align="center"> <code>not</code> | <code>!</code> </td></tr>
+<tr><td align="center"> <em>AI</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <em>AL</em> | ε </td></tr>
+<tr><td align="center"> <em>AJ</em> </td><td align="center"> → </td><td align="center"> <em>AJ</em> <em>AM</em> | ε </td></tr>
+<tr><td align="center"> <em>AK</em> </td><td align="center"> → </td><td align="center"> <em>U</em> <em>AP</em> | ε </td></tr>
+<tr><td align="center"> <em>AL</em> </td><td align="center"> → </td><td align="center"> <code>id</code> <em>AJ</em> <code>.</code> | <code>id</code> <code>(</code> <em>AK</em> <code>)</code> <code>.</code> </td></tr>
+<tr><td align="center"> <em>AM</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <em>Z</em> <code>]</code> </td></tr>
+<tr><td align="center"> <em>AN</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <code>intNum</code> <code>]</code> </td></tr>
+<tr><td align="center"> <em>AO</em> </td><td align="center"> → </td><td align="center"> <em>AO</em> <em>AQ</em> | ε </td></tr>
+<tr><td align="center"> <em>AP</em> </td><td align="center"> → </td><td align="center"> <em>AP</em> <em>AR</em> | ε </td></tr>
+<tr><td align="center"> <em>AQ</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>J</em> <code>id</code> <em>Q</em> </td></tr>
+<tr><td align="center"> <em>AR</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>U</em> </td></tr>
+</tbody></table>
+<p>An <a href="http://atocc.de">AtoCC</a>-compatible text format of the above grammar is shown below:</p>
+<pre><code>S -&gt; A B 'program' C ';'
+A -&gt; A D | EPSILON
+B -&gt; B N | EPSILON
+C -&gt; '{' F O '}'
+D -&gt; 'class' 'id' E '{' F G '}' ';'
+E -&gt; ':' 'id' H | EPSILON
+F -&gt; F P | EPSILON
+G -&gt; G I | EPSILON
+H -&gt; H ',' 'id' | EPSILON
+I -&gt; J 'id' '(' K ')' ';'
+J -&gt; 'int' | 'float' | 'id'
+K -&gt; J 'id' Q AO | EPSILON
+L -&gt; J M 'id' '(' K ')'
+M -&gt;  'id' '::' | EPSILON
+N -&gt; L C ';'
+O -&gt; O R | EPSILON
+P -&gt; J 'id' Q ';'
+Q -&gt; Q AN | EPSILON
+R -&gt; T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
+T -&gt; Y W U
+U -&gt; Z | X
+V -&gt; '{' O '}' | R | EPSILON
+W -&gt; '='
+X -&gt; Z AA Z
+Y -&gt; AI 'id' AJ
+Z -&gt; Z AB AC | AC
+AA -&gt; '==' | '&lt;&gt;' | '&lt;' | '&gt;' | '&lt;=' | '&gt;='
+AB -&gt; '+' | '-' | 'or' | '||'
+AC -&gt; AC AE AF | AF
+AD -&gt; '+' | '-'
+AE -&gt; '*' | '/' | 'and' | '&amp;&amp;'
+AF -&gt; Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
+AG -&gt; AI 'id' '(' AK ')'
+AH -&gt; 'not' | '!'
+AI -&gt; AI AL | EPSILON
+AJ -&gt; AJ AM | EPSILON
+AK -&gt; U AP | EPSILON
+AL -&gt; 'id' AJ '.' | 'id' '(' AK ')' '.'
+AM -&gt; '[' Z ']'
+AN -&gt; '[' 'intNum' ']'
+AO -&gt; AO AQ | EPSILON
+AP -&gt; AP AR | EPSILON
+AQ -&gt; ',' J 'id' Q
+AR -&gt; ',' U
+</code></pre>
+<a class="header" href="3-parser.html#left-factored-right-recursive-and-ll1-grammar" id="left-factored-right-recursive-and-ll1-grammar"><h3>Left-Factored, Right-Recursive and LL(1) Grammar</h3></a>
+<p>Left factoring is a technique used in predictive top-down parsers avoid the need for backtracking or lookaheads during parsing, such as is done in recursive descent. It involves the removal of any common left factor (terminal or non-terminal) that appears in a production with an or clause (|), or effectively two productions of the same non-terminal. Performing left factoring means that at a given non-terminal, there is a clear deterministic choice of which production to proceed towards.</p>
+<p>Left recursion is avoided in recursive descent and predictive parsing strategies due to the possibility of an infinite loop, resulting in the compiler never terminating and with no progress.</p>
+<p>Left-recursive productions can be replaced with right-recursive productions by applying the following rules:</p>
+<p>For any production with the general form...</p>
+<blockquote>
+<p><em>S</em> → <em>S</em>α<sub>1</sub> | ... | <em>S</em>α<sub>n</sub> | β<sub>1</sub> | ... | β<sub>m</sub></p>
+</blockquote>
+<p>... replace with two productions:</p>
+<blockquote>
+<p><em>S</em> → β<sub>1</sub> <em>T</em> | ... | β<sub>m</sub> <em>T</em> <br/>
+<em>T</em> → α<sub>1</sub> <em>T</em> | ... | α<sub>1</sub> <em>T</em> | ε</p>
+</blockquote>
+<p>This technique needs to be applied and the condition must hold for all non-terminal substitutions (one derivation step of a production).</p>
+<p>Ambiguity in context-free grammars means that it can result in multiple possible derivations or parse trees. This is undesirable as we want our compiler to reliably generate the same parse tree given the same input program.</p>
+<p>Using an LL(1) grammar for a syntactic analysis is attractive given that LL(1) grammars are known to be unambigiuous. Converting a grammar to LL(1) is an effective technique for dealing with ambiguities in general, giving that determining if an arbitrary grammar is ambiguous is an undecidable problem.</p>
+<p>An attempt to use the following <a href="https://cyberzhg.github.io/toolbox/left_fact">left-factoring online tool</a>, <a href="https://cyberzhg.github.io/toolbox/left_rec">left-recusion elimination online tool</a> and <a href="https://cyberzhg.github.io/toolbox/cfg2ll">CFG-to-LL(k) online tool</a> was done. However, these tools were error-prone, and superior results were obtained by manipulating the grammar by hand while verifying with the <a href="http://atocc.de">AtoCC</a> kfGEdit tool along the way.</p>
+<p>Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below.</p>
+<pre><code>S  -&gt; A B program C ;
+A  -&gt; D A | EPSILON
+B  -&gt; N B | EPSILON
+C  -&gt; { FO }
+D  -&gt; class id E { FG } ;
+E  -&gt; : id H | EPSILON
+FO -&gt; id id Q ; FO | P FO | O
+FG -&gt; id id Q ; FG | P FG | G
+G  -&gt; I G | EPSILON
+H  -&gt; , id H | EPSILON
+I  -&gt; J id ( K ) ;
+J  -&gt; float | id | int
+K  -&gt; J id Q AO | EPSILON
+L  -&gt; J M ( K )
+M  -&gt; id BA
+BA -&gt; :: id | EPSILON
+N  -&gt; L C ;
+O  -&gt; id T O | R O | EPSILON
+P  -&gt; float id Q ; | int id Q ;
+Q  -&gt; AN Q | EPSILON
+R  -&gt; for ( J id = U ; X ; id T ) V ;
+    | if ( U ) then V ;
+    | get ( id Y ) ;
+    | put ( U ) ;
+    | return ( U ) ;
+T  -&gt; Y = U
+U  -&gt; Z BF
+BF -&gt; AA Z | EPSILON
+V  -&gt; { O } | R | id T | EPSILON
+X  -&gt; Z AA Z
+Y  -&gt; XA AJ
+Z  -&gt; AC BE
+BE -&gt; AB AC BE | EPSILON
+AA -&gt; &lt; | &lt;= | &lt;&gt; | == | &gt; | &gt;=
+AB -&gt; + | - | or | '||'
+AC -&gt; AF BD
+BD -&gt; AE AF BD | EPSILON
+AD -&gt; + | -
+AE -&gt; &amp;&amp; | * | / | and
+AF -&gt; ( Z ) | floatNum | intNum | id BB | AD AF | AH AF
+BB -&gt; XA BC
+BC -&gt; AJ | ( AK )
+AH -&gt; ! | not
+XA -&gt; AL XA
+AJ -&gt; AM AJ | EPSILON
+AK -&gt; U AP | EPSILON
+AL -&gt; ( AK ) . | AJ .
+AM -&gt; [ Z ]
+AN -&gt; [ intNum ]
+AO -&gt; AQ AO | EPSILON
+AP -&gt; AR AP | EPSILON
+AQ -&gt; , J id Q
+AR -&gt; , U
+</code></pre>
+<p>Unfortunately, as of the submission of this assignment, the above grammar is not LL(1). There are two unresolved left-factoring issues in right-recursive nested productions (clash of <em>FIRST(FO)</em> and <em>FIRST(O)</em>, as well as a clash of <em>FIRST(FG)</em> and <em>FIRST(G)</em>.</p>
+<a class="header" href="3-parser.html#list-of-terminal-symbols-tokens" id="list-of-terminal-symbols-tokens"><h2>List of Terminal Symbols (Tokens)</h2></a>
+<ul>
+<li>Identifier (<code>id</code>)</li>
+<li>Keyword (<code>program</code>)</li>
+<li>Keyword (<code>class</code>)</li>
+<li>Keyword (<code>if</code>)</li>
+<li>Keyword (<code>then</code>)</li>
+<li>Keyword (<code>for</code>)</li>
+<li>Keyword (<code>get</code>)</li>
+<li>Keyword (<code>put</code>)</li>
+<li>Keyword (<code>return</code>)</li>
+<li>Keyword (<code>float</code>)</li>
+<li>Keyword (<code>int</code>)</li>
+<li>Semicolon (<code>;</code>)</li>
+<li>OpenCurlyBrace (<code>{</code>)</li>
+<li>CloseCurlyBrace (<code>}</code>)</li>
+<li>InheritanceOperator (<code>:</code>)</li>
+<li>Comma (<code>,</code>)</li>
+<li>OpenParens (<code>(</code>)</li>
+<li>CloseParens (<code>)</code>)</li>
+<li>ScopeResolutionOperator (<code>::</code>)</li>
+<li>AssignmentOperator (<code>=</code>)</li>
+<li>RelationalOperator</li>
+<li>MathOperator (<code>+</code>)</li>
+<li>MathOperator (<code>-</code>)</li>
+<li>MathOperator (<code>*</code>)</li>
+<li>MathOperator (<code>/</code>)</li>
+<li>BinaryLogicalOperator (<code>or</code>)</li>
+<li>BinaryLogicalOperator (<code>!!</code>)</li>
+<li>BinaryLogicalOperator (<code>and</code>)</li>
+<li>BinaryLogicalOperator (<code>&amp;&amp;</code>)</li>
+<li>UnaryLogicalOperator (<code>not</code>)</li>
+<li>UnaryLogicalOperator (<code>!</code>)</li>
+<li>Integer</li>
+<li>Float</li>
+<li>OpenSquareBracket (<code>[</code>)</li>
+<li>CloseSquareBracket (<code>]</code>)</li>
+<li>AccessorOperator (<code>.</code>)</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2-lexer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="2-lexer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+            </nav>
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if (getComputedStyle(document.querySelector(".fa")).fontFamily !== "FontAwesome") {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = '_FontAwesome/css/font-awesome.css';
+                document.head.insertBefore(link, document.head.firstChild)
+            }
+        </script>
+
+        
+        <!-- Livereload script (if served using the cli tool) -->
+        <script type="text/javascript">
+            var socket = new WebSocket("ws://localhost:3001");
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload(true); // force reload from server (not from cache)
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>
