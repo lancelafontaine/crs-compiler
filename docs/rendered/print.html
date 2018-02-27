@@ -488,51 +488,54 @@
 <tr><td align="center"> <em>AR</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>U</em> </td></tr>
 </tbody></table>
 <p>An <a href="http://atocc.de">AtoCC</a>-compatible text format of the above grammar is shown below:</p>
-<pre><code>S -&gt; A B 'program' C ';'
-A -&gt; A D | EPSILON
-B -&gt; B N | EPSILON
-C -&gt; '{' F O '}'
-D -&gt; 'class' 'id' E '{' F G '}' ';'
-E -&gt; ':' 'id' H | EPSILON
-F -&gt; F P | EPSILON
-G -&gt; G I | EPSILON
-H -&gt; H ',' 'id' | EPSILON
-I -&gt; J 'id' '(' K ')' ';'
-J -&gt; 'int' | 'float' | 'id'
-K -&gt; J 'id' Q AO | EPSILON
-L -&gt; J M 'id' '(' K ')'
-M -&gt;  'id' '::' | EPSILON
-N -&gt; L C ';'
-O -&gt; O R | EPSILON
-P -&gt; J 'id' Q ';'
-Q -&gt; Q AN | EPSILON
-R -&gt; T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
-T -&gt; Y W U
-U -&gt; Z | X
-V -&gt; '{' O '}' | R | EPSILON
-W -&gt; '='
-X -&gt; Z AA Z
-Y -&gt; AI 'id' AJ
-Z -&gt; Z AB AC | AC
-AA -&gt; '==' | '&lt;&gt;' | '&lt;' | '&gt;' | '&lt;=' | '&gt;='
-AB -&gt; '+' | '-' | 'or' | '||'
-AC -&gt; AC AE AF | AF
-AD -&gt; '+' | '-'
-AE -&gt; '*' | '/' | 'and' | '&amp;&amp;'
-AF -&gt; Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
-AG -&gt; AI 'id' '(' AK ')'
-AH -&gt; 'not' | '!'
-AI -&gt; AI AL | EPSILON
-AJ -&gt; AJ AM | EPSILON
-AK -&gt; U AP | EPSILON
-AL -&gt; 'id' AJ '.' | 'id' '(' AK ')' '.'
-AM -&gt; '[' Z ']'
-AN -&gt; '[' 'intNum' ']'
-AO -&gt; AO AQ | EPSILON
-AP -&gt; AP AR | EPSILON
-AQ -&gt; ',' J 'id' Q
-AR -&gt; ',' U
-</code></pre>
+<!--
+```
+S -> A B 'program' C ';'
+A -> A D | EPSILON
+B -> B N | EPSILON
+C -> '{' F O '}'
+D -> 'class' 'id' E '{' F G '}' ';'
+E -> ':' 'id' H | EPSILON
+F -> F P | EPSILON
+G -> G I | EPSILON
+H -> H ',' 'id' | EPSILON
+I -> J 'id' '(' K ')' ';'
+J -> 'int' | 'float' | 'id'
+K -> J 'id' Q AO | EPSILON
+L -> J M 'id' '(' K ')'
+M ->  'id' '::' | EPSILON
+N -> L C ';'
+O -> O R | EPSILON
+P -> J 'id' Q ';'
+Q -> Q AN | EPSILON
+R -> T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
+T -> Y W U
+U -> Z | X
+V -> '{' O '}' | R | EPSILON
+W -> '='
+X -> Z AA Z
+Y -> AI 'id' AJ
+Z -> Z AB AC | AC
+AA -> '==' | '<>' | '<' | '>' | '<=' | '>='
+AB -> '+' | '-' | 'or' | '||'
+AC -> AC AE AF | AF
+AD -> '+' | '-'
+AE -> '*' | '/' | 'and' | '&&'
+AF -> Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
+AG -> AI 'id' '(' AK ')'
+AH -> 'not' | '!'
+AI -> AI AL | EPSILON
+AJ -> AJ AM | EPSILON
+AK -> U AP | EPSILON
+AL -> 'id' AJ '.' | 'id' '(' AK ')' '.'
+AM -> '[' Z ']'
+AN -> '[' 'intNum' ']'
+AO -> AO AQ | EPSILON
+AP -> AP AR | EPSILON
+AQ -> ',' J 'id' Q
+AR -> ',' U
+```
+-->
 <a class="header" href="print.html#left-factored-right-recursive-and-ll1-grammar" id="left-factored-right-recursive-and-ll1-grammar"><h3>Left-Factored, Right-Recursive and LL(1) Grammar</h3></a>
 <p>Left factoring is a technique used in predictive top-down parsers avoid the need for backtracking or lookaheads during parsing, such as is done in recursive descent. It involves the removal of any common left factor (terminal or non-terminal) that appears in a production with an or clause (|), or effectively two productions of the same non-terminal. Performing left factoring means that at a given non-terminal, there is a clear deterministic choice of which production to proceed towards.</p>
 <p>Left recursion is avoided in recursive descent and predictive parsing strategies due to the possibility of an infinite loop, resulting in the compiler never terminating and with no progress.</p>
@@ -557,11 +560,25 @@ B  -&gt; N B | EPSILON
 C  -&gt; { FO }
 D  -&gt; class id E { FG } ;
 E  -&gt; : id H | EPSILON
-FO -&gt; id id Q ; FO | P FO | O
-FG -&gt; id id Q ; FG | P FG | G
-G  -&gt; I G | EPSILON
+FO -&gt; id CA | CB | P FO
+CF -&gt; id Q ; FO
+CC -&gt; T CD
+CE -&gt; id CC
+CB -&gt; R CD | EPSILON
+CA -&gt; CC | CF
+CD -&gt; CB | CE
+FG -&gt; float id DA
+    | id id DA
+    | int id DA
+    | EPSILON
+DB -&gt; Q ; FG
+DC -&gt; ( K ) ; W
+W  -&gt; float id DC
+    | id id DC
+    | int id DC
+    | EPSILON
+DA -&gt; DC | DB
 H  -&gt; , id H | EPSILON
-I  -&gt; J id ( K ) ;
 J  -&gt; float | id | int
 K  -&gt; J id Q AO | EPSILON
 L  -&gt; J M ( K )
@@ -572,14 +589,17 @@ O  -&gt; id T O | R O | EPSILON
 P  -&gt; float id Q ; | int id Q ;
 Q  -&gt; AN Q | EPSILON
 R  -&gt; for ( J id = U ; X ; id T ) V ;
-    | if ( U ) then V ;
     | get ( id Y ) ;
+    | if ( U ) then V ;
     | put ( U ) ;
     | return ( U ) ;
 T  -&gt; Y = U
 U  -&gt; Z BF
 BF -&gt; AA Z | EPSILON
-V  -&gt; { O } | R | id T | EPSILON
+V  -&gt; { O }
+    | id T
+    | R
+    | EPSILON
 X  -&gt; Z AA Z
 Y  -&gt; XA AJ
 Z  -&gt; AC BE
@@ -590,9 +610,14 @@ AC -&gt; AF BD
 BD -&gt; AE AF BD | EPSILON
 AD -&gt; + | -
 AE -&gt; &amp;&amp; | * | / | and
-AF -&gt; ( Z ) | floatNum | intNum | id BB | AD AF | AH AF
+AF -&gt; ( Z )
+    | floatNum
+    | id BB
+    | intNum
+    | AH AF
+    | AD AF
 BB -&gt; XA BC
-BC -&gt; AJ | ( AK )
+BC -&gt; ( AK ) | AJ
 AH -&gt; ! | not
 XA -&gt; AL XA
 AJ -&gt; AM AJ | EPSILON

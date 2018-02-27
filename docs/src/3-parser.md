@@ -197,6 +197,7 @@ This results in the same BNF grammar but with single-letter non-terminal symbols
 | _AR_ | &rarr; | `,` _U_ |
 
 An [AtoCC](http://atocc.de)-compatible text format of the above grammar is shown below:
+<!--
 ```
 S -> A B 'program' C ';'
 A -> A D | EPSILON
@@ -243,6 +244,7 @@ AP -> AP AR | EPSILON
 AQ -> ',' J 'id' Q
 AR -> ',' U
 ```
+-->
 
 ### Left-Factored, Right-Recursive and LL(1) Grammar
 
@@ -277,11 +279,25 @@ B  -> N B | EPSILON
 C  -> { FO }
 D  -> class id E { FG } ;
 E  -> : id H | EPSILON
-FO -> id id Q ; FO | P FO | O
-FG -> id id Q ; FG | P FG | G
-G  -> I G | EPSILON
+FO -> id CA | CB | P FO
+CF -> id Q ; FO
+CC -> T CD
+CE -> id CC
+CB -> R CD | EPSILON
+CA -> CC | CF
+CD -> CB | CE
+FG -> float id DA
+    | id id DA
+    | int id DA
+    | EPSILON
+DB -> Q ; FG
+DC -> ( K ) ; W
+W  -> float id DC
+    | id id DC
+    | int id DC
+    | EPSILON
+DA -> DC | DB
 H  -> , id H | EPSILON
-I  -> J id ( K ) ;
 J  -> float | id | int
 K  -> J id Q AO | EPSILON
 L  -> J M ( K )
@@ -292,14 +308,17 @@ O  -> id T O | R O | EPSILON
 P  -> float id Q ; | int id Q ;
 Q  -> AN Q | EPSILON
 R  -> for ( J id = U ; X ; id T ) V ;
-    | if ( U ) then V ;
     | get ( id Y ) ;
+    | if ( U ) then V ;
     | put ( U ) ;
     | return ( U ) ;
 T  -> Y = U
 U  -> Z BF
 BF -> AA Z | EPSILON
-V  -> { O } | R | id T | EPSILON
+V  -> { O }
+    | id T
+    | R
+    | EPSILON
 X  -> Z AA Z
 Y  -> XA AJ
 Z  -> AC BE
@@ -310,9 +329,14 @@ AC -> AF BD
 BD -> AE AF BD | EPSILON
 AD -> + | -
 AE -> && | * | / | and
-AF -> ( Z ) | floatNum | intNum | id BB | AD AF | AH AF
+AF -> ( Z )
+    | floatNum
+    | id BB
+    | intNum
+    | AH AF
+    | AD AF
 BB -> XA BC
-BC -> AJ | ( AK )
+BC -> ( AK ) | AJ
 AH -> ! | not
 XA -> AL XA
 AJ -> AM AJ | EPSILON
