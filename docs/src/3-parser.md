@@ -39,7 +39,7 @@ The specification for the syntactic analysis of the language is shown with the p
 | _addOp_ | &rarr; | `+` \| `-` \| `or` \| `¦¦` |
 | _multOp_ | &rarr; | `*` \| `/` \| `and` \| `&&` |
 
-# BNF Grammar
+### BNF Grammar
 
 An EBNF grammar can be converted to a BNF grammar by applying the following rules:
 
@@ -147,7 +147,6 @@ We can simplify the non-terminals of the language by following this legend:
 | _aParamsTail_ | _AR_ |
 
 
-
 This results in the same BNF grammar but with single-letter non-terminal symbols.
 
 | LHS | &rarr; | RHS |
@@ -198,7 +197,6 @@ This results in the same BNF grammar but with single-letter non-terminal symbols
 | _AR_ | &rarr; | `,` _U_ |
 
 An [AtoCC](http://atocc.de)-compatible text format of the above grammar is shown below:
-
 ```
 S -> A B 'program' C ';'
 A -> A D | EPSILON
@@ -246,7 +244,7 @@ AQ -> ',' J 'id' Q
 AR -> ',' U
 ```
 
-# Left-Factored, Right-Recursive and LL(1) Grammars
+### Left-Factored, Right-Recursive and LL(1) Grammar
 
 Left factoring is a technique used in predictive top-down parsers avoid the need for backtracking or lookaheads during parsing, such as is done in recursive descent. It involves the removal of any common left factor (terminal or non-terminal) that appears in a production with an or clause (|), or effectively two productions of the same non-terminal. Performing left factoring means that at a given non-terminal, there is a clear deterministic choice of which production to proceed towards.
 
@@ -270,80 +268,102 @@ Using an LL(1) grammar for a syntactic analysis is attractive given that LL(1) g
 
 An attempt to use the following [left-factoring online tool](https://cyberzhg.github.io/toolbox/left_fact), [left-recusion elimination online tool](https://cyberzhg.github.io/toolbox/left_rec) and [CFG-to-LL(k) online tool](https://cyberzhg.github.io/toolbox/cfg2ll) was done. However, these tools were error-prone, and superior results were obtained by manipulating the grammar by hand while verifying with the [AtoCC](http://atocc.de) kfGEdit tool along the way.
 
-Ultimately, the following general changes were made which resulted in the grammar below:
-- _AL_ was left-factored into _AL_ and _BL_.
-- _AL_ was removed and integrated into _DI_.
-- _U_ was left-factored into _U_ and _BU_.
-- _AI_ was left recursive and was split into _AI_ and _DI_.
-- _AJ_ was left recursive and was split into _AJ_ and _BJ_.
-- _AO_ was left recursive and was split into _AO_ and _BO_.
-- _AP_ was left recursive and was split into _AP_ and _BP_.
-- _AC_ was left recursive and was split into _AC_ and _BC_.
-- _Z_ was left recursive AND left factored, and was split into _Z_ and _BZ_.
-- The use of _M_ in _L_ was left factored by introducing _BM_
-- The use of _Y_ and _BF_ incorporated _DI_ which was left factored into _DI_, _CI_ and _CF_
-- _AF_ generated multiple layers which could be left factored
-- All terminals after _Y_ needed to be propagated down through every subsequent production to avoid a _FIRST{DI}_ and _FOLLOW{DI}_ clash
+Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below.
 
 ```
-S -> A B 'program' C ';'
-A -> A D | EPSILON
-B -> B N | EPSILON
-C -> '{' F O '}'
-D -> 'class' 'id' E '{' F G '}' ';'
-E -> ':' 'id' H | EPSILON
-F -> F P | EPSILON
-G -> G I | EPSILON
-H -> H ',' 'id' | EPSILON
-I -> J 'id' '(' K ')' ';'
-J -> 'int' | 'float' | 'id'
-K -> J 'id' Q AO | EPSILON
-L -> J M '(' K ')'
-M ->  'id' BM
-BM -> '::' 'id' | EPSILON
-N -> L C ';'
-O -> O R | EPSILON
-P -> J 'id' Q ';'
-Q -> Q AN | EPSILON
-R -> T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' '=' U ';' X ';' T  ')' V ';' | 'get' '(' YA ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
-T -> YB U
-U -> Z BU
-BU -> AA Z | EPSILON
-V -> '{' O '}' | R | EPSILON
-X -> Z AA Z
-YA -> 'id' XYA
-YB -> 'id' XYB
-Z -> AC BZ
-BZ -> AB AC BZ | EPSILON
-AA -> '==' | '<>' | '<' | '>' | '<=' | '>='
-AB -> '+' | '-' | 'or' | '||'
-AC -> AF BC
-BC -> AE AF BC | EPSILON
-AD -> '+' | '-'
-AE -> '*' | '/' | 'and' | '&&'
-AF -> BF | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
-BF -> 'id' XZ
-CF -> BJ | '(' AK ')'
-AH -> 'not' | '!'
-XX -> DI 'id' | 'id'
-XYA -> DI BJA | BJA
-XYB -> DI BJB | BJB
-XZ -> DI CF | CF
-DI -> DF XX
-BJ -> '[' Z ']' BJ | EPSILON
-BJA -> '[' Z ']' BJ | ')'
-BJB -> '[' Z ']' BJ | '='
+S  -> A B program C ;
+A  -> D A | EPSILON
+B  -> N B | EPSILON
+C  -> { FO }
+D  -> class id E { FG } ;
+E  -> : id H | EPSILON
+FO -> id id Q ; FO | P FO | O
+FG -> id id Q ; FG | P FG | G
+G  -> I G | EPSILON
+H  -> , id H | EPSILON
+I  -> J id ( K ) ;
+J  -> float | id | int
+K  -> J id Q AO | EPSILON
+L  -> J M ( K )
+M  -> id BA
+BA -> :: id | EPSILON
+N  -> L C ;
+O  -> id T O | R O | EPSILON
+P  -> float id Q ; | int id Q ;
+Q  -> AN Q | EPSILON
+R  -> for ( J id = U ; X ; id T ) V ;
+    | if ( U ) then V ;
+    | get ( id Y ) ;
+    | put ( U ) ;
+    | return ( U ) ;
+T  -> Y = U
+U  -> Z BF
+BF -> AA Z | EPSILON
+V  -> { O } | R | id T | EPSILON
+X  -> Z AA Z
+Y  -> XA AJ
+Z  -> AC BE
+BE -> AB AC BE | EPSILON
+AA -> < | <= | <> | == | > | >=
+AB -> + | - | or | '||'
+AC -> AF BD
+BD -> AE AF BD | EPSILON
+AD -> + | -
+AE -> && | * | / | and
+AF -> ( Z ) | floatNum | intNum | id BB | AD AF | AH AF
+BB -> XA BC
+BC -> AJ | ( AK )
+AH -> ! | not
+XA -> AL XA
+AJ -> AM AJ | EPSILON
 AK -> U AP | EPSILON
-AN -> '[' 'intNum' ']'
-AO -> BO
-BO -> AQ BO | EPSILON
-AP -> BP
-BP -> AR BP | EPSILON
-AQ -> ',' J 'id' Q
-AR -> ',' U
+AL -> ( AK ) . | AJ .
+AM -> [ Z ]
+AN -> [ intNum ]
+AO -> AQ AO | EPSILON
+AP -> AR AP | EPSILON
+AQ -> , J id Q
+AR -> , U
 ```
-The original BNF grammar, after being left-factored, and eliminating all left-recursion, _FIRST-FIRST_ set clashes and _FIRST-FOLLOW_ set clashes, was LL(1). This was confirmed with the use of the [AtoCC](http://atocc.de) kfGEdit tool.
 
-![Confirmation by the AtoCC kfgEdit tool that the above grammar is LL(1)](assets/images/atocc-ll1-confirmation.png).
+Unfortunately, as of the submission of this assignment, the above grammar is not LL(1). There are two unresolved left-factoring issues in right-recursive nested productions (clash of _FIRST(FO)_ and _FIRST(O)_, as well as a clash of _FIRST(FG)_ and _FIRST(G)_.
 
+## List of Terminal Symbols (Tokens)
+
+- Identifier (`id`)
+- Keyword (`program`)
+- Keyword (`class`)
+- Keyword (`if`)
+- Keyword (`then`)
+- Keyword (`for`)
+- Keyword (`get`)
+- Keyword (`put`)
+- Keyword (`return`)
+- Keyword (`float`)
+- Keyword (`int`)
+- Semicolon (`;`)
+- OpenCurlyBrace (`{`)
+- CloseCurlyBrace (`}`)
+- InheritanceOperator (`:`)
+- Comma (`,`)
+- OpenParens (`(`)
+- CloseParens (`)`)
+- ScopeResolutionOperator (`::`)
+- AssignmentOperator (`=`)
+- RelationalOperator
+- MathOperator (`+`)
+- MathOperator (`-`)
+- MathOperator (`*`)
+- MathOperator (`/`)
+- BinaryLogicalOperator (`or`)
+- BinaryLogicalOperator (`!!`)
+- BinaryLogicalOperator (`and`)
+- BinaryLogicalOperator (`&&`)
+- UnaryLogicalOperator (`not`)
+- UnaryLogicalOperator (`!`)
+- Integer
+- Float
+- OpenSquareBracket (`[`)
+- CloseSquareBracket (`]`)
+- AccessorOperator (`.`)
 
