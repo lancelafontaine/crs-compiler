@@ -197,30 +197,30 @@ This results in the same BNF grammar but with single-letter non-terminal symbols
 | _AR_ | &rarr; | `,` _U_ |
 
 An [AtoCC](http://atocc.de)-compatible text format of the above grammar is shown below:
-<!--
+
 ```
 S -> A B 'program' C ';'
-A -> A D | EPSILON
-B -> B N | EPSILON
+A -> A D | '
+B -> B N | '
 C -> '{' F O '}'
 D -> 'class' 'id' E '{' F G '}' ';'
-E -> ':' 'id' H | EPSILON
-F -> F P | EPSILON
-G -> G I | EPSILON
-H -> H ',' 'id' | EPSILON
+E -> ':' 'id' H | '
+F -> F P | '
+G -> G I | '
+H -> H ',' 'id' | '
 I -> J 'id' '(' K ')' ';'
 J -> 'int' | 'float' | 'id'
-K -> J 'id' Q AO | EPSILON
+K -> J 'id' Q AO | '
 L -> J M 'id' '(' K ')'
-M ->  'id' '::' | EPSILON
+M ->  'id' '::' | '
 N -> L C ';'
-O -> O R | EPSILON
+O -> O R | '
 P -> J 'id' Q ';'
-Q -> Q AN | EPSILON
+Q -> Q AN | '
 R -> T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
 T -> Y W U
 U -> Z | X
-V -> '{' O '}' | R | EPSILON
+V -> '{' O '}' | R | '
 W -> '='
 X -> Z AA Z
 Y -> AI 'id' AJ
@@ -233,18 +233,17 @@ AE -> '*' | '/' | 'and' | '&&'
 AF -> Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
 AG -> AI 'id' '(' AK ')'
 AH -> 'not' | '!'
-AI -> AI AL | EPSILON
-AJ -> AJ AM | EPSILON
-AK -> U AP | EPSILON
+AI -> AI AL | '
+AJ -> AJ AM | '
+AK -> U AP | '
 AL -> 'id' AJ '.' | 'id' '(' AK ')' '.'
 AM -> '[' Z ']'
 AN -> '[' 'intNum' ']'
-AO -> AO AQ | EPSILON
-AP -> AP AR | EPSILON
+AO -> AO AQ | '
+AP -> AP AR | '
 AQ -> ',' J 'id' Q
 AR -> ',' U
 ```
--->
 
 ### Left-Factored, Right-Recursive and LL(1) Grammar
 
@@ -276,69 +275,38 @@ Ultimately, too many changes were made to the grammar to describe every ambiguit
 S  -> A B program C ;
 A  -> D A | EPSILON
 B  -> N B | EPSILON
-C  -> { FO }
-D  -> class id E { FG } ;
+C  -> { F }
+D  -> class id E { AG } ;
 E  -> : id H | EPSILON
-FO -> id CA | CB | P FO
-CF -> id Q ; FO
-CC -> T CD
-CE -> id CC
-CB -> R CD | EPSILON
-CA -> CC | CF
-CD -> CB | CE
-FG -> float id DA
-    | id id DA
-    | int id DA
-    | EPSILON
-DB -> Q ; FG
-DC -> ( K ) ; W
-W  -> float id DC
-    | id id DC
-    | int id DC
-    | EPSILON
-DA -> DC | DB
+F  -> id AY | AX | P F
+G  -> id Q ; F
 H  -> , id H | EPSILON
+I  -> AL I
 J  -> float | id | int
 K  -> J id Q AO | EPSILON
 L  -> J M ( K )
 M  -> id BA
-BA -> :: id | EPSILON
 N  -> L C ;
 O  -> id T O | R O | EPSILON
 P  -> float id Q ; | int id Q ;
 Q  -> AN Q | EPSILON
-R  -> for ( J id = U ; X ; id T ) V ;
-    | get ( id Y ) ;
-    | if ( U ) then V ;
-    | put ( U ) ;
-    | return ( U ) ;
+R  -> for ( J id = U ; X ; id T ) V ; | get ( id Y ) ; | if ( U ) then V ; | put ( U ) ; | return ( U ) ;
 T  -> Y = U
-U  -> Z BF
-BF -> AA Z | EPSILON
-V  -> { O }
-    | id T
-    | R
-    | EPSILON
+U  -> Z AZ
+V  -> { O } | id T | R | EPSILON
+W  -> float id AI | id id AI | int id AI | EPSILON
 X  -> Z AA Z
-Y  -> XA AJ
+Y  -> I AJ
 Z  -> AC BE
-BE -> AB AC BE | EPSILON
 AA -> < | <= | <> | == | > | >=
-AB -> + | - | or | '||'
+AB -> + | - | or | ||
 AC -> AF BD
-BD -> AE AF BD | EPSILON
 AD -> + | -
-AE -> && | * | / | and
-AF -> ( Z )
-    | floatNum
-    | id BB
-    | intNum
-    | AH AF
-    | AD AF
-BB -> XA BC
-BC -> ( AK ) | AJ
+AE -> and | && | * | /
+AF -> ( Z ) | floatNum | id BB | intNum | AH AF | AD AF
+AG -> float id AT | id id AT | int id AT | EPSILON
 AH -> ! | not
-XA -> AL XA
+AI -> ( K ) ; W
 AJ -> AM AJ | EPSILON
 AK -> U AP | EPSILON
 AL -> ( AK ) . | AJ .
@@ -348,9 +316,197 @@ AO -> AQ AO | EPSILON
 AP -> AR AP | EPSILON
 AQ -> , J id Q
 AR -> , U
+AS -> Q ; AG
+AT -> AI | AS
+AU -> id AW
+AV -> AX | AU
+AW -> T AV
+AX -> R AV | EPSILON
+AY -> AW | G
+AZ -> AA Z | EPSILON
+BA -> :: id | EPSILON
+BB -> I BC
+BC -> ( AK ) | AJ
+BD -> AE AF BD | EPSILON
+BE -> AB AC BE | EPSILON
 ```
 
-Unfortunately, as of the submission of this assignment, the above grammar is not LL(1). There are two unresolved left-factoring issues in right-recursive nested productions (clash of _FIRST(FO)_ and _FIRST(O)_, as well as a clash of _FIRST(FG)_ and _FIRST(G)_.
+The [AtoCC](http://atocc.de) kfG Edit tool confirms that the above grammar is LL(1).
+
+![AtoCC confirmation prompt indicating that the gramar satifies both LL(1) properties.](assets/images/atocc-ll1-confirmation.png)
+
+## LL(1) Parse Table
+
+A parsing table must be constructed from the above grammar in order to represent the grammar during predictive parsing. The information below was generated automatically using [an online tool](http://hackingoff.com/compilers/predict-first-follow-set).
+
+The fact that there was at most one production in each table cell further reinforces the fact that the grammar is LL(1).
+
+
+### _FIRST_ Sets
+
+| Non-Terminal Symbol | First Set |
+|:------:|:-----:|
+| `program` | `program` |
+| `;` | `;` |
+| `ε` | `ε` |
+| `{` | `{` |
+| `}` | `}` |
+| `class` | `class` |
+| `id` | `id` |
+| `:` | `:` |
+| `,` | `,` |
+| `float` | `float` |
+| `int` | `int` |
+| `(` | `(` |
+| `)` | `)` |
+| `for` | `for` |
+| `=` | `=` |
+| `get` | `get` |
+| `if` | `if` |
+| `then` | `then` |
+| `put` | `put` |
+| `return` | `return` |
+| `<` | `<` |
+| `<=` | `<=` |
+| `<>` | `<>` |
+| `==` | `==` |
+| `>` | `>` |
+| `>=` | `>=` |
+| `+` | `+` |
+| `-` | `-` |
+| `or` | `or` |
+| `¦¦` | `¦¦` |
+| `and` | `and` |
+| `&&` | `&&` |
+| `*` | `*` |
+| `/` | `/` |
+| `floatNum` | `floatNum` |
+| `intNum` | `intNum` |
+| `not` | `not` |
+| `!` | `!` |
+| `.` | `.` |
+| `[` | `[` |
+| `]` | `]` |
+| `::` | `::` |
+| _S_ | `program`, `ε`, `class`, `float`, `id`, `int` |
+| _A_ | `ε`, `class` |
+| _B_ | `ε`, `float`, `id`, `int` |
+| _C_ | `{` |
+| _D_ | `class` |
+| _E_ | `:`, `ε` |
+| _F_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return`, `float`, `int` |
+| _G_ | `id` |
+| _H_ | `,`, `ε` |
+| _I_ | `(`, `.`, `ε`, `[` |
+| _J_ | `float`, `id`, `int` |
+| _K_ | `ε`, `float`, `id`, `int` |
+| _L_ | `float`, `id`, `int` |
+| _M_ | `id` |
+| _N_ | `float`, `id`, `int` |
+| _O_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
+| _P_ | `float`, `int` |
+| _Q_ | `ε`, `[` |
+| _R_ | `for`, `get`, `if`, `put`, `return` |
+| _T_ | `(`, `.`, `ε`, `[` |
+| _U_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _V_ | `{`, `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
+| _W_ | `float`, `id`, `int`, `ε` |
+| _X_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _Y_ | `(`, `.`, `ε`, `[` |
+| _Z_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AA_ | `<`, `<=`, `<>`, `==`, `>`, `>=` |
+| _AB_ | `+`, `-`, `or`, `¦¦` |
+| _AC_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AD_ | `+`, `-` |
+| _AE_ | `and`, `&&`, `*`, `/` |
+| _AF_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AG_ | `float`, `id`, `int`, `ε` |
+| _AH_ | `not`, `!` |
+| _AI_ | `(` |
+| _AJ_ | `ε`, `[` |
+| _AK_ | `ε`, `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AL_ | `(`, `.`, `ε`, `[` |
+| _AM_ | `[` |
+| _AN_ | `[` |
+| _AO_ | `ε`, `,` |
+| _AP_ | `ε`, `,` |
+| _AQ_ | `,` |
+| _AR_ | `,` |
+| _AS_ | `;`, `ε`, `[` |
+| _AT_ | `(`, `;`, `ε`, `[` |
+| _AU_ | `id` |
+| _AV_ | `ε`, `for`, `get`, `if`, `put`, `return`, `id` |
+| _AW_ | `(`, `.`, `ε`, `[` |
+| _AX_ | `ε`, `for`, `get`, `if`, `put`, `return` |
+| _AY_ | `(`, `.`, `ε`, `[`, `id` |
+| _AZ_ | `ε`, `<`, `<=`, `<>`, `==`, `>`, `>=` |
+| _BA_ | `::`, `ε` |
+| _BB_ | `(`, `.`, `ε`, `[` |
+| _BC_ | `(`, `ε`, `[` |
+| _BD_ | `ε`, `and`, `&&`, `*`, `/` |
+| _BE_ | `ε`, `+`, `-`, `or`, `¦¦` |
+
+### _FOLLOW_ Sets
+
+| Non-Terminal Symbol | Follow Set |
+|:----:|:-----:|
+| _S_ | `$` |
+| _A_ | `program`, `float`, `id`, `int` |
+| _B_ | `program` |
+| _C_ | `;` |
+| _D_ | `class`, `program`, `float`, `id`, `int` |
+| _E_ | `{` |
+| _F_ | `}` |
+| _G_ | `}` |
+| _H_ | `{` |
+| _I_ | `(`, `[`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _J_ | `id` |
+| _K_ | `)` |
+| _L_ | `{` |
+| _M_ | `(` |
+| _N_ | `float`, `id`, `int`, `program` |
+| _O_ | `}` |
+| _P_ | `id`, `for`, `get`, `if`, `put`, `return`, `float`, `int`, `}` |
+| _Q_ | `;`, `,`, `)` |
+| _R_ | `for`, `get`, `if`, `put`, `return`, `id`, `;`, `}` |
+| _T_ | `for`, `get`, `if`, `put`, `return`, `id`, `)`, `;`, `}` |
+| _U_ |  `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _V_ | `;` |
+| _W_ | `}` |
+| _X_ | `;` |
+| _Y_ | `=`, `)` |
+| _Z_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AA_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AB_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AC_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AD_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AE_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AF_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AG_ | `}` |
+| _AH_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AI_ | `}` |
+| _AJ_ | `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`,  `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AK_ | `)` |
+| _AL_ | `(`, `.`, `[` |
+| _AM_ | `[`, `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AN_ | `[`, `;`, `,`, `)` |
+| _AO_ | `)` |
+| _AP_ | `)` |
+| _AQ_ | `,`, `)` |
+| _AR_ | `,`, `)` |
+| _AS_ | `}` |
+| _AT_ | `}` |
+| _AU_ | `}` |
+| _AV_ | `}` |
+| _AW_ | `}` |
+| _AX_ | `}` |
+| _AY_ | `}` |
+| _AZ_ | `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BA_ | `(` |
+| _BB_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BC_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BD_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BE_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
 
 ## List of Terminal Symbols (Tokens)
 
@@ -380,7 +536,7 @@ Unfortunately, as of the submission of this assignment, the above grammar is not
 - MathOperator (`*`)
 - MathOperator (`/`)
 - BinaryLogicalOperator (`or`)
-- BinaryLogicalOperator (`!!`)
+- BinaryLogicalOperator (`||`)
 - BinaryLogicalOperator (`and`)
 - BinaryLogicalOperator (`&&`)
 - UnaryLogicalOperator (`not`)
