@@ -489,27 +489,27 @@
 </tbody></table>
 <p>An <a href="http://atocc.de">AtoCC</a>-compatible text format of the above grammar is shown below:</p>
 <pre><code>S -&gt; A B 'program' C ';'
-A -&gt; A D | '
-B -&gt; B N | '
+A -&gt; A D | EPSILON
+B -&gt; B N | EPSILON
 C -&gt; '{' F O '}'
 D -&gt; 'class' 'id' E '{' F G '}' ';'
-E -&gt; ':' 'id' H | '
-F -&gt; F P | '
-G -&gt; G I | '
-H -&gt; H ',' 'id' | '
+E -&gt; ':' 'id' H | EPSILON
+F -&gt; F P | EPSILON
+G -&gt; G I | EPSILON
+H -&gt; H ',' 'id' | EPSILON
 I -&gt; J 'id' '(' K ')' ';'
 J -&gt; 'int' | 'float' | 'id'
-K -&gt; J 'id' Q AO | '
+K -&gt; J 'id' Q AO | EPSILON
 L -&gt; J M 'id' '(' K ')'
-M -&gt;  'id' '::' | '
+M -&gt;  'id' '::' | EPSILON
 N -&gt; L C ';'
-O -&gt; O R | '
+O -&gt; O R | EPSILON
 P -&gt; J 'id' Q ';'
-Q -&gt; Q AN | '
+Q -&gt; Q AN | EPSILON
 R -&gt; T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
 T -&gt; Y W U
 U -&gt; Z | X
-V -&gt; '{' O '}' | R | '
+V -&gt; '{' O '}' | R | EPSILON
 W -&gt; '='
 X -&gt; Z AA Z
 Y -&gt; AI 'id' AJ
@@ -522,14 +522,14 @@ AE -&gt; '*' | '/' | 'and' | '&amp;&amp;'
 AF -&gt; Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
 AG -&gt; AI 'id' '(' AK ')'
 AH -&gt; 'not' | '!'
-AI -&gt; AI AL | '
-AJ -&gt; AJ AM | '
-AK -&gt; U AP | '
+AI -&gt; AI AL | EPSILON
+AJ -&gt; AJ AM | EPSILON
+AK -&gt; U AP | EPSILON
 AL -&gt; 'id' AJ '.' | 'id' '(' AK ')' '.'
 AM -&gt; '[' Z ']'
 AN -&gt; '[' 'intNum' ']'
-AO -&gt; AO AQ | '
-AP -&gt; AP AR | '
+AO -&gt; AO AQ | EPSILON
+AP -&gt; AP AR | EPSILON
 AQ -&gt; ',' J 'id' Q
 AR -&gt; ',' U
 </code></pre>

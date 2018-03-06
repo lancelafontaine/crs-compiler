@@ -200,27 +200,27 @@ An [AtoCC](http://atocc.de)-compatible text format of the above grammar is shown
 
 ```
 S -> A B 'program' C ';'
-A -> A D | '
-B -> B N | '
+A -> A D | EPSILON
+B -> B N | EPSILON
 C -> '{' F O '}'
 D -> 'class' 'id' E '{' F G '}' ';'
-E -> ':' 'id' H | '
-F -> F P | '
-G -> G I | '
-H -> H ',' 'id' | '
+E -> ':' 'id' H | EPSILON
+F -> F P | EPSILON
+G -> G I | EPSILON
+H -> H ',' 'id' | EPSILON
 I -> J 'id' '(' K ')' ';'
 J -> 'int' | 'float' | 'id'
-K -> J 'id' Q AO | '
+K -> J 'id' Q AO | EPSILON
 L -> J M 'id' '(' K ')'
-M ->  'id' '::' | '
+M ->  'id' '::' | EPSILON
 N -> L C ';'
-O -> O R | '
+O -> O R | EPSILON
 P -> J 'id' Q ';'
-Q -> Q AN | '
+Q -> Q AN | EPSILON
 R -> T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
 T -> Y W U
 U -> Z | X
-V -> '{' O '}' | R | '
+V -> '{' O '}' | R | EPSILON
 W -> '='
 X -> Z AA Z
 Y -> AI 'id' AJ
@@ -233,14 +233,14 @@ AE -> '*' | '/' | 'and' | '&&'
 AF -> Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
 AG -> AI 'id' '(' AK ')'
 AH -> 'not' | '!'
-AI -> AI AL | '
-AJ -> AJ AM | '
-AK -> U AP | '
+AI -> AI AL | EPSILON
+AJ -> AJ AM | EPSILON
+AK -> U AP | EPSILON
 AL -> 'id' AJ '.' | 'id' '(' AK ')' '.'
 AM -> '[' Z ']'
 AN -> '[' 'intNum' ']'
-AO -> AO AQ | '
-AP -> AP AR | '
+AO -> AO AQ | EPSILON
+AP -> AP AR | EPSILON
 AQ -> ',' J 'id' Q
 AR -> ',' U
 ```
