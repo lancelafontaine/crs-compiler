@@ -1,7 +1,7 @@
 use std::fmt;
 use std::cmp::PartialEq;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TokenClass {
     Identifier,
     Keyword,
@@ -26,9 +26,12 @@ pub enum TokenClass {
     ScopeResolutionOperator,
     InheritanceOperator,
     AccessorOperator,
+    Comma,
+    EndOfInput,
     UndefinedTokenClass
 }
 
+#[derive(PartialEq, Eq, Hash)]
 pub struct Token {
     pub class: TokenClass,
     pub lexeme: String
