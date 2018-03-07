@@ -569,7 +569,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 56 | _AB_ | &rarr; | `+` | `+` |
 | 57 | _AB_ | &rarr; | `-` | `-` |
 | 58 | _AB_ | &rarr; | `or` | `or` |
-| 59 | _AB_ | &rarr; | `||` | `||` |
+| 59 | _AB_ | &rarr; | `¦¦` | `¦¦` |
 | 60 | _AC_ | &rarr; | _AF_ _BD_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
 | 61 | _AD_ | &rarr; | `+` | `+` |
 | 62 | _AD_ | &rarr; | `-` | `-` |
@@ -591,7 +591,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 78 | _AH_ | &rarr; | `not` | `not` |
 | 79 | _AI_ | &rarr; | `(` _K_ `)` `;` _W_ | `(` |
 | 80 | _AJ_ | &rarr; | _AM_ _AJ_ | |
-| 81 | _AJ_ | &rarr; | &epsilon; | `.`, `=`, `)`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `||`, , `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 81 | _AJ_ | &rarr; | &epsilon; | `.`, `=`, `)`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
 | 82 | _AK_ | &rarr; | _U_ _AP_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
 | 83 | _AK_ | &rarr; | &epsilon; | `)`
 | 84 | _AL_ | &rarr; | `(` _AK_ `)` `.` | `(` |
@@ -623,8 +623,8 @@ The fact that there was at most one production in each table cell further reinfo
 | 110 | _BC_ | &rarr; | `(` _AK_ `)` | `(` |
 | 111 | _BC_ | &rarr; | _AJ_ | |
 | 112 | _BD_ | &rarr; | _AE_ _AF_ _BD_ | `&&`, `*`, `/`, `and` |
-| 113 | _BD_ | &rarr; | &epsilon; | `+`, `-`, `or`, `||`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| 114 | _BE_ | &rarr; | _AB_ _AC_ _BE_ | `+`, `-`, `or`, `||` |
+| 113 | _BD_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 114 | _BE_ | &rarr; | _AB_ _AC_ _BE_ | `+`, `-`, `or`, `¦¦` |
 | 115 | _BE_ | &rarr; | &epsilon; | `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
 | 116 | POP error | POP error | POP error | POP error |
 | 117 | SCAN error | SCAN error | SCAN error | SCAN error |
