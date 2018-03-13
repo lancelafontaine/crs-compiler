@@ -5,20 +5,29 @@ extern crate ropey;
 
 pub mod output;
 pub mod lexer;
+pub mod parser;
 pub mod args;
 
 use std::path::Path;
-use lexer::Lexer;
+use lexer::{Lexer, Token};
 use output::error;
 use quicli::prelude::*;
+use std::collections::VecDeque;
 
 main!(|args: args::Args| {
     if !Path::new(&args.input_file).exists() {
         error(1);
     }
+
+    // Lexical Analysis
     let mut lex = Lexer::new(&args.input_file);
+    let mut token_queue: VecDeque<Token> = VecDeque::new();
     while let Some(token) = lex.next_token() {
-        println!("{}", token);
+        token_queue.push_back(token);
     }
+    //println!("{:#?}", token_queue);
+
+    // Syntactic Analysis
+    parser::parse(token_queue);
 });
 
