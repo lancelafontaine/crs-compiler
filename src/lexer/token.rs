@@ -31,7 +31,7 @@ pub enum TokenClass {
     UndefinedTokenClass
 }
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct Token {
     pub class: TokenClass,
     pub lexeme: String
