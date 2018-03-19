@@ -210,145 +210,51 @@
 <tr><td align="center"> <em>addOp</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> | <code>or</code> | <code>¦¦</code> </td></tr>
 <tr><td align="center"> <em>multOp</em> </td><td align="center"> → </td><td align="center"> <code>*</code> | <code>/</code> | <code>and</code> | <code>&amp;&amp;</code> </td></tr>
 </tbody></table>
-<p>We can simplify the non-terminals of the language by following this legend:</p>
-<table><thead><tr><th> Previous Non-Terminal Symbol </th><th> New Non-Terminal Symbol </th></tr></thead><tbody>
-<tr><td align="center"> <em>prog</em> </td><td align="center"> <em>S</em> </td></tr>
-<tr><td align="center"> <em>classDeclRecursion</em> </td><td align="center"> <em>A</em> </td></tr>
-<tr><td align="center"> <em>funcDefRecursion</em> </td><td align="center"> <em>B</em> </td></tr>
-<tr><td align="center"> <em>funcBody</em> </td><td align="center"> <em>C</em> </td></tr>
-<tr><td align="center"> <em>classDecl</em> </td><td align="center"> <em>D</em> </td></tr>
-<tr><td align="center"> <em>optionalInheritance</em> </td><td align="center"> <em>E</em> </td></tr>
-<tr><td align="center"> <em>varDeclRecursion</em> </td><td align="center"> <em>F</em> </td></tr>
-<tr><td align="center"> <em>funcDeclRecursion</em> </td><td align="center"> <em>G</em> </td></tr>
-<tr><td align="center"> <em>MultipleSuperClasses</em> </td><td align="center"> <em>H</em> </td></tr>
-<tr><td align="center"> <em>funcDecl</em> </td><td align="center"> <em>I</em> </td></tr>
-<tr><td align="center"> <em>type</em> </td><td align="center"> <em>J</em> </td></tr>
-<tr><td align="center"> <em>fParams</em> </td><td align="center"> <em>K</em> </td></tr>
-<tr><td align="center"> <em>funcHead</em> </td><td align="center"> <em>L</em> </td></tr>
-<tr><td align="center"> <em>optionalNamespace</em> </td><td align="center"> <em>M</em> </td></tr>
-<tr><td align="center"> <em>funcDef</em> </td><td align="center"> <em>N</em> </td></tr>
-<tr><td align="center"> <em>statementRecursion</em> </td><td align="center"> <em>O</em> </td></tr>
-<tr><td align="center"> <em>varDecl</em> </td><td align="center"> <em>P</em> </td></tr>
-<tr><td align="center"> <em>arraySizeRecursion</em> </td><td align="center"> <em>Q</em> </td></tr>
-<tr><td align="center"> <em>statement</em> </td><td align="center"> <em>R</em> </td></tr>
-<tr><td align="center"> <em>assignStat</em> </td><td align="center"> <em>T</em> </td></tr>
-<tr><td align="center"> <em>expr</em> </td><td align="center"> <em>U</em> </td></tr>
-<tr><td align="center"> <em>statBlock</em> </td><td align="center"> <em>V</em> </td></tr>
-<tr><td align="center"> <em>assignOp</em> </td><td align="center"> <em>W</em> </td></tr>
-<tr><td align="center"> <em>relExpr</em> </td><td align="center"> <em>X</em> </td></tr>
-<tr><td align="center"> <em>variable</em> </td><td align="center"> <em>Y</em> </td></tr>
-<tr><td align="center"> <em>arithExpr</em> </td><td align="center"> <em>Z</em> </td></tr>
-<tr><td align="center"> <em>relOp</em> </td><td align="center"> <em>AA</em> </td></tr>
-<tr><td align="center"> <em>addOp</em> </td><td align="center"> <em>AB</em> </td></tr>
-<tr><td align="center"> <em>term</em> </td><td align="center"> <em>AC</em> </td></tr>
-<tr><td align="center"> <em>sign</em> </td><td align="center"> <em>AD</em> </td></tr>
-<tr><td align="center"> <em>multOp</em> </td><td align="center"> <em>AE</em> </td></tr>
-<tr><td align="center"> <em>factor</em> </td><td align="center"> <em>AF</em> </td></tr>
-<tr><td align="center"> <em>functionCall</em> </td><td align="center"> <em>AG</em> </td></tr>
-<tr><td align="center"> <em>negationOperator</em> </td><td align="center"> <em>AH</em> </td></tr>
-<tr><td align="center"> <em>idnestRecursion</em> </td><td align="center"> <em>AI</em> </td></tr>
-<tr><td align="center"> <em>indiceRecursion</em> </td><td align="center"> <em>AJ</em> </td></tr>
-<tr><td align="center"> <em>aParams</em> </td><td align="center"> <em>AK</em> </td></tr>
-<tr><td align="center"> <em>idnest</em> </td><td align="center"> <em>AL</em> </td></tr>
-<tr><td align="center"> <em>indice</em> </td><td align="center"> <em>AM</em> </td></tr>
-<tr><td align="center"> <em>arraySize</em> </td><td align="center"> <em>AN</em> </td></tr>
-<tr><td align="center"> <em>fParamsTailRecursion</em> </td><td align="center"> <em>AO</em> </td></tr>
-<tr><td align="center"> <em>aParamsTailRecursion</em> </td><td align="center"> <em>AP</em> </td></tr>
-<tr><td align="center"> <em>fParamsTail</em> </td><td align="center"> <em>AQ</em> </td></tr>
-<tr><td align="center"> <em>aParamsTail</em> </td><td align="center"> <em>AR</em> </td></tr>
-</tbody></table>
-<p>This results in the same BNF grammar but with single-letter non-terminal symbols.</p>
-<table><thead><tr><th align="center"> LHS </th><th> → </th><th> RHS </th></tr></thead><tbody>
-<tr><td align="center"> <em>S</em> </td><td align="center"> → </td><td align="center"> <em>A</em> <em>B</em> <code>program</code> <em>C</em> <code>;</code></td></tr>
-<tr><td align="center"> <em>A</em> </td><td align="center"> → </td><td align="center"> <em>A</em> <em>D</em> | ε </td></tr>
-<tr><td align="center"> <em>B</em> </td><td align="center"> → </td><td align="center"> <em>B</em> <em>N</em> | ε </td></tr>
-<tr><td align="center"> <em>C</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>F</em> <em>O</em> <code>}</code> </td></tr>
-<tr><td align="center"> <em>D</em> </td><td align="center"> → </td><td align="center"> <code>class</code> <code>id</code> <em>E</em> <code>{</code> <em>F</em> <em>G</em> <code>}</code> <code>;</code> </td></tr>
-<tr><td align="center"> <em>E</em> </td><td align="center"> → </td><td align="center"> <code>:</code> <code>id</code> <em>H</em> | ε</td></tr>
-<tr><td align="center"> <em>F</em> </td><td align="center"> → </td><td align="center"> <em>F</em> <em>P</em> | ε </td></tr>
-<tr><td align="center"> <em>G</em> </td><td align="center"> → </td><td align="center"> <em>G</em> <em>I</em> | ε </td></tr>
-<tr><td align="center"> <em>H</em> </td><td align="center"> → </td><td align="center"> <em>H</em> <code>,</code> <code>id</code> | ε </td></tr>
-<tr><td align="center"> <em>I</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <code>(</code> <em>K</em> <code>)</code> <code>;</code> </td></tr>
-<tr><td align="center"> <em>J</em> </td><td align="center"> → </td><td align="center"> <code>int</code> | <code>float</code> | <code>id</code> </td></tr>
-<tr><td align="center"> <em>K</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <em>Q</em> <em>AO</em> | ε </td></tr>
-<tr><td align="center"> <em>L</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <em>M</em> <code>id</code> <code>(</code> <em>K</em> <code>)</code> </td></tr>
-<tr><td align="center"> <em>M</em> </td><td align="center"> → </td><td align="center">  <code>id</code> <code>::</code> | ε</td></tr>
-<tr><td align="center"> <em>N</em> </td><td align="center"> → </td><td align="center"> <em>L</em> <em>C</em> <code>;</code> </td></tr>
-<tr><td align="center"> <em>O</em> </td><td align="center"> → </td><td align="center"> <em>O</em> <em>R</em> | ε </td></tr>
-<tr><td align="center"> <em>P</em> </td><td align="center"> → </td><td align="center"> <em>J</em> <code>id</code> <em>Q</em> <code>;</code> </td></tr>
-<tr><td align="center"> <em>Q</em> </td><td align="center"> → </td><td align="center"> <em>Q</em> <em>AN</em> | ε </td></tr>
-<tr><td align="center"> <em>R</em> </td><td align="center"> → </td><td align="center"> <em>T</em> | <code>if</code> <code>(</code> <em>U</em> <code>)</code> <code>then</code> <em>V</em> <code>;</code> | <code>for</code> <code>(</code> <em>J</em> <code>id</code> <em>W</em> <em>U</em> <code>;</code> <em>X</em> <code>;</code> <em>T</em>  <code>)</code> <em>V</em> <code>;</code> | <br/> <code>get</code> <code>(</code> <em>Y</em> <code>)</code> <code>;</code> | <code>put</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> | <code>return</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> </td></tr>
-<tr><td align="center"> <em>T</em> </td><td align="center"> → </td><td align="center"> <em>Y</em> <em>W</em> <em>U</em> </td></tr>
-<tr><td align="center"> <em>U</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> | <em>X</em> </td></tr>
-<tr><td align="center"> <em>V</em> </td><td align="center"> → </td><td align="center"> <code>{</code> <em>O</em> <code>}</code> | <em>R</em> | ε </td></tr>
-<tr><td align="center"> <em>W</em> </td><td align="center"> → </td><td align="center"> <code>=</code> </td></tr>
-<tr><td align="center"> <em>X</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> <em>AA</em> <em>Z</em> </td></tr>
-<tr><td align="center"> <em>Y</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <code>id</code> <em>AJ</em> </td></tr>
-<tr><td align="center"> <em>Z</em> </td><td align="center"> → </td><td align="center"> <em>Z</em> <em>AB</em> <em>AC</em> | <em>AC</em> </td></tr>
-<tr><td align="center"> <em>AA</em> </td><td align="center"> → </td><td align="center"> <code>==</code> | <code>&lt;&gt;</code> | <code>&lt;</code> | <code>&gt;</code> | <code>&lt;=</code> | <code>&gt;=</code> </td></tr>
-<tr><td align="center"> <em>AB</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> | <code>or</code> | <code>¦¦</code> </td></tr>
-<tr><td align="center"> <em>AC</em> </td><td align="center"> → </td><td align="center"> <em>AC</em> <em>AE</em> <em>AF</em> | <em>AF</em> </td></tr>
-<tr><td align="center"> <em>AD</em> </td><td align="center"> → </td><td align="center"> <code>+</code> | <code>-</code> </td></tr>
-<tr><td align="center"> <em>AE</em> </td><td align="center"> → </td><td align="center"> <code>*</code> | <code>/</code> | <code>and</code> | <code>&amp;&amp;</code> </td></tr>
-<tr><td align="center"> <em>AF</em> </td><td align="center"> → </td><td align="center"> <em>Y</em> | <em>AG</em> | <code>intNum</code> | <code>floatNum</code> | <code>(</code> <em>Z</em> <code>)</code> | <em>AH</em> <em>AF</em> | <em>AD</em> <em>AF</em> </td></tr>
-<tr><td align="center"> <em>AG</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <code>id</code> <code>(</code> <em>AK</em> <code>)</code> </td></tr>
-<tr><td align="center"> <em>AH</em> </td><td align="center"> → </td><td align="center"> <code>not</code> | <code>!</code> </td></tr>
-<tr><td align="center"> <em>AI</em> </td><td align="center"> → </td><td align="center"> <em>AI</em> <em>AL</em> | ε </td></tr>
-<tr><td align="center"> <em>AJ</em> </td><td align="center"> → </td><td align="center"> <em>AJ</em> <em>AM</em> | ε </td></tr>
-<tr><td align="center"> <em>AK</em> </td><td align="center"> → </td><td align="center"> <em>U</em> <em>AP</em> | ε </td></tr>
-<tr><td align="center"> <em>AL</em> </td><td align="center"> → </td><td align="center"> <code>id</code> <em>AJ</em> <code>.</code> | <code>id</code> <code>(</code> <em>AK</em> <code>)</code> <code>.</code> </td></tr>
-<tr><td align="center"> <em>AM</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <em>Z</em> <code>]</code> </td></tr>
-<tr><td align="center"> <em>AN</em> </td><td align="center"> → </td><td align="center"> <code>[</code> <code>intNum</code> <code>]</code> </td></tr>
-<tr><td align="center"> <em>AO</em> </td><td align="center"> → </td><td align="center"> <em>AO</em> <em>AQ</em> | ε </td></tr>
-<tr><td align="center"> <em>AP</em> </td><td align="center"> → </td><td align="center"> <em>AP</em> <em>AR</em> | ε </td></tr>
-<tr><td align="center"> <em>AQ</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>J</em> <code>id</code> <em>Q</em> </td></tr>
-<tr><td align="center"> <em>AR</em> </td><td align="center"> → </td><td align="center"> <code>,</code> <em>U</em> </td></tr>
-</tbody></table>
-<p>An <a href="http://atocc.de">AtoCC</a>-compatible text format of the above grammar is shown below:</p>
-<pre><code>S -&gt; A B 'program' C ';'
-A -&gt; A D | EPSILON
-B -&gt; B N | EPSILON
-C -&gt; '{' F O '}'
-D -&gt; 'class' 'id' E '{' F G '}' ';'
-E -&gt; ':' 'id' H | EPSILON
-F -&gt; F P | EPSILON
-G -&gt; G I | EPSILON
-H -&gt; H ',' 'id' | EPSILON
-I -&gt; J 'id' '(' K ')' ';'
-J -&gt; 'int' | 'float' | 'id'
-K -&gt; J 'id' Q AO | EPSILON
-L -&gt; J M 'id' '(' K ')'
-M -&gt;  'id' '::' | EPSILON
-N -&gt; L C ';'
-O -&gt; O R | EPSILON
-P -&gt; J 'id' Q ';'
-Q -&gt; Q AN | EPSILON
-R -&gt; T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
-T -&gt; Y W U
-U -&gt; Z | X
-V -&gt; '{' O '}' | R | EPSILON
-W -&gt; '='
-X -&gt; Z AA Z
-Y -&gt; AI 'id' AJ
-Z -&gt; Z AB AC | AC
-AA -&gt; '==' | '&lt;&gt;' | '&lt;' | '&gt;' | '&lt;=' | '&gt;='
-AB -&gt; '+' | '-' | 'or' | '||'
-AC -&gt; AC AE AF | AF
-AD -&gt; '+' | '-'
-AE -&gt; '*' | '/' | 'and' | '&amp;&amp;'
-AF -&gt; Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
-AG -&gt; AI 'id' '(' AK ')'
-AH -&gt; 'not' | '!'
-AI -&gt; AI AL | EPSILON
-AJ -&gt; AJ AM | EPSILON
-AK -&gt; U AP | EPSILON
-AL -&gt; 'id' AJ '.' | 'id' '(' AK ')' '.'
-AM -&gt; '[' Z ']'
-AN -&gt; '[' 'intNum' ']'
-AO -&gt; AO AQ | EPSILON
-AP -&gt; AP AR | EPSILON
-AQ -&gt; ',' J 'id' Q
-AR -&gt; ',' U
+<p>An <a href="http://atocc.de">AtoCC</a>-compatible text format of the above grammar (with renamed variables) is shown below:</p>
+<pre><code>prog -&gt; classDeclRecursion funcDefRecursion 'program' funcBody ';'
+classDeclRecursion -&gt; classDeclRecursion classDecl | EPSILON
+classDecl -&gt; 'class' 'id' optionalInheritance '{' varDeclRecursion funcDeclRecursion '}' ';'
+optionalInheritance -&gt; ':' 'id' multipleSuperClasses | EPSILON
+multipleSuperClasses -&gt; multipleSuperClasses ',' 'id' | EPSILON
+funcDeclRecursion -&gt; funcDeclRecursion funcDecl | EPSILON
+funcDecl -&gt; type 'id' '(' fParams ')' ';'
+funcHead -&gt; type optionalNamespace 'id' '(' fParams ')'
+optionalNamespace -&gt;  'id' '::' | EPSILON
+funcDefRecursion -&gt; funcDefRecursion funcDef | EPSILON
+funcDef -&gt; funcHead funcBody ';'
+funcBody -&gt; '{' varDeclRecursion statementRecursion '}'
+varDeclRecursion -&gt; varDeclRecursion varDecl | EPSILON
+varDecl -&gt; type 'id' arraySizeRecursion ';'
+statementRecursion -&gt; statementRecursion statement | EPSILON
+statement -&gt; assignStat | 'if' '(' expr ')' 'then' statBlock ';' | 'for' '(' type 'id' assignOp expr ';' relExpr ';' assignStat  ')' statBlock ';' | 'get' '(' variable ')' ';' | 'put' '(' expr ')' ';' | 'return' '(' expr ')' ';'
+assignStat -&gt; variable assignOp expr
+statBlock -&gt; '{' statementRecursion '}' | statement | EPSILON
+expr -&gt; arithExpr | relExpr
+relExpr -&gt; arithExpr relOp arithExpr
+arithExpr -&gt; arithExpr addOp term | term
+sign -&gt; '+' | '-'
+term -&gt; term multOp factor | factor
+factor -&gt; variable | functionCall | 'intNum' | 'floatNum' | '(' arithExpr ')' | negationOperator factor | sign factor
+negationOperator -&gt; 'not' | '!'
+variable -&gt; idnestRecursion 'id' indiceRecursion
+functionCall -&gt; idnestRecursion 'id' '(' aParams ')'
+idnestRecursion -&gt; idnestRecursion idnest | EPSILON
+idnest -&gt; 'id' indiceRecursion '.' | 'id' '(' aParams ')' '.'
+indiceRecursion -&gt; indiceRecursion indice | EPSILON
+indice -&gt; '[' arithExpr ']'
+arraySizeRecursion -&gt; arraySizeRecursion arraySize | EPSILON
+arraySize -&gt; '[' 'intNum' ']'
+type -&gt; 'int' | 'float' | 'id'
+fParams -&gt; type 'id' arraySizeRecursion fParamsTailRecursion | EPSILON
+aParams -&gt; expr aParamsTailRecursion | EPSILON
+fParamsTailRecursion -&gt; fParamsTailRecursion fParamsTail | EPSILON
+fParamsTail -&gt; ',' type 'id' arraySizeRecursion
+aParamsTailRecursion -&gt; aParamsTailRecursion aParamsTail | EPSILON
+aParamsTail -&gt; ',' expr
+assignOp -&gt; '='
+relOp -&gt; '==' | '&lt;&gt;' | '&lt;' | '&gt;' | '&lt;=' | '&gt;='
+addOp -&gt; '+' | '-' | 'or' | '¦¦'
+multOp -&gt; '*' | '/' | 'and' | '&amp;&amp;'
 </code></pre>
 <a class="header" href="3-parser.html#left-factored-right-recursive-and-ll1-grammar" id="left-factored-right-recursive-and-ll1-grammar"><h3>Left-Factored, Right-Recursive and LL(1) Grammar</h3></a>
 <p>Left factoring is a technique used in predictive top-down parsers avoid the need for backtracking or lookaheads during parsing, such as is done in recursive descent. It involves the removal of any common left factor (terminal or non-terminal) that appears in a production with an or clause (|), or effectively two productions of the same non-terminal. Performing left factoring means that at a given non-terminal, there is a clear deterministic choice of which production to proceed towards.</p>
@@ -367,64 +273,114 @@ AR -&gt; ',' U
 <p>Ambiguity in context-free grammars means that it can result in multiple possible derivations or parse trees. This is undesirable as we want our compiler to reliably generate the same parse tree given the same input program.</p>
 <p>Using an LL(1) grammar for a syntactic analysis is attractive given that LL(1) grammars are known to be unambigiuous. Converting a grammar to LL(1) is an effective technique for dealing with ambiguities in general, giving that determining if an arbitrary grammar is ambiguous is an undecidable problem.</p>
 <p>An attempt to use the following <a href="https://cyberzhg.github.io/toolbox/left_fact">left-factoring online tool</a>, <a href="https://cyberzhg.github.io/toolbox/left_rec">left-recusion elimination online tool</a> and <a href="https://cyberzhg.github.io/toolbox/cfg2ll">CFG-to-LL(k) online tool</a> was done. However, these tools were error-prone, and superior results were obtained by manipulating the grammar by hand while verifying with the <a href="http://atocc.de">AtoCC</a> kfGEdit tool along the way.</p>
-<p>Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below.</p>
-<pre><code>S  -&gt; A B program C ;
-A  -&gt; D A | EPSILON
-B  -&gt; N B | EPSILON
-C  -&gt; { F }
-D  -&gt; class id E { AG } ;
-E  -&gt; : id H | EPSILON
-F  -&gt; id AY | AX | P F
-G  -&gt; id Q ; F
-H  -&gt; , id H | EPSILON
-I  -&gt; AL I
-J  -&gt; float | id | int
-K  -&gt; J id Q AO | EPSILON
-L  -&gt; J M ( K )
-M  -&gt; id BA
-N  -&gt; L C ;
-O  -&gt; id T O | R O | EPSILON
-P  -&gt; float id Q ; | int id Q ;
-Q  -&gt; AN Q | EPSILON
-R  -&gt; for ( J id = U ; X ; id T ) V ; | get ( id Y ) ; | if ( U ) then V ; | put ( U ) ; | return ( U ) ;
-T  -&gt; Y = U
-U  -&gt; Z AZ
-V  -&gt; { O } | id T | R | EPSILON
-W  -&gt; float id AI | id id AI | int id AI | EPSILON
-X  -&gt; Z AA Z
-Y  -&gt; I AJ | EPSILON
-Z  -&gt; AC BE
-AA -&gt; &lt; | &lt;= | &lt;&gt; | == | &gt; | &gt;=
-AB -&gt; + | - | or | ¦¦
-AC -&gt; AF BD
-AD -&gt; + | -
-AE -&gt; and | &amp;&amp; | * | /
-AF -&gt; ( Z ) | floatNum | id BB | intNum | AH AF | AD AF
-AG -&gt; float id AT | id id AT | int id AT | EPSILON
-AH -&gt; ! | not
-AI -&gt; ( K ) ; W
-AJ -&gt; AM AJ | EPSILON
-AK -&gt; U AP | EPSILON
-AL -&gt; ( AK ) . | AJ .
-AM -&gt; [ Z ]
-AN -&gt; [ intNum ]
-AO -&gt; AQ AO | EPSILON
-AP -&gt; AR AP | EPSILON
-AQ -&gt; , J id Q
-AR -&gt; , U
-AS -&gt; Q ; AG
-AT -&gt; AI | AS
-AU -&gt; id AW
-AV -&gt; AX | AU
-AW -&gt; T AV
-AX -&gt; R AV | EPSILON
-AY -&gt; AW | G
-AZ -&gt; AA Z | EPSILON
-BA -&gt; :: id | EPSILON
-BB -&gt; I BC | EPSILON
-BC -&gt; ( AK ) | AJ
-BD -&gt; AE AF BD | EPSILON
-BE -&gt; AB AC BE | EPSILON
+<p>Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below in an AtoCC-compatible format (with renamed non-terminal symbols to more accurately represent their role).</p>
+<pre><code>Program                                             -&gt; ClassDeclarationRecursion FunctionDefinitionRecursion program FunctionBody ;
+AdditiveOperator                                    -&gt; +
+AdditiveOperator                                    -&gt; -
+AdditiveOperator                                    -&gt; or
+AdditiveOperator                                    -&gt; ¦¦
+ArithmeticExpression                                -&gt; Term ArithmeticExpressionTail
+ArithmeticExpressionTail                            -&gt; AdditiveOperator Term ArithmeticExpressionTail
+ArithmeticExpressionTail                            -&gt; EPSILON
+ArithmeticOrRelationalExpression                    -&gt; RelationalOperator ArithmeticExpression
+ArithmeticOrRelationalExpression                    -&gt; EPSILON
+ArraySize                                           -&gt; [ intNum ]
+ArraySizeRecursion                                  -&gt; ArraySize ArraySizeRecursion
+ArraySizeRecursion                                  -&gt; EPSILON
+AssignmentStatement                                 -&gt; Variable = Expression
+ClassDeclaration                                    -&gt; class id OptionalInheritanceList { VariableThenFunctionDeclarationRecursion } ;
+ClassDeclarationRecursion                           -&gt; ClassDeclaration ClassDeclarationRecursion
+ClassDeclarationRecursion                           -&gt; EPSILON
+Expression                                          -&gt; ArithmeticExpression ArithmeticOrRelationalExpression
+Factor                                              -&gt; ( ArithmeticExpression )
+Factor                                              -&gt; FunctionCallOrVariable
+Factor                                              -&gt; NegationOperator Factor
+Factor                                              -&gt; NumberSign Factor
+Factor                                              -&gt; floatNum
+Factor                                              -&gt; intNum
+FunctionArguments                                   -&gt; Expression FunctionArgumentsTailRecursion
+FunctionArguments                                   -&gt; EPSILON
+FunctionArgumentsTail                               -&gt; , Expression
+FunctionArgumentsTailRecursion                      -&gt; FunctionArgumentsTail FunctionArgumentsTailRecursion
+FunctionArgumentsTailRecursion                      -&gt; EPSILON
+FunctionBody                                        -&gt; { VariableDeclarationRecursionThenStatementRecursionA }
+FunctionCallOrVariable                              -&gt; id FunctionCallOrVariableTail
+FunctionCallOrVariableTail                          -&gt; FunctionCallParensOrIndexing FunctionCallOrVariableTailRecursion
+FunctionCallOrVariableTailRecursion                 -&gt; . id FunctionCallOrVariableTail
+FunctionCallOrVariableTailRecursion                 -&gt; EPSILON
+FunctionCallParensOrIndexing                        -&gt; ( FunctionArguments )
+FunctionCallParensOrIndexing                        -&gt; IndexingRecursion
+FunctionDeclarationRecursionStart                   -&gt; Type id FunctionDeclarationRecursionTail
+FunctionDeclarationRecursionStart                   -&gt; EPSILON
+FunctionDeclarationRecursionTail                    -&gt; ( FunctionParameters ) ; FunctionDeclarationRecursionStart
+FunctionDefinition                                  -&gt; FunctionHeader FunctionBody ;
+FunctionDefinitionRecursion                         -&gt; FunctionDefinition FunctionDefinitionRecursion
+FunctionDefinitionRecursion                         -&gt; EPSILON
+FunctionHeader                                      -&gt; Type OptionalNamespacing ( FunctionParameters )
+FunctionParameters                                  -&gt; Type id ArraySizeRecursion FunctionParametersTailRecursion
+FunctionParameters                                  -&gt; EPSILON
+FunctionParametersTail                              -&gt; , Type id ArraySizeRecursion
+FunctionParametersTailRecursion                     -&gt; FunctionParametersTail FunctionParametersTailRecursion
+FunctionParametersTailRecursion                     -&gt; EPSILON
+IdListRecursion                                     -&gt; , id IdListRecursion
+IdListRecursion                                     -&gt; EPSILON
+Indexing                                            -&gt; [ ArithmeticExpression ]
+IndexingRecursion                                   -&gt; Indexing IndexingRecursion
+IndexingRecursion                                   -&gt; EPSILON
+MultiplicativeOperator                              -&gt; &amp;&amp;
+MultiplicativeOperator                              -&gt; *
+MultiplicativeOperator                              -&gt; /
+MultiplicativeOperator                              -&gt; and
+NegationOperator                                    -&gt; !
+NegationOperator                                    -&gt; not
+NumberSign                                          -&gt; +
+NumberSign                                          -&gt; -
+NumberType                                          -&gt; float
+NumberType                                          -&gt; int
+OptionalInheritanceList                             -&gt; : id IdListRecursion
+OptionalInheritanceList                             -&gt; EPSILON
+OptionalNamespacing                                 -&gt; id OptionalNamespacingTail
+OptionalNamespacingTail                             -&gt; :: id
+OptionalNamespacingTail                             -&gt; EPSILON
+RelationalExpression                                -&gt; ArithmeticExpression RelationalOperator ArithmeticExpression
+RelationalOperator                                  -&gt; !=
+RelationalOperator                                  -&gt; &lt;
+RelationalOperator                                  -&gt; &lt;=
+RelationalOperator                                  -&gt; ==
+RelationalOperator                                  -&gt; &gt;
+RelationalOperator                                  -&gt; &gt;=
+Statement                                           -&gt; AssignmentStatement ;
+Statement                                           -&gt; StatementWithoutAssignment
+StatementBlock                                      -&gt; Statement
+StatementBlock                                      -&gt; EPSILON
+StatementBlock                                      -&gt; { StatementRecursion }
+StatementRecursion                                  -&gt; Statement StatementRecursion
+StatementRecursion                                  -&gt; EPSILON
+StatementWithoutAssignment                          -&gt; for ( Type id = Expression ; RelationalExpression ; AssignmentStatement ) StatementBlock ;
+StatementWithoutAssignment                          -&gt; get ( Variable ) ;
+StatementWithoutAssignment                          -&gt; if ( Expression ) then StatementBlock else StatementBlock ;
+StatementWithoutAssignment                          -&gt; put ( Expression ) ;
+StatementWithoutAssignment                          -&gt; return ( Expression ) ;
+Term                                                -&gt; Factor TermRecursion
+TermRecursion                                       -&gt; MultiplicativeOperator Factor TermRecursion
+TermRecursion                                       -&gt; EPSILON
+Type                                                -&gt; NumberType
+Type                                                -&gt; id
+Variable                                            -&gt; id VariableTail
+VariableDeclarationRecursionThenStatementRecursionA -&gt; NumberType id ArraySizeRecursion ; VariableDeclarationRecursionThenStatementRecursionA
+VariableDeclarationRecursionThenStatementRecursionA -&gt; EPSILON
+VariableDeclarationRecursionThenStatementRecursionA -&gt; StatementWithoutAssignment StatementRecursion
+VariableDeclarationRecursionThenStatementRecursionA -&gt; id VariableDeclarationRecursionThenStatementRecursionB
+VariableDeclarationRecursionThenStatementRecursionB -&gt; VariableTail = Expression ; StatementRecursion
+VariableDeclarationRecursionThenStatementRecursionB -&gt; id ArraySizeRecursion ; VariableDeclarationRecursionThenStatementRecursionA
+VariableTail                                        -&gt; ( FunctionArguments ) . id VariableTail
+VariableTail                                        -&gt; IndexingRecursion VariableTailTail
+VariableTailTail                                    -&gt; . id VariableTail
+VariableTailTail                                    -&gt; EPSILON
+VariableThenFunctionDeclarationRecursion            -&gt; Type id VariableThenFunctionDeclarationRecursionTail
+VariableThenFunctionDeclarationRecursion            -&gt; EPSILON
+VariableThenFunctionDeclarationRecursionTail        -&gt; ArraySizeRecursion ; VariableThenFunctionDeclarationRecursion
+VariableThenFunctionDeclarationRecursionTail        -&gt; FunctionDeclarationRecursionTail
 </code></pre>
 <p>The <a href="http://atocc.de">AtoCC</a> kfG Edit tool confirms that the above grammar is LL(1).</p>
 <p><img src="assets/images/atocc-ll1-confirmation.png" alt="AtoCC confirmation prompt indicating that the gramar satifies both LL(1) properties." /></p>
@@ -432,294 +388,301 @@ BE -&gt; AB AC BE | EPSILON
 <p>A parsing table must be constructed from the above grammar in order to represent the grammar during predictive parsing. The information below was generated automatically using <a href="http://hackingoff.com/compilers/predict-first-follow-set">an online tool</a>.</p>
 <p>The fact that there was at most one production in each table cell further reinforces the fact that the grammar is LL(1).</p>
 <a class="header" href="3-parser.html#first-sets" id="first-sets"><h3><em>FIRST</em> Sets</h3></a>
-<table><thead><tr><th> Non-Terminal Symbol </th><th> First Set </th></tr></thead><tbody>
-<tr><td align="center"> <code>program</code> </td><td align="center"> <code>program</code> </td></tr>
-<tr><td align="center"> <code>;</code> </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> <code>ε</code> </td><td align="center"> <code>ε</code> </td></tr>
-<tr><td align="center"> <code>{</code> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> <code>}</code> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <code>class</code> </td><td align="center"> <code>class</code> </td></tr>
-<tr><td align="center"> <code>id</code> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> <code>:</code> </td><td align="center"> <code>:</code> </td></tr>
-<tr><td align="center"> <code>,</code> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> <code>float</code> </td><td align="center"> <code>float</code> </td></tr>
-<tr><td align="center"> <code>int</code> </td><td align="center"> <code>int</code> </td></tr>
-<tr><td align="center"> <code>(</code> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> <code>)</code> </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> <code>for</code> </td><td align="center"> <code>for</code> </td></tr>
-<tr><td align="center"> <code>=</code> </td><td align="center"> <code>=</code> </td></tr>
-<tr><td align="center"> <code>get</code> </td><td align="center"> <code>get</code> </td></tr>
-<tr><td align="center"> <code>if</code> </td><td align="center"> <code>if</code> </td></tr>
-<tr><td align="center"> <code>then</code> </td><td align="center"> <code>then</code> </td></tr>
-<tr><td align="center"> <code>put</code> </td><td align="center"> <code>put</code> </td></tr>
-<tr><td align="center"> <code>return</code> </td><td align="center"> <code>return</code> </td></tr>
-<tr><td align="center"> <code>&lt;</code> </td><td align="center"> <code>&lt;</code> </td></tr>
-<tr><td align="center"> <code>&lt;=</code> </td><td align="center"> <code>&lt;=</code> </td></tr>
-<tr><td align="center"> <code>&lt;&gt;</code> </td><td align="center"> <code>&lt;&gt;</code> </td></tr>
-<tr><td align="center"> <code>==</code> </td><td align="center"> <code>==</code> </td></tr>
-<tr><td align="center"> <code>&gt;</code> </td><td align="center"> <code>&gt;</code> </td></tr>
-<tr><td align="center"> <code>&gt;=</code> </td><td align="center"> <code>&gt;=</code> </td></tr>
-<tr><td align="center"> <code>+</code> </td><td align="center"> <code>+</code> </td></tr>
-<tr><td align="center"> <code>-</code> </td><td align="center"> <code>-</code> </td></tr>
-<tr><td align="center"> <code>or</code> </td><td align="center"> <code>or</code> </td></tr>
-<tr><td align="center"> <code>¦¦</code> </td><td align="center"> <code>¦¦</code> </td></tr>
-<tr><td align="center"> <code>and</code> </td><td align="center"> <code>and</code> </td></tr>
-<tr><td align="center"> <code>&amp;&amp;</code> </td><td align="center"> <code>&amp;&amp;</code> </td></tr>
-<tr><td align="center"> <code>*</code> </td><td align="center"> <code>*</code> </td></tr>
-<tr><td align="center"> <code>/</code> </td><td align="center"> <code>/</code> </td></tr>
-<tr><td align="center"> <code>floatNum</code> </td><td align="center"> <code>floatNum</code> </td></tr>
-<tr><td align="center"> <code>intNum</code> </td><td align="center"> <code>intNum</code> </td></tr>
-<tr><td align="center"> <code>not</code> </td><td align="center"> <code>not</code> </td></tr>
-<tr><td align="center"> <code>!</code> </td><td align="center"> <code>!</code> </td></tr>
-<tr><td align="center"> <code>.</code> </td><td align="center"> <code>.</code> </td></tr>
-<tr><td align="center"> <code>[</code> </td><td align="center"> <code>[</code> </td></tr>
-<tr><td align="center"> <code>]</code> </td><td align="center"> <code>]</code> </td></tr>
-<tr><td align="center"> <code>::</code> </td><td align="center"> <code>::</code> </td></tr>
-<tr><td align="center"> <em>S</em> </td><td align="center"> <code>program</code>, <code>ε</code>, <code>class</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>A</em> </td><td align="center"> <code>ε</code>, <code>class</code> </td></tr>
-<tr><td align="center"> <em>B</em> </td><td align="center"> <code>ε</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>C</em> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> <em>D</em> </td><td align="center"> <code>class</code> </td></tr>
-<tr><td align="center"> <em>E</em> </td><td align="center"> <code>:</code>, <code>ε</code> </td></tr>
-<tr><td align="center"> <em>F</em> </td><td align="center"> <code>id</code>, <code>ε</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>float</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>G</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> <em>H</em> </td><td align="center"> <code>,</code>, <code>ε</code> </td></tr>
-<tr><td align="center"> <em>I</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>J</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>K</em> </td><td align="center"> <code>ε</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>L</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>M</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> <em>N</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>O</em> </td><td align="center"> <code>id</code>, <code>ε</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> <em>P</em> </td><td align="center"> <code>float</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>Q</em> </td><td align="center"> <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>R</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> <em>T</em> </td><td align="center"> <code>=</code>, <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>U</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>V</em> </td><td align="center"> <code>{</code>, <code>id</code>, <code>ε</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> <em>W</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code>, <code>ε</code> </td></tr>
-<tr><td align="center"> <em>X</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>Y</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>Z</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AA</em> </td><td align="center"> <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code> </td></tr>
-<tr><td align="center"> <em>AB</em> </td><td align="center"> <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code> </td></tr>
-<tr><td align="center"> <em>AC</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AD</em> </td><td align="center"> <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AE</em> </td><td align="center"> <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code> </td></tr>
-<tr><td align="center"> <em>AF</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AG</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code>, <code>ε</code> </td></tr>
-<tr><td align="center"> <em>AH</em> </td><td align="center"> <code>not</code>, <code>!</code> </td></tr>
-<tr><td align="center"> <em>AI</em> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> <em>AJ</em> </td><td align="center"> <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AK</em> </td><td align="center"> <code>ε</code>, <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AL</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AM</em> </td><td align="center"> <code>[</code> </td></tr>
-<tr><td align="center"> <em>AN</em> </td><td align="center"> <code>[</code> </td></tr>
-<tr><td align="center"> <em>AO</em> </td><td align="center"> <code>ε</code>, <code>,</code> </td></tr>
-<tr><td align="center"> <em>AP</em> </td><td align="center"> <code>ε</code>, <code>,</code> </td></tr>
-<tr><td align="center"> <em>AQ</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> <em>AR</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> <em>AS</em> </td><td align="center"> <code>;</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AT</em> </td><td align="center"> <code>(</code>, <code>;</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AU</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> <em>AV</em> </td><td align="center"> <code>ε</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code> </td></tr>
-<tr><td align="center"> <em>AW</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AX</em> </td><td align="center"> <code>ε</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> <em>AY</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code>, <code>id</code> </td></tr>
-<tr><td align="center"> <em>AZ</em> </td><td align="center"> <code>ε</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code> </td></tr>
-<tr><td align="center"> <em>BA</em> </td><td align="center"> <code>::</code>, <code>ε</code> </td></tr>
-<tr><td align="center"> <em>BB</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>BC</em> </td><td align="center"> <code>(</code>, <code>ε</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>BD</em> </td><td align="center"> <code>ε</code>, <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code> </td></tr>
-<tr><td align="center"> <em>BE</em> </td><td align="center"> <code>ε</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code> </td></tr>
-</tbody></table>
+<!--
+| Non-Terminal Symbol | First Set |
+|:------:|:-----:|
+| `program` | `program` |
+| `;` | `;` |
+| `ε` | `ε` |
+| `{` | `{` |
+| `}` | `}` |
+| `class` | `class` |
+| `id` | `id` |
+| `:` | `:` |
+| `,` | `,` |
+| `float` | `float` |
+| `int` | `int` |
+| `(` | `(` |
+| `)` | `)` |
+| `for` | `for` |
+| `=` | `=` |
+| `get` | `get` |
+| `if` | `if` |
+| `then` | `then` |
+| `put` | `put` |
+| `return` | `return` |
+| `<` | `<` |
+| `<=` | `<=` |
+| `<>` | `<>` |
+| `==` | `==` |
+| `>` | `>` |
+| `>=` | `>=` |
+| `+` | `+` |
+| `-` | `-` |
+| `or` | `or` |
+| `¦¦` | `¦¦` |
+| `and` | `and` |
+| `&&` | `&&` |
+| `*` | `*` |
+| `/` | `/` |
+| `floatNum` | `floatNum` |
+| `intNum` | `intNum` |
+| `not` | `not` |
+| `!` | `!` |
+| `.` | `.` |
+| `[` | `[` |
+| `]` | `]` |
+| `::` | `::` |
+| _S_ | `program`, `ε`, `class`, `float`, `id`, `int` |
+| _A_ | `ε`, `class` |
+| _B_ | `ε`, `float`, `id`, `int` |
+| _C_ | `{` |
+| _D_ | `class` |
+| _E_ | `:`, `ε` |
+| _F_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return`, `float`, `int` |
+| _G_ | `id` |
+| _H_ | `,`, `ε` |
+| _I_ | `(`, `.`, `ε`, `[` |
+| _J_ | `float`, `id`, `int` |
+| _K_ | `ε`, `float`, `id`, `int` |
+| _L_ | `float`, `id`, `int` |
+| _M_ | `id` |
+| _N_ | `float`, `id`, `int` |
+| _O_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
+| _P_ | `float`, `int` |
+| _Q_ | `ε`, `[` |
+| _R_ | `for`, `get`, `if`, `put`, `return` |
+| _T_ | `=`, `(`, `.`, `ε`, `[` |
+| _U_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _V_ | `{`, `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
+| _W_ | `float`, `id`, `int`, `ε` |
+| _X_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _Y_ | `(`, `.`, `ε`, `[` |
+| _Z_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AA_ | `<`, `<=`, `<>`, `==`, `>`, `>=` |
+| _AB_ | `+`, `-`, `or`, `¦¦` |
+| _AC_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AD_ | `+`, `-` |
+| _AE_ | `and`, `&&`, `*`, `/` |
+| _AF_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AG_ | `float`, `id`, `int`, `ε` |
+| _AH_ | `not`, `!` |
+| _AI_ | `(` |
+| _AJ_ | `ε`, `[` |
+| _AK_ | `ε`, `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AL_ | `(`, `.`, `ε`, `[` |
+| _AM_ | `[` |
+| _AN_ | `[` |
+| _AO_ | `ε`, `,` |
+| _AP_ | `ε`, `,` |
+| _AQ_ | `,` |
+| _AR_ | `,` |
+| _AS_ | `;`, `ε`, `[` |
+| _AT_ | `(`, `;`, `ε`, `[` |
+| _AU_ | `id` |
+| _AV_ | `ε`, `for`, `get`, `if`, `put`, `return`, `id` |
+| _AW_ | `(`, `.`, `ε`, `[` |
+| _AX_ | `ε`, `for`, `get`, `if`, `put`, `return` |
+| _AY_ | `(`, `.`, `ε`, `[`, `id` |
+| _AZ_ | `ε`, `<`, `<=`, `<>`, `==`, `>`, `>=` |
+| _BA_ | `::`, `ε` |
+| _BB_ | `(`, `.`, `ε`, `[` |
+| _BC_ | `(`, `ε`, `[` |
+| _BD_ | `ε`, `and`, `&&`, `*`, `/` |
+| _BE_ | `ε`, `+`, `-`, `or`, `¦¦` |
+-->
 <a class="header" href="3-parser.html#follow-sets" id="follow-sets"><h3><em>FOLLOW</em> Sets</h3></a>
-<table><thead><tr><th> Non-Terminal Symbol </th><th> Follow Set </th></tr></thead><tbody>
-<tr><td align="center"> <em>S</em> </td><td align="center"> <code>$</code> </td></tr>
-<tr><td align="center"> <em>A</em> </td><td align="center"> <code>program</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>B</em> </td><td align="center"> <code>program</code> </td></tr>
-<tr><td align="center"> <em>C</em> </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> <em>D</em> </td><td align="center"> <code>class</code>, <code>program</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> <em>E</em> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> <em>F</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>G</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>H</em> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> <em>I</em> </td><td align="center"> <code>(</code>, <code>[</code>, <code>=</code>, <code>)</code>, <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>J</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> <em>K</em> </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> <em>L</em> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> <em>M</em> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> <em>N</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code>, <code>program</code> </td></tr>
-<tr><td align="center"> <em>O</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>P</em> </td><td align="center"> <code>id</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>float</code>, <code>int</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>Q</em> </td><td align="center"> <code>;</code>, <code>,</code>, <code>)</code> </td></tr>
-<tr><td align="center"> <em>R</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>;</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>T</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>)</code>, <code>;</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>U</em> </td><td align="center">  <code>,</code>, <code>;</code>, <code>)</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>V</em> </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> <em>W</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>X</em> </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> <em>Y</em> </td><td align="center"> <code>=</code>, <code>)</code> </td></tr>
-<tr><td align="center"> <em>Z</em> </td><td align="center"> <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>AA</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AB</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AC</em> </td><td align="center"> <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>AD</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AE</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AF</em> </td><td align="center"> <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>AG</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AH</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>not</code>, <code>!</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> <em>AI</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AJ</em> </td><td align="center"> <code>.</code>, <code>=</code>, <code>)</code>, <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>,  <code>]</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>AK</em> </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> <em>AL</em> </td><td align="center"> <code>(</code>, <code>.</code>, <code>[</code> </td></tr>
-<tr><td align="center"> <em>AM</em> </td><td align="center"> <code>[</code>, <code>.</code>, <code>=</code>, <code>)</code>, <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>AN</em> </td><td align="center"> <code>[</code>, <code>;</code>, <code>,</code>, <code>)</code> </td></tr>
-<tr><td align="center"> <em>AO</em> </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> <em>AP</em> </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> <em>AQ</em> </td><td align="center"> <code>,</code>, <code>)</code> </td></tr>
-<tr><td align="center"> <em>AR</em> </td><td align="center"> <code>,</code>, <code>)</code> </td></tr>
-<tr><td align="center"> <em>AS</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AT</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AU</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AV</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AW</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AX</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AY</em> </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> <em>AZ</em> </td><td align="center"> <code>,</code>, <code>;</code>, <code>)</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>BA</em> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> <em>BB</em> </td><td align="center"> <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>BC</em> </td><td align="center"> <code>and</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>BD</em> </td><td align="center"> <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> <em>BE</em> </td><td align="center"> <code>]</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-</tbody></table>
+<!--
+| Non-Terminal Symbol | Follow Set |
+|:----:|:-----:|
+| _S_ | `$` |
+| _A_ | `program`, `float`, `id`, `int` |
+| _B_ | `program` |
+| _C_ | `;` |
+| _D_ | `class`, `program`, `float`, `id`, `int` |
+| _E_ | `{` |
+| _F_ | `}` |
+| _G_ | `}` |
+| _H_ | `{` |
+| _I_ | `(`, `[`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _J_ | `id` |
+| _K_ | `)` |
+| _L_ | `{` |
+| _M_ | `(` |
+| _N_ | `float`, `id`, `int`, `program` |
+| _O_ | `}` |
+| _P_ | `id`, `for`, `get`, `if`, `put`, `return`, `float`, `int`, `}` |
+| _Q_ | `;`, `,`, `)` |
+| _R_ | `for`, `get`, `if`, `put`, `return`, `id`, `;`, `}` |
+| _T_ | `for`, `get`, `if`, `put`, `return`, `id`, `)`, `;`, `}` |
+| _U_ |  `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _V_ | `;` |
+| _W_ | `}` |
+| _X_ | `;` |
+| _Y_ | `=`, `)` |
+| _Z_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AA_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AB_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AC_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AD_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AE_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AF_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AG_ | `}` |
+| _AH_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
+| _AI_ | `}` |
+| _AJ_ | `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`,  `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AK_ | `)` |
+| _AL_ | `(`, `.`, `[` |
+| _AM_ | `[`, `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _AN_ | `[`, `;`, `,`, `)` |
+| _AO_ | `)` |
+| _AP_ | `)` |
+| _AQ_ | `,`, `)` |
+| _AR_ | `,`, `)` |
+| _AS_ | `}` |
+| _AT_ | `}` |
+| _AU_ | `}` |
+| _AV_ | `}` |
+| _AW_ | `}` |
+| _AX_ | `}` |
+| _AY_ | `}` |
+| _AZ_ | `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BA_ | `(` |
+| _BB_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BC_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BD_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| _BE_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+-->
 <a class="header" href="3-parser.html#prediction-table" id="prediction-table"><h3>Prediction Table</h3></a>
-<table><thead><tr><th align="center"> Prediction Number </th><th align="left"> Production LHS Non-Terminal </th><th align="center"> → </th><th> Production RHS Expression </th><th> Predict Set </th></tr></thead><tbody>
-<tr><td align="center"> 1 </td><td align="left"> <em>S</em> </td><td align="center"> → </td><td align="left"> <em>A</em> <em>B</em> <code>program</code> <em>C</em> <code>;</code> </td><td align="center"> <code>class</code>, <code>float</code>, <code>id</code>, <code>int</code>, <code>program</code> </td></tr>
-<tr><td align="center"> 2 </td><td align="left"> <em>A</em> </td><td align="center"> → </td><td align="left"> <em>D</em> <em>A</em> </td><td align="center"> <code>class</code> </td></tr>
-<tr><td align="center"> 3 </td><td align="left"> <em>A</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>program</code>, <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 4 </td><td align="left"> <em>B</em> </td><td align="center"> → </td><td align="left"> <em>N</em> <em>B</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 5 </td><td align="left"> <em>B</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>program</code> </td></tr>
-<tr><td align="center"> 6 </td><td align="left"> <em>C</em> </td><td align="center"> → </td><td align="left"> <code>{</code> <em>F</em> <code>}</code> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> 7 </td><td align="left"> <em>D</em> </td><td align="center"> → </td><td align="left"> <code>class</code> <code>id</code> <em>E</em> <code>{</code> <em>AG</em> <code>}</code> <code>;</code> </td><td align="center"> <code>class</code> </td></tr>
-<tr><td align="center"> 8 </td><td align="left"> <em>E</em> </td><td align="center"> → </td><td align="left"> <code>:</code> <code>id</code> <em>H</em> </td><td align="center"> <code>:</code> </td></tr>
-<tr><td align="center"> 9 </td><td align="left"> <em>E</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> 10 </td><td align="left"> <em>F</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>AY</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 11 </td><td align="left"> <em>F</em> </td><td align="center"> → </td><td align="left"> <em>AX</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> 12 </td><td align="left"> <em>F</em> </td><td align="center"> → </td><td align="left"> <em>P</em> <em>F</em> </td><td align="center"> <code>float</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 13 </td><td align="left"> <em>G</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>Q</em> <code>;</code> <em>F</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 14 </td><td align="left"> <em>H</em> </td><td align="center"> → </td><td align="left"> <code>,</code> <code>id</code> <em>H</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> 15 </td><td align="left"> <em>H</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> 16 </td><td align="left"> <em>I</em> </td><td align="center"> → </td><td align="left"> <em>AL</em> <em>I</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 17 </td><td align="left"> <em>J</em> </td><td align="center"> → </td><td align="left"> <code>float</code> </td><td align="center"> <code>float</code> </td></tr>
-<tr><td align="center"> 18 </td><td align="left"> <em>J</em> </td><td align="center"> → </td><td align="left"> <code>id</code> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 19 </td><td align="left"> <em>J</em> </td><td align="center"> → </td><td align="left"> <code>int</code> </td><td align="center"> <code>int</code> </td></tr>
-<tr><td align="center"> 20 </td><td align="left"> <em>K</em> </td><td align="center"> → </td><td align="left"> <em>J</em> <code>id</code> <em>Q</em> <em>AO</em> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 21 </td><td align="left"> <em>K</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> 22 </td><td align="left"> <em>L</em> </td><td align="center"> → </td><td align="left"> <em>J</em> <em>M</em> <code>(</code> <em>K</em> <code>)</code> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 23 </td><td align="left"> <em>M</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>BA</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 24 </td><td align="left"> <em>N</em> </td><td align="center"> → </td><td align="left"> <em>L</em> <em>C</em> <code>;</code> </td><td align="center"> <code>float</code>, <code>id</code>, <code>int</code> </td></tr>
-<tr><td align="center"> 25 </td><td align="left"> <em>O</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>T</em> <em>O</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 26 </td><td align="left"> <em>O</em> </td><td align="center"> → </td><td align="left"> <em>R</em> <em>O</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code></td></tr>
-<tr><td align="center"> 27 </td><td align="left"> <em>O</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>}</code></td></tr>
-<tr><td align="center"> 28 </td><td align="left"> <em>P</em> </td><td align="center"> → </td><td align="left"> <code>float</code> <code>id</code> <em>Q</em> <code>;</code> </td><td align="center"> <code>float</code> </td></tr>
-<tr><td align="center"> 29 </td><td align="left"> <em>P</em> </td><td align="center"> → </td><td align="left"> <code>int</code> <code>id</code> <em>Q</em> <code>;</code> </td><td align="center"> <code>int</code> </td></tr>
-<tr><td align="center"> 30 </td><td align="left"> <em>Q</em> </td><td align="center"> → </td><td align="left"> <em>AN</em> <em>Q</em> </td><td align="center"> </td></tr>
-<tr><td align="center"> 31 </td><td align="left"> <em>Q</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>;</code>, <code>,</code>, <code>)</code> </td></tr>
-<tr><td align="center"> 32 </td><td align="left"> <em>R</em> </td><td align="center"> → </td><td align="left"> <code>for</code> <code>(</code> <em>J</em> <code>id</code> <code>=</code> <em>U</em> <code>;</code> <em>X</em> <code>;</code> <code>id</code> <em>T</em> <code>)</code> <em>V</em> <code>;</code> </td><td align="center"> <code>for</code> </td></tr>
-<tr><td align="center"> 33 </td><td align="left"> <em>R</em> </td><td align="center"> → </td><td align="left"> <code>get</code> <code>(</code> <code>id</code> <em>Y</em> <code>)</code> <code>;</code> </td><td align="center"> <code>get</code> </td></tr>
-<tr><td align="center"> 34 </td><td align="left"> <em>R</em> </td><td align="center"> → </td><td align="left"> <code>if</code> <code>(</code> <em>U</em> <code>)</code> <code>then</code> <em>V</em> <code>;</code> </td><td align="center"> <code>if</code> </td></tr>
-<tr><td align="center"> 35 </td><td align="left"> <em>R</em> </td><td align="center"> → </td><td align="left"> <code>put</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> </td><td align="center"> <code>put</code> </td></tr>
-<tr><td align="center"> 36 </td><td align="left"> <em>R</em> </td><td align="center"> → </td><td align="left"> <code>return</code> <code>(</code> <em>U</em> <code>)</code> <code>;</code> </td><td align="center"> <code>return</code> </td></tr>
-<tr><td align="center"> 37 </td><td align="left"> <em>T</em> </td><td align="center"> → </td><td align="left"> <em>Y</em> <code>=</code> <em>U</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 38 </td><td align="left"> <em>U</em> </td><td align="center"> → </td><td align="left"> <em>Z</em> <em>AZ</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>!</code>, <code>not</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 39 </td><td align="left"> <em>V</em> </td><td align="center"> → </td><td align="left"> <code>{</code> <em>O</em> <code>}</code> </td><td align="center"> <code>{</code> </td></tr>
-<tr><td align="center"> 40 </td><td align="left"> <em>V</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>T</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 41 </td><td align="left"> <em>V</em> </td><td align="center"> → </td><td align="left"> <em>R</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> 42 </td><td align="left"> <em>V</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> 43 </td><td align="left"> <em>W</em> </td><td align="center"> → </td><td align="left"> <code>float</code> <code>id</code> <em>AI</em> </td><td align="center"> <code>float</code> </td></tr>
-<tr><td align="center"> 44 </td><td align="left"> <em>W</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <code>id</code> <em>AI</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 45 </td><td align="left"> <em>W</em> </td><td align="center"> → </td><td align="left"> <code>int</code> <code>id</code> <em>AI</em> </td><td align="center"> <code>int</code> </td></tr>
-<tr><td align="center"> 46 </td><td align="left"> <em>W</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> 47 </td><td align="left"> <em>X</em> </td><td align="center"> → </td><td align="left"> <em>Z</em> <em>AA</em> <em>Z</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>!</code>, <code>not</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 48 </td><td align="left"> <em>Y</em> </td><td align="center"> → </td><td align="left"> <em>I</em> <em>AJ</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 49 </td><td align="left"> <em>Z</em> </td><td align="center"> → </td><td align="left"> <em>AC</em> <em>BE</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>!</code>, <code>not</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 50 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>&lt;</code> </td><td align="center"> <code>&lt;</code> </td></tr>
-<tr><td align="center"> 51 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>&lt;=</code> </td><td align="center"> <code>&lt;=</code> </td></tr>
-<tr><td align="center"> 52 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>&lt;&gt;</code> </td><td align="center"> <code>&lt;&gt;</code> </td></tr>
-<tr><td align="center"> 53 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>==</code> </td><td align="center"> <code>==</code> </td></tr>
-<tr><td align="center"> 54 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>&gt;</code> </td><td align="center"> <code>&gt;</code> </td></tr>
-<tr><td align="center"> 55 </td><td align="left"> <em>AA</em> </td><td align="center"> → </td><td align="left"> <code>&gt;=</code> </td><td align="center"> <code>&gt;=</code> </td></tr>
-<tr><td align="center"> 56 </td><td align="left"> <em>AB</em> </td><td align="center"> → </td><td align="left"> <code>+</code> </td><td align="center"> <code>+</code> </td></tr>
-<tr><td align="center"> 57 </td><td align="left"> <em>AB</em> </td><td align="center"> → </td><td align="left"> <code>-</code> </td><td align="center"> <code>-</code> </td></tr>
-<tr><td align="center"> 58 </td><td align="left"> <em>AB</em> </td><td align="center"> → </td><td align="left"> <code>or</code> </td><td align="center"> <code>or</code> </td></tr>
-<tr><td align="center"> 59 </td><td align="left"> <em>AB</em> </td><td align="center"> → </td><td align="left"> <code>¦¦</code> </td><td align="center"> <code>¦¦</code> </td></tr>
-<tr><td align="center"> 60 </td><td align="left"> <em>AC</em> </td><td align="center"> → </td><td align="left"> <em>AF</em> <em>BD</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>!</code>, <code>not</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 61 </td><td align="left"> <em>AD</em> </td><td align="center"> → </td><td align="left"> <code>+</code> </td><td align="center"> <code>+</code> </td></tr>
-<tr><td align="center"> 62 </td><td align="left"> <em>AD</em> </td><td align="center"> → </td><td align="left"> <code>-</code> </td><td align="center"> <code>-</code> </td></tr>
-<tr><td align="center"> 63 </td><td align="left"> <em>AE</em> </td><td align="center"> → </td><td align="left"> <code>&amp;&amp;</code> </td><td align="center"> <code>&amp;&amp;</code> </td></tr>
-<tr><td align="center"> 64 </td><td align="left"> <em>AE</em> </td><td align="center"> → </td><td align="left"> <code>*</code> </td><td align="center"> <code>*</code> </td></tr>
-<tr><td align="center"> 65 </td><td align="left"> <em>AE</em> </td><td align="center"> → </td><td align="left"> <code>/</code> </td><td align="center"> <code>/</code> </td></tr>
-<tr><td align="center"> 66 </td><td align="left"> <em>AE</em> </td><td align="center"> → </td><td align="left"> <code>and</code> </td><td align="center"> <code>and</code> </td></tr>
-<tr><td align="center"> 67 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <code>(</code> <em>Z</em> <code>)</code> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> 68 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <code>floatNum</code> </td><td align="center"> <code>floatNum</code> </td></tr>
-<tr><td align="center"> 69 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>BB</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 70 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <code>intNum</code> </td><td align="center"> <code>intNum</code> </td></tr>
-<tr><td align="center"> 71 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <em>AH</em> <em>AF</em> </td><td align="center"> <code>!</code>, <code>not</code> </td></tr>
-<tr><td align="center"> 72 </td><td align="left"> <em>AF</em> </td><td align="center"> → </td><td align="left"> <em>AD</em> <em>AF</em> </td><td align="center"> <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 73 </td><td align="left"> <em>AG</em> </td><td align="center"> → </td><td align="left"> <code>float</code> <code>id</code> <em>AT</em> </td><td align="center"> <code>float</code> </td></tr>
-<tr><td align="center"> 74 </td><td align="left"> <em>AG</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <code>id</code> <em>AT</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 75 </td><td align="left"> <em>AG</em> </td><td align="center"> → </td><td align="left"> <code>int</code> <code>id</code> <em>AT</em> </td><td align="center"> <code>int</code> </td></tr>
-<tr><td align="center"> 76 </td><td align="left"> <em>AG</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> 77 </td><td align="left"> <em>AH</em> </td><td align="center"> → </td><td align="left"> <code>!</code> </td><td align="center"> <code>!</code> </td></tr>
-<tr><td align="center"> 78 </td><td align="left"> <em>AH</em> </td><td align="center"> → </td><td align="left"> <code>not</code> </td><td align="center"> <code>not</code> </td></tr>
-<tr><td align="center"> 79 </td><td align="left"> <em>AI</em> </td><td align="center"> → </td><td align="left"> <code>(</code> <em>K</em> <code>)</code> <code>;</code> <em>W</em> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> 80 </td><td align="left"> <em>AJ</em> </td><td align="center"> → </td><td align="left"> <em>AM</em> <em>AJ</em> </td><td align="center"> </td></tr>
-<tr><td align="center"> 81 </td><td align="left"> <em>AJ</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>.</code>, <code>=</code>, <code>)</code>, <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>and</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 82 </td><td align="left"> <em>AK</em> </td><td align="center"> → </td><td align="left"> <em>U</em> <em>AP</em> </td><td align="center"> <code>(</code>, <code>floatNum</code>, <code>id</code>, <code>intNum</code>, <code>!</code>, <code>not</code>, <code>+</code>, <code>-</code> </td></tr>
-<tr><td align="center"> 83 </td><td align="left"> <em>AK</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>)</code></td></tr>
-<tr><td align="center"> 84 </td><td align="left"> <em>AL</em> </td><td align="center"> → </td><td align="left"> <code>(</code> <em>AK</em> <code>)</code> <code>.</code> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> 85 </td><td align="left"> <em>AL</em> </td><td align="center"> → </td><td align="left"> <em>AJ</em> <code>.</code> </td><td align="center"> <code>.</code> </td></tr>
-<tr><td align="center"> 86 </td><td align="left"> <em>AM</em> </td><td align="center"> → </td><td align="left"> <code>[</code> <em>Z</em> <code>]</code> </td><td align="center"> </td></tr>
-<tr><td align="center"> 87 </td><td align="left"> <em>AN</em> </td><td align="center"> → </td><td align="left"> <code>[</code> <code>intNum</code> <code>]</code> </td><td align="center"> </td></tr>
-<tr><td align="center"> 88 </td><td align="left"> <em>AO</em> </td><td align="center"> → </td><td align="left"> <em>AQ</em> <em>AO</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> 89 </td><td align="left"> <em>AO</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> 90 </td><td align="left"> <em>AP</em> </td><td align="center"> → </td><td align="left"> <em>AR</em> <em>AP</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> 91 </td><td align="left"> <em>AP</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>)</code> </td></tr>
-<tr><td align="center"> 92 </td><td align="left"> <em>AQ</em> </td><td align="center"> → </td><td align="left"> <code>,</code> <em>J</em> <code>id</code> <em>Q</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> 93 </td><td align="left"> <em>AR</em> </td><td align="center"> → </td><td align="left"> <code>,</code> <em>U</em> </td><td align="center"> <code>,</code> </td></tr>
-<tr><td align="center"> 94 </td><td align="left"> <em>AS</em> </td><td align="center"> → </td><td align="left"> <em>Q</em> <code>;</code> <em>AG</em> </td><td align="center"> <code>;</code> </td></tr>
-<tr><td align="center"> 95 </td><td align="left"> <em>AT</em> </td><td align="center"> → </td><td align="left"> <em>AI</em> </td><td align="center"> <code>(</code> </td><td>S</td></tr>
-<tr><td align="center"> 96 </td><td align="left"> <em>AT</em> </td><td align="center"> → </td><td align="left"> <em>AS</em> </td><td align="center"> <code>;</code>, <code>]</code> </td></tr>
-<tr><td align="center"> 97 </td><td align="left"> <em>AU</em> </td><td align="center"> → </td><td align="left"> <code>id</code> <em>AW</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 98 </td><td align="left"> <em>AV</em> </td><td align="center"> → </td><td align="left"> <em>AX</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 99 </td><td align="left"> <em>AV</em> </td><td align="center"> → </td><td align="left"> <em>AU</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 100 </td><td align="left"> <em>AW</em> </td><td align="center"> → </td><td align="left"> <em>T</em> <em>AV</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 101 </td><td align="left"> <em>AX</em> </td><td align="center"> → </td><td align="left"> <em>R</em> <em>AV</em> </td><td align="center"> <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code> </td></tr>
-<tr><td align="center"> 102 </td><td align="left"> <em>AX</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>}</code> </td></tr>
-<tr><td align="center"> 103 </td><td align="left"> <em>AY</em> </td><td align="center"> → </td><td align="left"> <em>AW</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 104 </td><td align="left"> <em>AY</em> </td><td align="center"> → </td><td align="left"> <em>G</em> </td><td align="center"> <code>id</code> </td></tr>
-<tr><td align="center"> 105 </td><td align="left"> <em>AZ</em> </td><td align="center"> → </td><td align="left"> <em>AA</em> <em>Z</em> </td><td align="center"> <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code> </td></tr>
-<tr><td align="center"> 106 </td><td align="left"> <em>AZ</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>,</code>, <code>;</code>, <code>)</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 107 </td><td align="left"> <em>BA</em> </td><td align="center"> → </td><td align="left"> <code>::</code> <code>id</code> </td><td align="center"> <code>::</code> </td></tr>
-<tr><td align="center"> 108 </td><td align="left"> <em>BA</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> 109 </td><td align="left"> <em>BB</em> </td><td align="center"> → </td><td align="left"> <em>I</em> <em>BC</em> </td><td align="center"> <code>(</code>, <code>.</code> </td></tr>
-<tr><td align="center"> 110 </td><td align="left"> <em>BC</em> </td><td align="center"> → </td><td align="left"> <code>(</code> <em>AK</em> <code>)</code> </td><td align="center"> <code>(</code> </td></tr>
-<tr><td align="center"> 111 </td><td align="left"> <em>BC</em> </td><td align="center"> → </td><td align="left"> <em>AJ</em> </td><td align="center"> </td></tr>
-<tr><td align="center"> 112 </td><td align="left"> <em>BD</em> </td><td align="center"> → </td><td align="left"> <em>AE</em> <em>AF</em> <em>BD</em> </td><td align="center"> <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>and</code> </td></tr>
-<tr><td align="center"> 113 </td><td align="left"> <em>BD</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 114 </td><td align="left"> <em>BE</em> </td><td align="center"> → </td><td align="left"> <em>AB</em> <em>AC</em> <em>BE</em> </td><td align="center"> <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code> </td></tr>
-<tr><td align="center"> 115 </td><td align="left"> <em>BE</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>id</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 116 </td><td align="left"> <em>BB</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>&amp;&amp;</code>, <code>*</code>, <code>/</code>, <code>and</code>, <code>+</code>, <code>-</code>, <code>or</code>, <code>¦¦</code>, <code>)</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>==</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>;</code>, <code>,</code>, <code>id</code>, <code>for</code>, <code>get</code>, <code>if</code>, <code>put</code>, <code>return</code>, <code>}</code> </td></tr>
-<tr><td align="center"> 117 </td><td align="left"> <em>Y</em> </td><td align="center"> → </td><td align="left"> ε </td><td align="center"> <code>=</code>, <code>)</code> </td></tr>
-<tr><td align="center"> 118 </td><td align="left"> POP error </td><td align="center"> POP error </td><td align="left"> POP error </td><td align="center"> POP error </td></tr>
-<tr><td align="center"> 119 </td><td align="left"> SCAN error </td><td align="center"> SCAN error </td><td align="left"> SCAN error </td><td align="center"> SCAN error </td></tr>
-</tbody></table>
+<!--
+| Prediction Number | Production LHS Non-Terminal | &rarr; | Production RHS Expression | Predict Set |
+|:--------:|:-----------|:-----------:|:-----------|:-----------:|
+| 1 | _S_ | &rarr; | _A_ _B_ `program` _C_ `;` | `class`, `float`, `id`, `int`, `program` |
+| 2 | _A_ | &rarr; | _D_ _A_ | `class` |
+| 3 | _A_ | &rarr; | &epsilon; | `program`, `float`, `id`, `int` |
+| 4 | _B_ | &rarr; | _N_ _B_ | `float`, `id`, `int` |
+| 5 | _B_ | &rarr; | &epsilon; | `program` |
+| 6 | _C_ | &rarr; | `{` _F_ `}` | `{` |
+| 7 | _D_ | &rarr; | `class` `id` _E_ `{` _AG_ `}` `;` | `class` |
+| 8 | _E_ | &rarr; | `:` `id` _H_ | `:` |
+| 9 | _E_ | &rarr; | &epsilon; | `{` |
+| 10 | _F_ | &rarr; | `id` _AY_ | `id` |
+| 11 | _F_ | &rarr; | _AX_ | `for`, `get`, `if`, `put`, `return` |
+| 12 | _F_ | &rarr; | _P_ _F_ | `float`, `int` |
+| 13 | _G_ | &rarr; | `id` _Q_ `;` _F_ | `id` |
+| 14 | _H_ | &rarr; | `,` `id` _H_ | `,` |
+| 15 | _H_ | &rarr; | &epsilon; | `{` |
+| 16 | _I_ | &rarr; | _AL_ _I_ | `(`, `.` |
+| 17 | _J_ | &rarr; | `float` | `float` |
+| 18 | _J_ | &rarr; | `id` | `id` |
+| 19 | _J_ | &rarr; | `int` | `int` |
+| 20 | _K_ | &rarr; | _J_ `id` _Q_ _AO_ | `float`, `id`, `int` |
+| 21 | _K_ | &rarr; | ε | `)` |
+| 22 | _L_ | &rarr; | _J_ _M_ `(` _K_ `)` | `float`, `id`, `int` |
+| 23 | _M_ | &rarr; | `id` _BA_ | `id` |
+| 24 | _N_ | &rarr; | _L_ _C_ `;` | `float`, `id`, `int` |
+| 25 | _O_ | &rarr; | `id` _T_ _O_ | `id` |
+| 26 | _O_ | &rarr; | _R_ _O_ | `for`, `get`, `if`, `put`, `return`
+| 27 | _O_ | &rarr; | ε | `}`
+| 28 | _P_ | &rarr; | `float` `id` _Q_ `;` | `float` |
+| 29 | _P_ | &rarr; | `int` `id` _Q_ `;` | `int` |
+| 30 | _Q_ | &rarr; | _AN_ _Q_ | |
+| 31 | _Q_ | &rarr; | &epsilon; | `;`, `,`, `)` |
+| 32 | _R_ | &rarr; | `for` `(` _J_ `id` `=` _U_ `;` _X_ `;` `id` _T_ `)` _V_ `;` | `for` |
+| 33 | _R_ | &rarr; | `get` `(` `id` _Y_ `)` `;` | `get` |
+| 34 | _R_ | &rarr; | `if` `(` _U_ `)` `then` _V_ `;` | `if` |
+| 35 | _R_ | &rarr; | `put` `(` _U_ `)` `;` | `put` |
+| 36 | _R_ | &rarr; | `return` `(` _U_ `)` `;` | `return` |
+| 37 | _T_ | &rarr; | _Y_ `=` _U_ | `(`, `.` |
+| 38 | _U_ | &rarr; | _Z_ _AZ_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
+| 39 | _V_ | &rarr; | `{` _O_ `}` | `{` |
+| 40 | _V_ | &rarr; | `id` _T_ | `id` |
+| 41 | _V_ | &rarr; | _R_ | `for`, `get`, `if`, `put`, `return` |
+| 42 | _V_ | &rarr; | &epsilon; | `;` |
+| 43 | _W_ | &rarr; | `float` `id` _AI_ | `float` |
+| 44 | _W_ | &rarr; | `id` `id` _AI_ | `id` |
+| 45 | _W_ | &rarr; | `int` `id` _AI_ | `int` |
+| 46 | _W_ | &rarr; | &epsilon; | `}` |
+| 47 | _X_ | &rarr; | _Z_ _AA_ _Z_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
+| 48 | _Y_ | &rarr; | _I_ _AJ_ | `(`, `.` |
+| 49 | _Z_ | &rarr; | _AC_ _BE_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
+| 50 | _AA_ | &rarr; | `<` | `<` |
+| 51 | _AA_ | &rarr; | `<=` | `<=` |
+| 52 | _AA_ | &rarr; | `<>` | `<>` |
+| 53 | _AA_ | &rarr; | `==` | `==` |
+| 54 | _AA_ | &rarr; | `>` | `>` |
+| 55 | _AA_ | &rarr; | `>=` | `>=` |
+| 56 | _AB_ | &rarr; | `+` | `+` |
+| 57 | _AB_ | &rarr; | `-` | `-` |
+| 58 | _AB_ | &rarr; | `or` | `or` |
+| 59 | _AB_ | &rarr; | `¦¦` | `¦¦` |
+| 60 | _AC_ | &rarr; | _AF_ _BD_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
+| 61 | _AD_ | &rarr; | `+` | `+` |
+| 62 | _AD_ | &rarr; | `-` | `-` |
+| 63 | _AE_ | &rarr; | `&&` | `&&` |
+| 64 | _AE_ | &rarr; | `*` | `*` |
+| 65 | _AE_ | &rarr; | `/` | `/` |
+| 66 | _AE_ | &rarr; | `and` | `and` |
+| 67 | _AF_ | &rarr; | `(` _Z_ `)` | `(` |
+| 68 | _AF_ | &rarr; | `floatNum` | `floatNum` |
+| 69 | _AF_ | &rarr; | `id` _BB_ | `id` |
+| 70 | _AF_ | &rarr; | `intNum` | `intNum` |
+| 71 | _AF_ | &rarr; | _AH_ _AF_ | `!`, `not` |
+| 72 | _AF_ | &rarr; | _AD_ _AF_ | `+`, `-` |
+| 73 | _AG_ | &rarr; | `float` `id` _AT_ | `float` |
+| 74 | _AG_ | &rarr; | `id` `id` _AT_ | `id` |
+| 75 | _AG_ | &rarr; | `int` `id` _AT_ | `int` |
+| 76 | _AG_ | &rarr; | &epsilon; | `}` |
+| 77 | _AH_ | &rarr; | `!` | `!` |
+| 78 | _AH_ | &rarr; | `not` | `not` |
+| 79 | _AI_ | &rarr; | `(` _K_ `)` `;` _W_ | `(` |
+| 80 | _AJ_ | &rarr; | _AM_ _AJ_ | |
+| 81 | _AJ_ | &rarr; | &epsilon; | `.`, `=`, `)`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 82 | _AK_ | &rarr; | _U_ _AP_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
+| 83 | _AK_ | &rarr; | &epsilon; | `)`
+| 84 | _AL_ | &rarr; | `(` _AK_ `)` `.` | `(` |
+| 85 | _AL_ | &rarr; | _AJ_ `.` | `.` |
+| 86 | _AM_ | &rarr; | `[` _Z_ `]` | |
+| 87 | _AN_ | &rarr; | `[` `intNum` `]` | |
+| 88 | _AO_ | &rarr; | _AQ_ _AO_ | `,` |
+| 89 | _AO_ | &rarr; | &epsilon; | `)` |
+| 90 | _AP_ | &rarr; | _AR_ _AP_ | `,` |
+| 91 | _AP_ | &rarr; | &epsilon; | `)` |
+| 92 | _AQ_ | &rarr; | `,` _J_ `id` _Q_ | `,` |
+| 93 | _AR_ | &rarr; | `,` _U_ | `,` |
+| 94 | _AS_ | &rarr; | _Q_ `;` _AG_ | `;` |
+| 95 | _AT_ | &rarr; | _AI_ | `(` |S
+| 96 | _AT_ | &rarr; | _AS_ | `;`, `]` |
+| 97 | _AU_ | &rarr; | `id` _AW_ | `id` |
+| 98 | _AV_ | &rarr; | _AX_ | `for`, `get`, `if`, `put`, `return`, `}` |
+| 99 | _AV_ | &rarr; | _AU_ | `id` |
+| 100 | _AW_ | &rarr; | _T_ _AV_ | `(`, `.` |
+| 101 | _AX_ | &rarr; | _R_ _AV_ | `for`, `get`, `if`, `put`, `return` |
+| 102 | _AX_ | &rarr; | &epsilon; | `}` |
+| 103 | _AY_ | &rarr; | _AW_ | `(`, `.` |
+| 104 | _AY_ | &rarr; | _G_ | `id` |
+| 105 | _AZ_ | &rarr; | _AA_ _Z_ | `<`, `<=`, `<>`, `==`, `>`, `>=` |
+| 106 | _AZ_ | &rarr; | &epsilon; | `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 107 | _BA_ | &rarr; | `::` `id` | `::` |
+| 108 | _BA_ | &rarr; | &epsilon; | `(` |
+| 109 | _BB_ | &rarr; | _I_ _BC_ | `(`, `.` |
+| 110 | _BC_ | &rarr; | `(` _AK_ `)` | `(` |
+| 111 | _BC_ | &rarr; | _AJ_ | |
+| 112 | _BD_ | &rarr; | _AE_ _AF_ _BD_ | `&&`, `*`, `/`, `and` |
+| 113 | _BD_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 114 | _BE_ | &rarr; | _AB_ _AC_ _BE_ | `+`, `-`, `or`, `¦¦` |
+| 115 | _BE_ | &rarr; | &epsilon; | `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
+| 116 | _BB_ | &rarr; | &epsilon; | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `id`, `for`, `get`, `if`, `put`, `return`, `}` |
+| 117 | _Y_ | &rarr; | &epsilon; | `=`, `)` |
+| 118 | POP error | POP error | POP error | POP error |
+| 119 | SCAN error | SCAN error | SCAN error | SCAN error |
+-->
 <a class="header" href="3-parser.html#ll1-parsing-table" id="ll1-parsing-table"><h3>LL(1) Parsing Table</h3></a>
 <p>The columns of the parsing table below represent the list of possible next input tokens.</p>
 <p>The rows represent the current leftmost nonterminal in the parse tree.</p>
 <p>Every table cell maps the indicates how the current non-terminal should be expanded based on the next input token. The numbers correspond to the rows of entries in the above prediction table, where the production right-hand side expression would be used to expand the current non-terminal.</p>
-<table><thead><tr><th align="center"> </th><th align="center"><code>program</code> </th><th align="center"> <code>;</code> </th><th align="center"> <code>{</code> </th><th align="center"> <code>}</code> </th><th align="center"> <code>class</code> </th><th align="center"> <code>id</code> </th><th align="center"> <code>:</code> </th><th align="center"> <code>,</code> </th><th align="center"> <code>float</code> </th><th align="center"> <code>int</code> </th><th align="center"> <code>(</code> </th><th align="center"> <code>)</code> </th><th align="center"> <code>for</code> </th><th align="center"> <code>=</code> </th><th align="center"> <code>get</code> </th><th align="center"> <code>if</code> </th><th align="center"> <code>then</code> </th><th align="center"> <code>put</code> </th><th align="center"> <code>return</code> </th><th align="center"> <code>&lt;</code> </th><th align="center"> <code>&lt;=</code> </th><th align="center"> <code>&lt;&gt;</code> </th><th align="center"> <code>==</code> </th><th align="center"> <code>&gt;</code> </th><th align="center"> <code>&gt;=</code> </th><th align="center"> <code>+</code> </th><th align="center"> <code>-</code> </th><th align="center"> <code>or</code> </th><th align="center"> <code>¦¦</code> </th><th align="center"> <code>&amp;&amp;</code> </th><th align="center"> <code>*</code> </th><th align="center"> <code>/</code> </th><th align="center"> <code>and</code> </th><th align="center"> <code>floatNum</code> </th><th align="center"> <code>intNum</code> </th><th align="center"> <code>!</code> </th><th align="center"> <code>not</code> </th><th> <code>.</code> </th><th> <code>[</code> </th><th> <code>]</code> </th><th> <code>::</code> </th><th> <code>$</code> </th></tr></thead><tbody>
+<!--
+<table><thead><tr><th align="center"> </th><th align="center"><code>program</code> </th><th align="center"> <code>;</code> </th><th align="center"> <code>{</code> </th><th align="center"> <code>}</code> </th><th align="center"> <code>class</code> </th><th align="center"> <code>id</code> </th><th align="center"> <code>:</code> </th><th align="center"> <code>,</code> </th><th align="center"> <code>float</code> </th><th align="center"> <code>int</code> </th><th align="center"> <code>(</code> </th><th align="center"> <code>)</code> </th><th align="center"> <code>for</code> </th><th align="center"> <code>=</code> </th><th align="center"> <code>get</code> </th><th align="center"> <code>if</code> </th><th align="center"> <code>then</code> </th><th align="center"> <code>put</code> </th><th align="center"> <code>return</code> </th><th align="center"> <code>&lt;</code> </th><th align="center"> <code>&lt;=</code> </th><th align="center"> <code>&lt;&gt;</code> </th><th align="center"> <code>==</code> </th><th align="center"> <code>&gt;</code> </th><th align="center"> <code>&gt;=</code> </th><th align="center"> <code>+</code> </th><th align="center"> <code>-</code> </th><th align="center"> <code>or</code> </th><th align="center"> <code>¦¦</code> </th><th align="center"> <code>&amp;&amp;</code> </th><th align="center"> <code>*</code> </th><th align="center"> <code>/</code> </th><th align="center"> <code>and</code> </th><th align="center"> <code>floatNum</code> </th><th align="center"> <code>intNum</code> </th><th align="center"> <code>!</code> </th><th align="center"> <code>not</code> </th><th align="center"> <code>.</code> </th><th align="center"> <code>[</code> </th><th> <code>]</code> </th><th> <code>::</code> </th><th> <code>$</code> </th></tr></thead><tbody>
 <tr><td align="center"> <code>S</code> </td><td align="center"> 1 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 1 </td><td align="center"> 1 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 1 </td><td align="center"> 1 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 118 </td></tr>
 <tr><td align="center"> <code>A</code> </td><td align="center"> 3 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 2 </td><td align="center"> 3 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 3 </td><td align="center"> 3 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td></tr>
 <tr><td align="center"> <code>B</code> </td><td align="center"> 5 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 4 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 4 </td><td align="center"> 4 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td></tr>
@@ -778,6 +741,7 @@ BE -&gt; AB AC BE | EPSILON
 <tr><td align="center"> <code>BD</code> </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 113 </td><td align="center"> 112 </td><td align="center"> 112 </td><td align="center"> 112 </td><td align="center"> 112 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 113 </td><td align="center"> 119 </td><td align="center"> 119 </td></tr>
 <tr><td align="center"> <code>BE</code> </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 115 </td><td align="center"> 114 </td><td align="center"> 114 </td><td align="center"> 114 </td><td align="center"> 114 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 119 </td><td align="center"> 115 </td><td align="center"> 119 </td><td align="center"> 119 </td></tr>
 </tbody></table>
+<p>--&gt;</p>
 <a class="header" href="3-parser.html#list-of-terminal-symbols-tokens" id="list-of-terminal-symbols-tokens"><h2>List of Terminal Symbols (Tokens)</h2></a>
 <ul>
 <li>Identifier (<code>id</code>)</li>
