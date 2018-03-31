@@ -62,13 +62,11 @@ program {
   Utility utility;
   Utility arrayUtility[2][3][6][7];
 
-  /*
-  for( int t = 0; t <== 100; t= t + 1) {
+  for( int t = 0; t <= 100; t= t + 1) {
 
     get(sample[t]);
     sample[t] = (sample[t] * randomize());
   };
-  */
 
   maxValue = utility.findMax(sample);
   minValue = utility.findMin(sample);
