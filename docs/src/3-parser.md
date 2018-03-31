@@ -15,7 +15,7 @@ The specification for the syntactic analysis of the language is shown with the p
 | _funcDef_ | &rarr; | _funcHead_ _funcBody_ `;` |
 | _funcBody_ | &rarr; | `{` {_varDecl_} {_statement_} `}` |
 | _varDecl_ | &rarr; | _type_ `id` {_arraySize_} `;` |
-| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
+| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `else` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
 | _assignStat_ | &rarr; | _variable_ _assignOp_ _expr_ |
 | _statBlock_ | &rarr; | `{` {_statement_} `}` \| _statement_ \| &epsilon; |
 | _expr_ | &rarr; | _arithExpr_ \| _relExpr_ |
@@ -66,7 +66,7 @@ The syntactic language specification in EBNF format was converted to a BNF gramm
 | _varDeclRecursion_ | &rarr; | _varDeclRecursion_ _varDecl_ \| &epsilon; |
 | _varDecl_ | &rarr; | _type_ `id` _arraySizeRecursion_ `;` |
 | _statementRecursion_ | &rarr; | _statementRecursion_ _statement_ \| &epsilon; |
-| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
+| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `else` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
 | _assignStat_ | &rarr; | _variable_ _assignOp_ _expr_ |
 | _statBlock_ | &rarr; | `{` _statementRecursion_ `}` \| _statement_ \| &epsilon; |
 | _expr_ | &rarr; | _arithExpr_ \| _relExpr_ |
@@ -114,7 +114,7 @@ funcBody -> '{' varDeclRecursion statementRecursion '}'
 varDeclRecursion -> varDeclRecursion varDecl | EPSILON
 varDecl -> type 'id' arraySizeRecursion ';'
 statementRecursion -> statementRecursion statement | EPSILON
-statement -> assignStat | 'if' '(' expr ')' 'then' statBlock ';' | 'for' '(' type 'id' assignOp expr ';' relExpr ';' assignStat  ')' statBlock ';' | 'get' '(' variable ')' ';' | 'put' '(' expr ')' ';' | 'return' '(' expr ')' ';'
+statement -> assignStat | 'if' '(' expr ')' 'then' statBlock 'else' statBlock ';' | 'for' '(' type 'id' assignOp expr ';' relExpr ';' assignStat  ')' statBlock ';' | 'get' '(' variable ')' ';' | 'put' '(' expr ')' ';' | 'return' '(' expr ')' ';'
 assignStat -> variable assignOp expr
 statBlock -> '{' statementRecursion '}' | statement | EPSILON
 expr -> arithExpr | relExpr
@@ -241,7 +241,7 @@ OptionalNamespacing                                 -> id OptionalNamespacingTai
 OptionalNamespacingTail                             -> :: id
 OptionalNamespacingTail                             -> EPSILON
 RelationalExpression                                -> ArithmeticExpression RelationalOperator ArithmeticExpression
-RelationalOperator                                  -> !=
+RelationalOperator                                  -> <>
 RelationalOperator                                  -> <
 RelationalOperator                                  -> <=
 RelationalOperator                                  -> ==
@@ -324,7 +324,7 @@ The fact that there was at most one production in each table cell further reinfo
 | `int` | `int` |
 | `:` | `:` |
 | `::` | `::` |
-| `!=` | `!=` |
+| `<>` | `<>` |
 | `<` | `<` |
 | `<=` | `<=` |
 | `==` | `==` |
@@ -340,7 +340,7 @@ The fact that there was at most one production in each table cell further reinfo
 | _Program_ | `program`, &epsilon;, `class`, `id`, `float`, `int` |
 | _AdditiveOperator_ | `+`, `-`, `or`, `¦¦` |
 | _ArithmeticExpressionTail_ | &epsilon;, `+`, `-`, `or`, `¦¦` |
-| _ArithmeticOrRelationalExpression_ | &epsilon;, `!=`, `<`, `<=`, `==`, `>`, `>=` |
+| _ArithmeticOrRelationalExpression_ | &epsilon;, `<>`, `<`, `<=`, `==`, `>`, `>=` |
 | _ArraySize_ | `[` |
 | _ArraySizeRecursion_ | &epsilon;, `[` |
 | _ClassDeclaration_ | `class` |
@@ -369,7 +369,7 @@ The fact that there was at most one production in each table cell further reinfo
 | _OptionalInheritanceList_ | `:`, &epsilon; |
 | _OptionalNamespacing_ | `id` |
 | _OptionalNamespacingTail_ | `::`, &epsilon; |
-| _RelationalOperator_ | `!=`, `<`, `<=`, `==`, `>`, `>=` |
+| _RelationalOperator_ | `<>`, `<`, `<=`, `==`, `>`, `>=` |
 | _StatementBlock_ | &epsilon;, `{`, `id`, `for`, `get`, `if`, `put`, `return` |
 | _StatementRecursion_ | &epsilon;, `id`, `for`, `get`, `if`, `put`, `return` |
 | _StatementWithoutAssignment_ | `for`, `get`, `if`, `put`, `return` |
@@ -398,8 +398,8 @@ The fact that there was at most one production in each table cell further reinfo
 |:----:|:-----:|
 | _Program_ | `$` |
 | _AdditiveOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
-| _ArithmeticExpression_ | `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| _ArithmeticExpressionTail_ | `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _ArithmeticExpression_ | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _ArithmeticExpressionTail_ | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | _ArithmeticOrRelationalExpression_ | `;`, `)`, `,` |
 | _ArraySize_ | `[`, `;`, `,`, `)` |
 | _ArraySizeRecursion_ `;`, `,`, `)` |
@@ -407,15 +407,15 @@ The fact that there was at most one production in each table cell further reinfo
 | _ClassDeclaration_ | `class`, `program`, `id`, `float`, `int` |
 | _ClassDeclarationRecursion_ | `program`, `id`, `float`, `int` |
 | _Expression_ | `;`, `)`, `,` |
-| _Factor_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _Factor_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | _FunctionArguments_ | `)` |
 | _FunctionArgumentsTail_ | `,`, `)` |
 | _FunctionArgumentsTailRecursion_ | `)` |
 | _FunctionBody_ | `;` |
-| _FunctionCallOrVariable_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| _FunctionCallOrVariableTail_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| _FunctionCallOrVariableTailRecursion_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| _FunctionCallParensOrIndexing_ | `.`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallOrVariable_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallOrVariableTail_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallOrVariableTailRecursion_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallParensOrIndexing_ | `.`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | _FunctionDeclarationRecursionStart_ | `}` |
 | _FunctionDeclarationRecursionTail_ | `}` |
 | _FunctionDefinition_ | `id`, `float`, `int`, `program` |
@@ -425,8 +425,8 @@ The fact that there was at most one production in each table cell further reinfo
 | _FunctionParametersTail_ | `,`, `)` |
 | _FunctionParametersTailRecursion_ | `)` |
 | _IdListRecursion_ | `{` |
-| _Indexing_ | `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
-| _IndexingRecursion_ | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| _Indexing_ | `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| _IndexingRecursion_ | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
 | _MultiplicativeOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
 | _NegationOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
 | _NumberSign_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
@@ -440,8 +440,8 @@ The fact that there was at most one production in each table cell further reinfo
 | _StatementBlock_ | `;`, `else` |
 | _StatementRecursion_ | `}` |
 | _StatementWithoutAssignment_ | `id`, `for`, `get`, `if`, `put`, `return`, `}`, `;`, `else` |
-| _Term_ | `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| _TermRecursion_ | `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _Term_ | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _TermRecursion_ | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | _Type_ | `id` |
 | _Variable_ | `)`, `=` |
 | _VariableDeclarationRecursionThenStatementRecursionA_ | `}` |
@@ -462,8 +462,8 @@ The fact that there was at most one production in each table cell further reinfo
 | 5 | _AdditiveOperator_ | &rarr; | `¦¦` | `¦¦` |
 | 6 | _ArithmeticExpression_ | &rarr; | _Term_ _ArithmeticExpressionTail_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
 | 7 | _ArithmeticExpressionTail_ | &rarr; | _AdditiveOperator_ _Term_ _ArithmeticExpressionTail_ | `+`, `-`, `or`, `¦¦` |
-| 8 | _ArithmeticExpressionTail_ | &rarr; | &epsilon; | `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
-| 9 | _ArithmeticOrRelationalExpression_ | &rarr; | _RelationalOperator_ _ArithmeticExpression_ | `!=`, `<`, `=`, `==`, `>`, `>=` |
+| 8 | _ArithmeticExpressionTail_ | &rarr; | &epsilon; | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 9 | _ArithmeticOrRelationalExpression_ | &rarr; | _RelationalOperator_ _ArithmeticExpression_ | `<>`, `<`, `=`, `==`, `>`, `>=` |
 | 10 | _ArithmeticOrRelationalExpression_ | &rarr; | &epsilon; | `;`, `)`, `,` |
 | 11 | _ArraySize_ | &rarr; | `[` `intNum` `]` | `[` |
 | 12 | _ArraySizeRecursion_ | &rarr; | _ArraySize_ _ArraySizeRecursion_ | `[` |
@@ -473,7 +473,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 16 | _ClassDeclarationRecursion_ | &rarr; | _ClassDeclaration_ _ClassDeclarationRecursion_ | `class` |
 | 17 | _ClassDeclarationRecursion_ | &rarr; | &epsilon; | `program`, `id`, `float`, `int` |
 | 18 | _Expression_ | &rarr; | _ArithmeticExpression_ _ArithmeticOrRelationalExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
-| 19 | _Factor_ | &rarr; | `(` `ArithmeticExpression` `)` | `(` |
+| 19 | _Factor_ | &rarr; | `(` ArithmeticExpression `)` | `(` |
 | 20 | _Factor_ | &rarr; | _FunctionCallOrVariable_ | `id` |
 | 21 | _Factor_ | &rarr; | _NegationOperator_ _Factor_ | `!`, `not` |
 | 22 | _Factor_ | &rarr; | _NumberSign_ _Factor_ | `+`, `-` |
@@ -486,11 +486,11 @@ The fact that there was at most one production in each table cell further reinfo
 | 29 | _FunctionArgumentsTailRecursion_ | &rarr; | &epsilon; | `)` |
 | 30 | _FunctionBody_ | &rarr; | `{` _VariableDeclarationRecursionThenStatementRecursionA_ `}` | `{` |
 | 31 | _FunctionCallOrVariable_ | &rarr; | `id` _FunctionCallOrVariableTail_ | `id` |
-| 32 | _FunctionCallOrVariableTail_ | &rarr; | _FunctionCallParensOrIndexing_ _FunctionCallOrVariableTailRecursion_ | `(`, WEID_EMPTINESS, `.` |
+| 32 | _FunctionCallOrVariableTail_ | &rarr; | _FunctionCallParensOrIndexing_ _FunctionCallOrVariableTailRecursion_ | `(`, `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
 | 33 | _FunctionCallOrVariableTailRecursion_ | &rarr; | `.` `id` _FunctionCallOrVariableTail_ | `.` |
-| 34 | _FunctionCallOrVariableTailRecursion_ | &rarr; | &epsilon; | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 34 | _FunctionCallOrVariableTailRecursion_ | &rarr; | &epsilon; | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | 35 | _FunctionCallParensOrIndexing_ | &rarr; | `(` _FunctionArguments_ `)` | `(` |
-| 36 | _FunctionCallParensOrIndexing_ | &rarr; | _IndexingRecursion_ | `[`|
+| 36 | _FunctionCallParensOrIndexing_ | &rarr; | _IndexingRecursion_ | `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,`|
 | 37 | _FunctionDeclarationRecursionStart_ | &rarr; | _Type_ `id` _FunctionDeclarationRecursionTail_ | `id`, `float`, `int` |
 | 38 | _FunctionDeclarationRecursionStart_ | &rarr; | &epsilon; | `}` |
 | 39 | _FunctionDeclarationRecursionTail_ | &rarr; | `(` _FunctionParameters_ `)` `;` _FunctionDeclarationRecursionStart_ | `(` |
@@ -507,7 +507,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 50 | _IdListRecursion_ | &rarr; | &epsilon; | `{` |
 | 51 | _Indexing_ | &rarr; | `[` _ArithmeticExpression_ `]` | `[` |
 | 52 | _IndexingRecursion_ | &rarr; | _Indexing_ _IndexingRecursion_ | `[` |
-| 53 | _IndexingRecursion_ | &rarr; | &epsilon; | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| 53 | _IndexingRecursion_ | &rarr; | &epsilon; | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
 | 54 | _MultiplicativeOperator_ | &rarr; | `&&` | `&&` |
 | 55 | _MultiplicativeOperator_ | &rarr; | `*` | `*` |
 | 56 | _MultiplicativeOperator_ | &rarr; | `/` | `/` |
@@ -524,7 +524,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 67 | _OptionalNamespacingTail_ | &rarr; | `::` `id` | `::` |
 | 68 | _OptionalNamespacingTail_ | &rarr; | &epsilon; | `(` |
 | 69 | _RelationalExpression_ | &rarr; | _ArithmeticExpression_ _RelationalOperator_ _ArithmeticExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
-| 70 | _RelationalOperator_ | &rarr; | `!=` | `!=` |
+| 70 | _RelationalOperator_ | &rarr; | `<>` | `<>` |
 | 71 | _RelationalOperator_ | &rarr; | `<` | `<` |
 | 72 | _RelationalOperator_ | &rarr; | `<=` | `<=` |
 | 73 | _RelationalOperator_ | &rarr; | `==` | `==` |
@@ -544,7 +544,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 87 | _StatementWithoutAssignment_ | &rarr; | `return` `(` _Expression_ `)` `;` | `return` |
 | 88 | _Term_ | &rarr; | _Factor_ _TermRecursion_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
 | 89 | _TermRecursion_ | &rarr; | _MultiplicativeOperator_ _Factor_ _TermRecursion_ | `&&`, `*`, `/`, `and` |
-| 90 | _TermRecursion_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `!=`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 90 | _TermRecursion_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
 | 91 | _Type_ | &rarr; | _NumberType_ | `float`, `int` |
 | 92 | _Type_ | &rarr; | `id` | `id` |
 | 93 | _Variable_ | &rarr; | `id` _VariableTail_ | `id` |
@@ -555,7 +555,7 @@ The fact that there was at most one production in each table cell further reinfo
 | 98 | _VariableDeclarationRecursionThenStatementRecursionB_ | &rarr; | _VariableTail_ `=` _Expression_ `;` _StatementRecursion_ | `(`, `[`, `.`, `=` |
 | 99 | _VariableDeclarationRecursionThenStatementRecursionB_ | &rarr; | `id` _ArraySizeRecursion_ `;` _VariableDeclarationRecursionThenStatementRecursionA_ | `id` |
 | 100 | _VariableTail_ | &rarr; | `(` _FunctionArguments_ `)` `.` `id` _VariableTail_ | `(` |
-| 101 | _VariableTail_ | &rarr; | _IndexingRecursion_ _VariableTailTail_ | `[`, `.` |
+| 101 | _VariableTail_ | &rarr; | _IndexingRecursion_ _VariableTailTail_ | `[`, `.`, `=`, `)` |
 | 102 | _VariableTailTail_ | &rarr; | `.` `id` _VariableTail_ | `.` |
 | 103 | _VariableTailTail_ | &rarr; | &epsilon; | `=`, `)` |
 | 104 | _VariableThenFunctionDeclarationRecursion_ | &rarr; | _Type_ `id` _VariableThenFunctionDeclarationRecursionTail_ | `id`, `float`, `int` |
@@ -573,7 +573,7 @@ The rows represent the current leftmost nonterminal in the parse tree.
 
 Every table cell maps the indicates how the current non-terminal should be expanded based on the next input token. The numbers correspond to the rows of entries in the above prediction table, where the production right-hand side expression would be used to expand the current non-terminal.
 
-|  | `program` | `;` | `+` | `-` | `or` | `¦¦` | `[` | `intNum` | `]` | `=` | `class` | `id` | `{` | `}` | `(` | `)` | `floatNum` | `,` | `.` | `&&` | `*` | `/` | `and` | `!` | `not` | `float` | `int` | `:` | `::` | `!=` | `<` | `<=` | `==` | `>` | `>=` | `for` | `get` | `if` | `then` | `else` | `put` | `return` | `$` |
+|  | `program` | `;` | `+` | `-` | `or` | `¦¦` | `[` | `intNum` | `]` | `=` | `class` | `id` | `{` | `}` | `(` | `)` | `floatNum` | `,` | `.` | `&&` | `*` | `/` | `and` | `!` | `not` | `float` | `int` | `:` | `::` | `<>` | `<` | `<=` | `==` | `>` | `>=` | `for` | `get` | `if` | `then` | `else` | `put` | `return` | `$` |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | `Program` | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 1 | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 1 | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 |
 | `AdditiveOperator` | 109 | 109 | 2 | 3 | 4 | 5 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
