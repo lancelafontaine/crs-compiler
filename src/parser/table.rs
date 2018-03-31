@@ -743,7 +743,6 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
             unimplemented!();
         }
 
-
         match current_parse_symbol {
             ParseSymbol::Nonterminal(nonterminal_label) => {
                 let next_input_token = empty_lexeme_if_insignificant(next_input_token);
