@@ -15,7 +15,7 @@ The specification for the syntactic analysis of the language is shown with the p
 | _funcDef_ | &rarr; | _funcHead_ _funcBody_ `;` |
 | _funcBody_ | &rarr; | `{` {_varDecl_} {_statement_} `}` |
 | _varDecl_ | &rarr; | _type_ `id` {_arraySize_} `;` |
-| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
+| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `else` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
 | _assignStat_ | &rarr; | _variable_ _assignOp_ _expr_ |
 | _statBlock_ | &rarr; | `{` {_statement_} `}` \| _statement_ \| &epsilon; |
 | _expr_ | &rarr; | _arithExpr_ \| _relExpr_ |
@@ -66,7 +66,7 @@ The syntactic language specification in EBNF format was converted to a BNF gramm
 | _varDeclRecursion_ | &rarr; | _varDeclRecursion_ _varDecl_ \| &epsilon; |
 | _varDecl_ | &rarr; | _type_ `id` _arraySizeRecursion_ `;` |
 | _statementRecursion_ | &rarr; | _statementRecursion_ _statement_ \| &epsilon; |
-| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
+| _statement_ | &rarr; | _assignStat_ \| <br/> `if` `(` _expr_ `)` `then` _statBlock_ `else` _statBlock_ `;` \| <br/> `for` `(` _type_ `id` _assignOp_ _expr_ `;` _relExpr_ `;` _assignStat_  `)` _statBlock_ `;` \| <br/> `get` `(` _variable_ `)` `;` \| <br/> `put` `(` _expr_ `)` `;` \| <br/> `return` `(` _expr_ `)` `;` |
 | _assignStat_ | &rarr; | _variable_ _assignOp_ _expr_ |
 | _statBlock_ | &rarr; | `{` _statementRecursion_ `}` \| _statement_ \| &epsilon; |
 | _expr_ | &rarr; | _arithExpr_ \| _relExpr_ |
@@ -96,153 +96,53 @@ The syntactic language specification in EBNF format was converted to a BNF gramm
 | _addOp_ | &rarr; | `+` \| `-` \| `or` \| `¦¦` |
 | _multOp_ | &rarr; | `*` \| `/` \| `and` \| `&&` |
 
-
-We can simplify the non-terminals of the language by following this legend:
-
-| Previous Non-Terminal Symbol | New Non-Terminal Symbol |
-|:-----:|:-----:|
-| _prog_ | _S_ |
-| _classDeclRecursion_ | _A_ |
-| _funcDefRecursion_ | _B_ |
-| _funcBody_ | _C_ |
-| _classDecl_ | _D_ |
-| _optionalInheritance_ | _E_ |
-| _varDeclRecursion_ | _F_ |
-| _funcDeclRecursion_ | _G_ |
-| _MultipleSuperClasses_ | _H_ |
-| _funcDecl_ | _I_ |
-| _type_ | _J_ |
-| _fParams_ | _K_ |
-| _funcHead_ | _L_ |
-| _optionalNamespace_ | _M_ |
-| _funcDef_ | _N_ |
-| _statementRecursion_ | _O_ |
-| _varDecl_ | _P_ |
-| _arraySizeRecursion_ | _Q_ |
-| _statement_ | _R_ |
-| _assignStat_ | _T_ |
-| _expr_ | _U_ |
-| _statBlock_ | _V_ |
-| _assignOp_ | _W_ |
-| _relExpr_ | _X_ |
-| _variable_ | _Y_ |
-| _arithExpr_ | _Z_ |
-| _relOp_ | _AA_ |
-| _addOp_ | _AB_ |
-| _term_ | _AC_ |
-| _sign_ | _AD_ |
-| _multOp_ | _AE_ |
-| _factor_ | _AF_ |
-| _functionCall_ | _AG_ |
-| _negationOperator_ | _AH_ |
-| _idnestRecursion_ | _AI_ |
-| _indiceRecursion_ | _AJ_ |
-| _aParams_ | _AK_ |
-| _idnest_ | _AL_ |
-| _indice_ | _AM_ |
-| _arraySize_ | _AN_ |
-| _fParamsTailRecursion_ | _AO_ |
-| _aParamsTailRecursion_ | _AP_ |
-| _fParamsTail_ | _AQ_ |
-| _aParamsTail_ | _AR_ |
-
-
-This results in the same BNF grammar but with single-letter non-terminal symbols.
-
-| LHS | &rarr; | RHS |
-|:---:|:----:|:----:|
-| _S_ | &rarr; | _A_ _B_ `program` _C_ `;`|
-| _A_ | &rarr; | _A_ _D_ \| &epsilon; |
-| _B_ | &rarr; | _B_ _N_ \| &epsilon; |
-| _C_ | &rarr; | `{` _F_ _O_ `}` |
-| _D_ | &rarr; | `class` `id` _E_ `{` _F_ _G_ `}` `;` |
-| _E_ | &rarr; | `:` `id` _H_ \| &epsilon;|
-| _F_ | &rarr; | _F_ _P_ \| &epsilon; |
-| _G_ | &rarr; | _G_ _I_ \| &epsilon; |
-| _H_ | &rarr; | _H_ `,` `id` \| &epsilon; |
-| _I_ | &rarr; | _J_ `id` `(` _K_ `)` `;` |
-| _J_ | &rarr; | `int` \| `float` \| `id` |
-| _K_ | &rarr; | _J_ `id` _Q_ _AO_ \| &epsilon; |
-| _L_ | &rarr; | _J_ _M_ `id` `(` _K_ `)` |
-| _M_ | &rarr; |  `id` `::` \| &epsilon;|
-| _N_ | &rarr; | _L_ _C_ `;` |
-| _O_ | &rarr; | _O_ _R_ \| &epsilon; |
-| _P_ | &rarr; | _J_ `id` _Q_ `;` |
-| _Q_ | &rarr; | _Q_ _AN_ \| &epsilon; |
-| _R_ | &rarr; | _T_ \| `if` `(` _U_ `)` `then` _V_ `;` \| `for` `(` _J_ `id` _W_ _U_ `;` _X_ `;` _T_  `)` _V_ `;` \| <br/> `get` `(` _Y_ `)` `;` \| `put` `(` _U_ `)` `;` \| `return` `(` _U_ `)` `;` |
-| _T_ | &rarr; | _Y_ _W_ _U_ |
-| _U_ | &rarr; | _Z_ \| _X_ |
-| _V_ | &rarr; | `{` _O_ `}` \| _R_ \| &epsilon; |
-| _W_ | &rarr; | `=` |
-| _X_ | &rarr; | _Z_ _AA_ _Z_ |
-| _Y_ | &rarr; | _AI_ `id` _AJ_ |
-| _Z_ | &rarr; | _Z_ _AB_ _AC_ \| _AC_ |
-| _AA_ | &rarr; | `==` \| `<>` \| `<` \| `>` \| `<=` \| `>=` |
-| _AB_ | &rarr; | `+` \| `-` \| `or` \| `¦¦` |
-| _AC_ | &rarr; | _AC_ _AE_ _AF_ \| _AF_ |
-| _AD_ | &rarr; | `+` \| `-` |
-| _AE_ | &rarr; | `*` \| `/` \| `and` \| `&&` |
-| _AF_ | &rarr; | _Y_ \| _AG_ \| `intNum` \| `floatNum` \| `(` _Z_ `)` \| _AH_ _AF_ \| _AD_ _AF_ |
-| _AG_ | &rarr; | _AI_ `id` `(` _AK_ `)` |
-| _AH_ | &rarr; | `not` \| `!` |
-| _AI_ | &rarr; | _AI_ _AL_ \| &epsilon; |
-| _AJ_ | &rarr; | _AJ_ _AM_ \| &epsilon; |
-| _AK_ | &rarr; | _U_ _AP_ \| &epsilon; |
-| _AL_ | &rarr; | `id` _AJ_ `.` \| `id` `(` _AK_ `)` `.` |
-| _AM_ | &rarr; | `[` _Z_ `]` |
-| _AN_ | &rarr; | `[` `intNum` `]` |
-| _AO_ | &rarr; | _AO_ _AQ_ \| &epsilon; |
-| _AP_ | &rarr; | _AP_ _AR_ \| &epsilon; |
-| _AQ_ | &rarr; | `,` _J_ `id` _Q_ |
-| _AR_ | &rarr; | `,` _U_ |
-
-An [AtoCC](http://atocc.de)-compatible text format of the above grammar is shown below:
+An [AtoCC](http://atocc.de)-compatible text format of the above grammar (with renamed variables) is shown below:
 
 ```
-S -> A B 'program' C ';'
-A -> A D | EPSILON
-B -> B N | EPSILON
-C -> '{' F O '}'
-D -> 'class' 'id' E '{' F G '}' ';'
-E -> ':' 'id' H | EPSILON
-F -> F P | EPSILON
-G -> G I | EPSILON
-H -> H ',' 'id' | EPSILON
-I -> J 'id' '(' K ')' ';'
-J -> 'int' | 'float' | 'id'
-K -> J 'id' Q AO | EPSILON
-L -> J M 'id' '(' K ')'
-M ->  'id' '::' | EPSILON
-N -> L C ';'
-O -> O R | EPSILON
-P -> J 'id' Q ';'
-Q -> Q AN | EPSILON
-R -> T | 'if' '(' U ')' 'then' V ';' | 'for' '(' J 'id' W U ';' X ';' T  ')' V ';' | 'get' '(' Y ')' ';' | 'put' '(' U ')' ';' | 'return' '(' U ')' ';'
-T -> Y W U
-U -> Z | X
-V -> '{' O '}' | R | EPSILON
-W -> '='
-X -> Z AA Z
-Y -> AI 'id' AJ
-Z -> Z AB AC | AC
-AA -> '==' | '<>' | '<' | '>' | '<=' | '>='
-AB -> '+' | '-' | 'or' | '||'
-AC -> AC AE AF | AF
-AD -> '+' | '-'
-AE -> '*' | '/' | 'and' | '&&'
-AF -> Y | AG | 'intNum' | 'floatNum' | '(' Z ')' | AH AF | AD AF
-AG -> AI 'id' '(' AK ')'
-AH -> 'not' | '!'
-AI -> AI AL | EPSILON
-AJ -> AJ AM | EPSILON
-AK -> U AP | EPSILON
-AL -> 'id' AJ '.' | 'id' '(' AK ')' '.'
-AM -> '[' Z ']'
-AN -> '[' 'intNum' ']'
-AO -> AO AQ | EPSILON
-AP -> AP AR | EPSILON
-AQ -> ',' J 'id' Q
-AR -> ',' U
+prog -> classDeclRecursion funcDefRecursion 'program' funcBody ';'
+classDeclRecursion -> classDeclRecursion classDecl | EPSILON
+classDecl -> 'class' 'id' optionalInheritance '{' varDeclRecursion funcDeclRecursion '}' ';'
+optionalInheritance -> ':' 'id' multipleSuperClasses | EPSILON
+multipleSuperClasses -> multipleSuperClasses ',' 'id' | EPSILON
+funcDeclRecursion -> funcDeclRecursion funcDecl | EPSILON
+funcDecl -> type 'id' '(' fParams ')' ';'
+funcHead -> type optionalNamespace 'id' '(' fParams ')'
+optionalNamespace ->  'id' '::' | EPSILON
+funcDefRecursion -> funcDefRecursion funcDef | EPSILON
+funcDef -> funcHead funcBody ';'
+funcBody -> '{' varDeclRecursion statementRecursion '}'
+varDeclRecursion -> varDeclRecursion varDecl | EPSILON
+varDecl -> type 'id' arraySizeRecursion ';'
+statementRecursion -> statementRecursion statement | EPSILON
+statement -> assignStat | 'if' '(' expr ')' 'then' statBlock 'else' statBlock ';' | 'for' '(' type 'id' assignOp expr ';' relExpr ';' assignStat  ')' statBlock ';' | 'get' '(' variable ')' ';' | 'put' '(' expr ')' ';' | 'return' '(' expr ')' ';'
+assignStat -> variable assignOp expr
+statBlock -> '{' statementRecursion '}' | statement | EPSILON
+expr -> arithExpr | relExpr
+relExpr -> arithExpr relOp arithExpr
+arithExpr -> arithExpr addOp term | term
+sign -> '+' | '-'
+term -> term multOp factor | factor
+factor -> variable | functionCall | 'intNum' | 'floatNum' | '(' arithExpr ')' | negationOperator factor | sign factor
+negationOperator -> 'not' | '!'
+variable -> idnestRecursion 'id' indiceRecursion
+functionCall -> idnestRecursion 'id' '(' aParams ')'
+idnestRecursion -> idnestRecursion idnest | EPSILON
+idnest -> 'id' indiceRecursion '.' | 'id' '(' aParams ')' '.'
+indiceRecursion -> indiceRecursion indice | EPSILON
+indice -> '[' arithExpr ']'
+arraySizeRecursion -> arraySizeRecursion arraySize | EPSILON
+arraySize -> '[' 'intNum' ']'
+type -> 'int' | 'float' | 'id'
+fParams -> type 'id' arraySizeRecursion fParamsTailRecursion | EPSILON
+aParams -> expr aParamsTailRecursion | EPSILON
+fParamsTailRecursion -> fParamsTailRecursion fParamsTail | EPSILON
+fParamsTail -> ',' type 'id' arraySizeRecursion
+aParamsTailRecursion -> aParamsTailRecursion aParamsTail | EPSILON
+aParamsTail -> ',' expr
+assignOp -> '='
+relOp -> '==' | '<>' | '<' | '>' | '<=' | '>='
+addOp -> '+' | '-' | 'or' | '¦¦'
+multOp -> '*' | '/' | 'and' | '&&'
 ```
 
 ### Left-Factored, Right-Recursive and LL(1) Grammar
@@ -269,66 +169,116 @@ Using an LL(1) grammar for a syntactic analysis is attractive given that LL(1) g
 
 An attempt to use the following [left-factoring online tool](https://cyberzhg.github.io/toolbox/left_fact), [left-recusion elimination online tool](https://cyberzhg.github.io/toolbox/left_rec) and [CFG-to-LL(k) online tool](https://cyberzhg.github.io/toolbox/cfg2ll) was done. However, these tools were error-prone, and superior results were obtained by manipulating the grammar by hand while verifying with the [AtoCC](http://atocc.de) kfGEdit tool along the way.
 
-Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below.
+Ultimately, too many changes were made to the grammar to describe every ambiguity, left factoring or left-recursion elimination. The resulting grammar is shown below in an AtoCC-compatible format (with renamed non-terminal symbols to more accurately represent their role).
 
 ```
-S  -> A B program C ;
-A  -> D A | EPSILON
-B  -> N B | EPSILON
-C  -> { F }
-D  -> class id E { AG } ;
-E  -> : id H | EPSILON
-F  -> id AY | AX | P F
-G  -> id Q ; F
-H  -> , id H | EPSILON
-I  -> AL I
-J  -> float | id | int
-K  -> J id Q AO | EPSILON
-L  -> J M ( K )
-M  -> id BA
-N  -> L C ;
-O  -> id T O | R O | EPSILON
-P  -> float id Q ; | int id Q ;
-Q  -> AN Q | EPSILON
-R  -> for ( J id = U ; X ; id T ) V ; | get ( id Y ) ; | if ( U ) then V ; | put ( U ) ; | return ( U ) ;
-T  -> Y = U
-U  -> Z AZ
-V  -> { O } | id T | R | EPSILON
-W  -> float id AI | id id AI | int id AI | EPSILON
-X  -> Z AA Z
-Y  -> I AJ | EPSILON
-Z  -> AC BE
-AA -> < | <= | <> | == | > | >=
-AB -> + | - | or | ¦¦
-AC -> AF BD
-AD -> + | -
-AE -> and | && | * | /
-AF -> ( Z ) | floatNum | id BB | intNum | AH AF | AD AF
-AG -> float id AT | id id AT | int id AT | EPSILON
-AH -> ! | not
-AI -> ( K ) ; W
-AJ -> AM AJ | EPSILON
-AK -> U AP | EPSILON
-AL -> ( AK ) . | AJ .
-AM -> [ Z ]
-AN -> [ intNum ]
-AO -> AQ AO | EPSILON
-AP -> AR AP | EPSILON
-AQ -> , J id Q
-AR -> , U
-AS -> Q ; AG
-AT -> AI | AS
-AU -> id AW
-AV -> AX | AU
-AW -> T AV
-AX -> R AV | EPSILON
-AY -> AW | G
-AZ -> AA Z | EPSILON
-BA -> :: id | EPSILON
-BB -> I BC | EPSILON
-BC -> ( AK ) | AJ
-BD -> AE AF BD | EPSILON
-BE -> AB AC BE | EPSILON
+Program                                             -> ClassDeclarationRecursion FunctionDefinitionRecursion program FunctionBody ;
+AdditiveOperator                                    -> +
+AdditiveOperator                                    -> -
+AdditiveOperator                                    -> or
+AdditiveOperator                                    -> ¦¦
+ArithmeticExpression                                -> Term ArithmeticExpressionTail
+ArithmeticExpressionTail                            -> AdditiveOperator Term ArithmeticExpressionTail
+ArithmeticExpressionTail                            -> EPSILON
+ArithmeticOrRelationalExpression                    -> RelationalOperator ArithmeticExpression
+ArithmeticOrRelationalExpression                    -> EPSILON
+ArraySize                                           -> [ intNum ]
+ArraySizeRecursion                                  -> ArraySize ArraySizeRecursion
+ArraySizeRecursion                                  -> EPSILON
+AssignmentStatement                                 -> Variable = Expression
+ClassDeclaration                                    -> class id OptionalInheritanceList { VariableThenFunctionDeclarationRecursion } ;
+ClassDeclarationRecursion                           -> ClassDeclaration ClassDeclarationRecursion
+ClassDeclarationRecursion                           -> EPSILON
+Expression                                          -> ArithmeticExpression ArithmeticOrRelationalExpression
+Factor                                              -> ( ArithmeticExpression )
+Factor                                              -> FunctionCallOrVariable
+Factor                                              -> NegationOperator Factor
+Factor                                              -> NumberSign Factor
+Factor                                              -> floatNum
+Factor                                              -> intNum
+FunctionArguments                                   -> Expression FunctionArgumentsTailRecursion
+FunctionArguments                                   -> EPSILON
+FunctionArgumentsTail                               -> , Expression
+FunctionArgumentsTailRecursion                      -> FunctionArgumentsTail FunctionArgumentsTailRecursion
+FunctionArgumentsTailRecursion                      -> EPSILON
+FunctionBody                                        -> { VariableDeclarationRecursionThenStatementRecursionA }
+FunctionCallOrVariable                              -> id FunctionCallOrVariableTail
+FunctionCallOrVariableTail                          -> FunctionCallParensOrIndexing FunctionCallOrVariableTailRecursion
+FunctionCallOrVariableTailRecursion                 -> . id FunctionCallOrVariableTail
+FunctionCallOrVariableTailRecursion                 -> EPSILON
+FunctionCallParensOrIndexing                        -> ( FunctionArguments )
+FunctionCallParensOrIndexing                        -> IndexingRecursion
+FunctionDeclarationRecursionStart                   -> Type id FunctionDeclarationRecursionTail
+FunctionDeclarationRecursionStart                   -> EPSILON
+FunctionDeclarationRecursionTail                    -> ( FunctionParameters ) ; FunctionDeclarationRecursionStart
+FunctionDefinition                                  -> FunctionHeader FunctionBody ;
+FunctionDefinitionRecursion                         -> FunctionDefinition FunctionDefinitionRecursion
+FunctionDefinitionRecursion                         -> EPSILON
+FunctionHeader                                      -> Type OptionalNamespacing ( FunctionParameters )
+FunctionParameters                                  -> Type id ArraySizeRecursion FunctionParametersTailRecursion
+FunctionParameters                                  -> EPSILON
+FunctionParametersTail                              -> , Type id ArraySizeRecursion
+FunctionParametersTailRecursion                     -> FunctionParametersTail FunctionParametersTailRecursion
+FunctionParametersTailRecursion                     -> EPSILON
+IdListRecursion                                     -> , id IdListRecursion
+IdListRecursion                                     -> EPSILON
+Indexing                                            -> [ ArithmeticExpression ]
+IndexingRecursion                                   -> Indexing IndexingRecursion
+IndexingRecursion                                   -> EPSILON
+MultiplicativeOperator                              -> &&
+MultiplicativeOperator                              -> *
+MultiplicativeOperator                              -> /
+MultiplicativeOperator                              -> and
+NegationOperator                                    -> !
+NegationOperator                                    -> not
+NumberSign                                          -> +
+NumberSign                                          -> -
+NumberType                                          -> float
+NumberType                                          -> int
+OptionalInheritanceList                             -> : id IdListRecursion
+OptionalInheritanceList                             -> EPSILON
+OptionalNamespacing                                 -> id OptionalNamespacingTail
+OptionalNamespacingTail                             -> :: id
+OptionalNamespacingTail                             -> EPSILON
+RelationalExpression                                -> ArithmeticExpression RelationalOperator ArithmeticExpression
+RelationalOperator                                  -> <>
+RelationalOperator                                  -> <
+RelationalOperator                                  -> <=
+RelationalOperator                                  -> ==
+RelationalOperator                                  -> >
+RelationalOperator                                  -> >=
+Statement                                           -> AssignmentStatement ;
+Statement                                           -> StatementWithoutAssignment
+StatementBlock                                      -> Statement
+StatementBlock                                      -> EPSILON
+StatementBlock                                      -> { StatementRecursion }
+StatementRecursion                                  -> Statement StatementRecursion
+StatementRecursion                                  -> EPSILON
+StatementWithoutAssignment                          -> for ( Type id = Expression ; RelationalExpression ; AssignmentStatement ) StatementBlock ;
+StatementWithoutAssignment                          -> get ( Variable ) ;
+StatementWithoutAssignment                          -> if ( Expression ) then StatementBlock else StatementBlock ;
+StatementWithoutAssignment                          -> put ( Expression ) ;
+StatementWithoutAssignment                          -> return ( Expression ) ;
+Term                                                -> Factor TermRecursion
+TermRecursion                                       -> MultiplicativeOperator Factor TermRecursion
+TermRecursion                                       -> EPSILON
+Type                                                -> NumberType
+Type                                                -> id
+Variable                                            -> id VariableTail
+VariableDeclarationRecursionThenStatementRecursionA -> NumberType id ArraySizeRecursion ; VariableDeclarationRecursionThenStatementRecursionA
+VariableDeclarationRecursionThenStatementRecursionA -> EPSILON
+VariableDeclarationRecursionThenStatementRecursionA -> StatementWithoutAssignment StatementRecursion
+VariableDeclarationRecursionThenStatementRecursionA -> id VariableDeclarationRecursionThenStatementRecursionB
+VariableDeclarationRecursionThenStatementRecursionB -> VariableTail = Expression ; StatementRecursion
+VariableDeclarationRecursionThenStatementRecursionB -> id ArraySizeRecursion ; VariableDeclarationRecursionThenStatementRecursionA
+VariableTail                                        -> ( FunctionArguments ) . id VariableTail
+VariableTail                                        -> IndexingRecursion VariableTailTail
+VariableTailTail                                    -> . id VariableTail
+VariableTailTail                                    -> EPSILON
+VariableThenFunctionDeclarationRecursion            -> Type id VariableThenFunctionDeclarationRecursionTail
+VariableThenFunctionDeclarationRecursion            -> EPSILON
+VariableThenFunctionDeclarationRecursionTail        -> ArraySizeRecursion ; VariableThenFunctionDeclarationRecursion
+VariableThenFunctionDeclarationRecursionTail        -> FunctionDeclarationRecursionTail
 ```
 
 The [AtoCC](http://atocc.de) kfG Edit tool confirms that the above grammar is LL(1).
@@ -342,294 +292,278 @@ A parsing table must be constructed from the above grammar in order to represent
 The fact that there was at most one production in each table cell further reinforces the fact that the grammar is LL(1).
 
 ### _FIRST_ Sets
-
 | Non-Terminal Symbol | First Set |
 |:------:|:-----:|
 | `program` | `program` |
 | `;` | `;` |
-| `ε` | `ε` |
-| `{` | `{` |
-| `}` | `}` |
-| `class` | `class` |
-| `id` | `id` |
-| `:` | `:` |
-| `,` | `,` |
-| `float` | `float` |
-| `int` | `int` |
-| `(` | `(` |
-| `)` | `)` |
-| `for` | `for` |
-| `=` | `=` |
-| `get` | `get` |
-| `if` | `if` |
-| `then` | `then` |
-| `put` | `put` |
-| `return` | `return` |
-| `<` | `<` |
-| `<=` | `<=` |
-| `<>` | `<>` |
-| `==` | `==` |
-| `>` | `>` |
-| `>=` | `>=` |
 | `+` | `+` |
 | `-` | `-` |
 | `or` | `or` |
 | `¦¦` | `¦¦` |
-| `and` | `and` |
+| &epsilon; | &epsilon; |
+| `[` | `[` |
+| `intNum` | `intNum` |
+| `]` | `]` |
+| `=` | `=` |
+| `class` | `class` |
+| `id` | `id` |
+| `{` | `}` |
+| `}` | `}` |
+| `(` | `)` |
+| `)` | `)` |
+| `floatNum` | `floatNum` |
+| `,` | `,` |
+| `.` | `.` |
 | `&&` | `&&` |
 | `*` | `*` |
 | `/` | `/` |
-| `floatNum` | `floatNum` |
-| `intNum` | `intNum` |
-| `not` | `not` |
+| `and` | `and` |
 | `!` | `!` |
-| `.` | `.` |
-| `[` | `[` |
-| `]` | `]` |
+| `not` | `not` |
+| `float` | `float` |
+| `int` | `int` |
+| `:` | `:` |
 | `::` | `::` |
-| _S_ | `program`, `ε`, `class`, `float`, `id`, `int` |
-| _A_ | `ε`, `class` |
-| _B_ | `ε`, `float`, `id`, `int` |
-| _C_ | `{` |
-| _D_ | `class` |
-| _E_ | `:`, `ε` |
-| _F_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return`, `float`, `int` |
-| _G_ | `id` |
-| _H_ | `,`, `ε` |
-| _I_ | `(`, `.`, `ε`, `[` |
-| _J_ | `float`, `id`, `int` |
-| _K_ | `ε`, `float`, `id`, `int` |
-| _L_ | `float`, `id`, `int` |
-| _M_ | `id` |
-| _N_ | `float`, `id`, `int` |
-| _O_ | `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
-| _P_ | `float`, `int` |
-| _Q_ | `ε`, `[` |
-| _R_ | `for`, `get`, `if`, `put`, `return` |
-| _T_ | `=`, `(`, `.`, `ε`, `[` |
-| _U_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _V_ | `{`, `id`, `ε`, `for`, `get`, `if`, `put`, `return` |
-| _W_ | `float`, `id`, `int`, `ε` |
-| _X_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _Y_ | `(`, `.`, `ε`, `[` |
-| _Z_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AA_ | `<`, `<=`, `<>`, `==`, `>`, `>=` |
-| _AB_ | `+`, `-`, `or`, `¦¦` |
-| _AC_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AD_ | `+`, `-` |
-| _AE_ | `and`, `&&`, `*`, `/` |
-| _AF_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AG_ | `float`, `id`, `int`, `ε` |
-| _AH_ | `not`, `!` |
-| _AI_ | `(` |
-| _AJ_ | `ε`, `[` |
-| _AK_ | `ε`, `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AL_ | `(`, `.`, `ε`, `[` |
-| _AM_ | `[` |
-| _AN_ | `[` |
-| _AO_ | `ε`, `,` |
-| _AP_ | `ε`, `,` |
-| _AQ_ | `,` |
-| _AR_ | `,` |
-| _AS_ | `;`, `ε`, `[` |
-| _AT_ | `(`, `;`, `ε`, `[` |
-| _AU_ | `id` |
-| _AV_ | `ε`, `for`, `get`, `if`, `put`, `return`, `id` |
-| _AW_ | `(`, `.`, `ε`, `[` |
-| _AX_ | `ε`, `for`, `get`, `if`, `put`, `return` |
-| _AY_ | `(`, `.`, `ε`, `[`, `id` |
-| _AZ_ | `ε`, `<`, `<=`, `<>`, `==`, `>`, `>=` |
-| _BA_ | `::`, `ε` |
-| _BB_ | `(`, `.`, `ε`, `[` |
-| _BC_ | `(`, `ε`, `[` |
-| _BD_ | `ε`, `and`, `&&`, `*`, `/` |
-| _BE_ | `ε`, `+`, `-`, `or`, `¦¦` |
+| `<>` | `<>` |
+| `<` | `<` |
+| `<=` | `<=` |
+| `==` | `==` |
+| `>` | `>` |
+| `>=` | `>=` |
+| `for` | `for` |
+| `get` | `get` |
+| `if` | `if` |
+| `then` | `then` |
+| `else` | `else` |
+| `put` | `put` |
+| `return` | `return` |
+| _Program_ | `program`, &epsilon;, `class`, `id`, `float`, `int` |
+| _AdditiveOperator_ | `+`, `-`, `or`, `¦¦` |
+| _ArithmeticExpressionTail_ | &epsilon;, `+`, `-`, `or`, `¦¦` |
+| _ArithmeticOrRelationalExpression_ | &epsilon;, `<>`, `<`, `<=`, `==`, `>`, `>=` |
+| _ArraySize_ | `[` |
+| _ArraySizeRecursion_ | &epsilon;, `[` |
+| _ClassDeclaration_ | `class` |
+| _ClassDeclarationRecursion_ | &epsilon;, `class` |
+| _Factor_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _FunctionArguments_ | &epsilon;, `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _FunctionArgumentsTail_ | `,` |
+| _FunctionArgumentsTailRecursion_ | &epsilon;, `,` |
+| _FunctionBody_ | `{` |
+| _FunctionCallOrVariable_ | `id` |
+| _FunctionCallOrVariableTailRecursion_ | `.`, &epsilon; |
+| _FunctionCallParensOrIndexing_ | `(`, &epsilon;, `[` |
+| _FunctionDeclarationRecursionStart_ | &epsilon;, `id`, `float`, `int` |
+| _FunctionDeclarationRecursionTail_ | `(` |
+| _FunctionDefinitionRecursion_ | &epsilon;, `id`, `float`, `int` |
+| _FunctionParameters_ | &epsilon;, `id`, `float`, `int` |
+| _FunctionParametersTail_ | `,` |
+| _FunctionParametersTailRecursion_ | &epsilon;, `,` |
+| _IdListRecursion_ | `,`, &epsilon; |
+| _Indexing_ | `[` |
+| _IndexingRecursion_ | &epsilon;, `[` |
+| _MultiplicativeOperator_ | `&&`, `*`, `/`, `and` |
+| _NegationOperator_ | `!`, `not` |
+| _NumberSign_ | `+`, `-` |
+| _NumberType_ | `float`, `int` |
+| _OptionalInheritanceList_ | `:`, &epsilon; |
+| _OptionalNamespacing_ | `id` |
+| _OptionalNamespacingTail_ | `::`, &epsilon; |
+| _RelationalOperator_ | `<>`, `<`, `<=`, `==`, `>`, `>=` |
+| _StatementBlock_ | &epsilon;, `{`, `id`, `for`, `get`, `if`, `put`, `return` |
+| _StatementRecursion_ | &epsilon;, `id`, `for`, `get`, `if`, `put`, `return` |
+| _StatementWithoutAssignment_ | `for`, `get`, `if`, `put`, `return` |
+| _TermRecursion_ | &epsilon;, `&&`, `*`, `/`, `and` |
+| _Type_ | `id`, `float`, `int` |
+| _Variable_ | `id` |
+| _VariableDeclarationRecursionThenStatementRecursionA_ | &epsilon;, `id`, `float`, `int`, `for`, `get`, `if`, `put`, `return` |
+| _VariableDeclarationRecursionThenStatementRecursionB_	| `=`, `id`, `(`, &epsilon;, `[`, `.` |
+| _VariableTail_ | `(`, &epsilon;, `[`, `.` |
+| _VariableTailTail_ | `.`, &epsilon; |
+| _VariableThenFunctionDeclarationRecursion_ | &epsilon;, `id`, `float`, `int` |
+| _VariableThenFunctionDeclarationRecursionTail_ | `;`, &epsilon;, `[`, `(` |
+| _AssignmentStatement_ | `id` |
+| _FunctionHeader_ | `id`, `float`, `int` |
+| _Statement_ | `id`, `for`, `get`, `if`, `put`, `return` |
+| _FunctionCallOrVariableTail_ | `(`, &epsilon;, `[`, `.` |
+| _FunctionDefinition_ | `id`, `float`, `int` |
+| _Term_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _ArithmeticExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _Expression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _RelationalExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
 
 ### _FOLLOW_ Sets
 
 | Non-Terminal Symbol | Follow Set |
 |:----:|:-----:|
-| _S_ | `$` |
-| _A_ | `program`, `float`, `id`, `int` |
-| _B_ | `program` |
-| _C_ | `;` |
-| _D_ | `class`, `program`, `float`, `id`, `int` |
-| _E_ | `{` |
-| _F_ | `}` |
-| _G_ | `}` |
-| _H_ | `{` |
-| _I_ | `(`, `[`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _J_ | `id` |
-| _K_ | `)` |
-| _L_ | `{` |
-| _M_ | `(` |
-| _N_ | `float`, `id`, `int`, `program` |
-| _O_ | `}` |
-| _P_ | `id`, `for`, `get`, `if`, `put`, `return`, `float`, `int`, `}` |
-| _Q_ | `;`, `,`, `)` |
-| _R_ | `for`, `get`, `if`, `put`, `return`, `id`, `;`, `}` |
-| _T_ | `for`, `get`, `if`, `put`, `return`, `id`, `)`, `;`, `}` |
-| _U_ |  `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _V_ | `;` |
-| _W_ | `}` |
-| _X_ | `;` |
-| _Y_ | `=`, `)` |
-| _Z_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _AA_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AB_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AC_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _AD_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AE_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AF_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _AG_ | `}` |
-| _AH_ | `(`, `floatNum`, `id`, `intNum`, `not`, `!`, `+`, `-` |
-| _AI_ | `}` |
-| _AJ_ | `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`,  `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _AK_ | `)` |
-| _AL_ | `(`, `.`, `[` |
-| _AM_ | `[`, `.`, `=`, `)`, `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _AN_ | `[`, `;`, `,`, `)` |
-| _AO_ | `)` |
-| _AP_ | `)` |
-| _AQ_ | `,`, `)` |
-| _AR_ | `,`, `)` |
-| _AS_ | `}` |
-| _AT_ | `}` |
-| _AU_ | `}` |
-| _AV_ | `}` |
-| _AW_ | `}` |
-| _AX_ | `}` |
-| _AY_ | `}` |
-| _AZ_ | `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _BA_ | `(` |
-| _BB_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _BC_ | `and`, `&&`, `*`, `/`, `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _BD_ | `+`, `-`, `or`, `¦¦`, `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| _BE_ | `]`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-
+| _Program_ | `$` |
+| _AdditiveOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _ArithmeticExpression_ | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _ArithmeticExpressionTail_ | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _ArithmeticOrRelationalExpression_ | `;`, `)`, `,` |
+| _ArraySize_ | `[`, `;`, `,`, `)` |
+| _ArraySizeRecursion_ `;`, `,`, `)` |
+| _AssignmentStatement_ | `)`, `;` |
+| _ClassDeclaration_ | `class`, `program`, `id`, `float`, `int` |
+| _ClassDeclarationRecursion_ | `program`, `id`, `float`, `int` |
+| _Expression_ | `;`, `)`, `,` |
+| _Factor_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionArguments_ | `)` |
+| _FunctionArgumentsTail_ | `,`, `)` |
+| _FunctionArgumentsTailRecursion_ | `)` |
+| _FunctionBody_ | `;` |
+| _FunctionCallOrVariable_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallOrVariableTail_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallOrVariableTailRecursion_ | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionCallParensOrIndexing_ | `.`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _FunctionDeclarationRecursionStart_ | `}` |
+| _FunctionDeclarationRecursionTail_ | `}` |
+| _FunctionDefinition_ | `id`, `float`, `int`, `program` |
+| _FunctionDefinitionRecursion_ | `program` |
+| _FunctionHeader_ | `{` |
+| _FunctionParameters_ | `)` |
+| _FunctionParametersTail_ | `,`, `)` |
+| _FunctionParametersTailRecursion_ | `)` |
+| _IdListRecursion_ | `{` |
+| _Indexing_ | `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| _IndexingRecursion_ | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| _MultiplicativeOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _NegationOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _NumberSign_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _NumberType_ | `id` |
+| _OptionalInheritanceList_ | `{` |
+| _OptionalNamespacing_ | `(` |
+| _OptionalNamespacingTail_ | `(` |
+| _RelationalExpression_ | `;` |
+| _RelationalOperator_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| _Statement_ | `id`, `for`, `get`, `if`, `put`, `return`, `}`, `;`, `else` |
+| _StatementBlock_ | `;`, `else` |
+| _StatementRecursion_ | `}` |
+| _StatementWithoutAssignment_ | `id`, `for`, `get`, `if`, `put`, `return`, `}`, `;`, `else` |
+| _Term_ | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _TermRecursion_ | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| _Type_ | `id` |
+| _Variable_ | `)`, `=` |
+| _VariableDeclarationRecursionThenStatementRecursionA_ | `}` |
+| _VariableDeclarationRecursionThenStatementRecursionB_ | `}` |
+| _VariableTail_ | `=`, `)` |
+| _VariableTailTail_ | `=`, `)` |
+| _VariableThenFunctionDeclarationRecursion_ | `}` |
+| _VariableThenFunctionDeclarationRecursionTail_ | `}` |
 
 ### Prediction Table
+
 | Prediction Number | Production LHS Non-Terminal | &rarr; | Production RHS Expression | Predict Set |
 |:--------:|:-----------|:-----------:|:-----------|:-----------:|
-| 1 | _S_ | &rarr; | _A_ _B_ `program` _C_ `;` | `class`, `float`, `id`, `int`, `program` |
-| 2 | _A_ | &rarr; | _D_ _A_ | `class` |
-| 3 | _A_ | &rarr; | &epsilon; | `program`, `float`, `id`, `int` |
-| 4 | _B_ | &rarr; | _N_ _B_ | `float`, `id`, `int` |
-| 5 | _B_ | &rarr; | &epsilon; | `program` |
-| 6 | _C_ | &rarr; | `{` _F_ `}` | `{` |
-| 7 | _D_ | &rarr; | `class` `id` _E_ `{` _AG_ `}` `;` | `class` |
-| 8 | _E_ | &rarr; | `:` `id` _H_ | `:` |
-| 9 | _E_ | &rarr; | &epsilon; | `{` |
-| 10 | _F_ | &rarr; | `id` _AY_ | `id` |
-| 11 | _F_ | &rarr; | _AX_ | `for`, `get`, `if`, `put`, `return` |
-| 12 | _F_ | &rarr; | _P_ _F_ | `float`, `int` |
-| 13 | _G_ | &rarr; | `id` _Q_ `;` _F_ | `id` |
-| 14 | _H_ | &rarr; | `,` `id` _H_ | `,` |
-| 15 | _H_ | &rarr; | &epsilon; | `{` |
-| 16 | _I_ | &rarr; | _AL_ _I_ | `(`, `.` |
-| 17 | _J_ | &rarr; | `float` | `float` |
-| 18 | _J_ | &rarr; | `id` | `id` |
-| 19 | _J_ | &rarr; | `int` | `int` |
-| 20 | _K_ | &rarr; | _J_ `id` _Q_ _AO_ | `float`, `id`, `int` |
-| 21 | _K_ | &rarr; | ε | `)` |
-| 22 | _L_ | &rarr; | _J_ _M_ `(` _K_ `)` | `float`, `id`, `int` |
-| 23 | _M_ | &rarr; | `id` _BA_ | `id` |
-| 24 | _N_ | &rarr; | _L_ _C_ `;` | `float`, `id`, `int` |
-| 25 | _O_ | &rarr; | `id` _T_ _O_ | `id` |
-| 26 | _O_ | &rarr; | _R_ _O_ | `for`, `get`, `if`, `put`, `return`
-| 27 | _O_ | &rarr; | ε | `}`
-| 28 | _P_ | &rarr; | `float` `id` _Q_ `;` | `float` |
-| 29 | _P_ | &rarr; | `int` `id` _Q_ `;` | `int` |
-| 30 | _Q_ | &rarr; | _AN_ _Q_ | |
-| 31 | _Q_ | &rarr; | &epsilon; | `;`, `,`, `)` |
-| 32 | _R_ | &rarr; | `for` `(` _J_ `id` `=` _U_ `;` _X_ `;` `id` _T_ `)` _V_ `;` | `for` |
-| 33 | _R_ | &rarr; | `get` `(` `id` _Y_ `)` `;` | `get` |
-| 34 | _R_ | &rarr; | `if` `(` _U_ `)` `then` _V_ `;` | `if` |
-| 35 | _R_ | &rarr; | `put` `(` _U_ `)` `;` | `put` |
-| 36 | _R_ | &rarr; | `return` `(` _U_ `)` `;` | `return` |
-| 37 | _T_ | &rarr; | _Y_ `=` _U_ | `(`, `.` |
-| 38 | _U_ | &rarr; | _Z_ _AZ_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
-| 39 | _V_ | &rarr; | `{` _O_ `}` | `{` |
-| 40 | _V_ | &rarr; | `id` _T_ | `id` |
-| 41 | _V_ | &rarr; | _R_ | `for`, `get`, `if`, `put`, `return` |
-| 42 | _V_ | &rarr; | &epsilon; | `;` |
-| 43 | _W_ | &rarr; | `float` `id` _AI_ | `float` |
-| 44 | _W_ | &rarr; | `id` `id` _AI_ | `id` |
-| 45 | _W_ | &rarr; | `int` `id` _AI_ | `int` |
-| 46 | _W_ | &rarr; | &epsilon; | `}` |
-| 47 | _X_ | &rarr; | _Z_ _AA_ _Z_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
-| 48 | _Y_ | &rarr; | _I_ _AJ_ | `(`, `.` |
-| 49 | _Z_ | &rarr; | _AC_ _BE_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
-| 50 | _AA_ | &rarr; | `<` | `<` |
-| 51 | _AA_ | &rarr; | `<=` | `<=` |
-| 52 | _AA_ | &rarr; | `<>` | `<>` |
-| 53 | _AA_ | &rarr; | `==` | `==` |
-| 54 | _AA_ | &rarr; | `>` | `>` |
-| 55 | _AA_ | &rarr; | `>=` | `>=` |
-| 56 | _AB_ | &rarr; | `+` | `+` |
-| 57 | _AB_ | &rarr; | `-` | `-` |
-| 58 | _AB_ | &rarr; | `or` | `or` |
-| 59 | _AB_ | &rarr; | `¦¦` | `¦¦` |
-| 60 | _AC_ | &rarr; | _AF_ _BD_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
-| 61 | _AD_ | &rarr; | `+` | `+` |
-| 62 | _AD_ | &rarr; | `-` | `-` |
-| 63 | _AE_ | &rarr; | `&&` | `&&` |
-| 64 | _AE_ | &rarr; | `*` | `*` |
-| 65 | _AE_ | &rarr; | `/` | `/` |
-| 66 | _AE_ | &rarr; | `and` | `and` |
-| 67 | _AF_ | &rarr; | `(` _Z_ `)` | `(` |
-| 68 | _AF_ | &rarr; | `floatNum` | `floatNum` |
-| 69 | _AF_ | &rarr; | `id` _BB_ | `id` |
-| 70 | _AF_ | &rarr; | `intNum` | `intNum` |
-| 71 | _AF_ | &rarr; | _AH_ _AF_ | `!`, `not` |
-| 72 | _AF_ | &rarr; | _AD_ _AF_ | `+`, `-` |
-| 73 | _AG_ | &rarr; | `float` `id` _AT_ | `float` |
-| 74 | _AG_ | &rarr; | `id` `id` _AT_ | `id` |
-| 75 | _AG_ | &rarr; | `int` `id` _AT_ | `int` |
-| 76 | _AG_ | &rarr; | &epsilon; | `}` |
-| 77 | _AH_ | &rarr; | `!` | `!` |
-| 78 | _AH_ | &rarr; | `not` | `not` |
-| 79 | _AI_ | &rarr; | `(` _K_ `)` `;` _W_ | `(` |
-| 80 | _AJ_ | &rarr; | _AM_ _AJ_ | |
-| 81 | _AJ_ | &rarr; | &epsilon; | `.`, `=`, `)`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| 82 | _AK_ | &rarr; | _U_ _AP_ | `(`, `floatNum`, `id`, `intNum`, `!`, `not`, `+`, `-` |
-| 83 | _AK_ | &rarr; | &epsilon; | `)`
-| 84 | _AL_ | &rarr; | `(` _AK_ `)` `.` | `(` |
-| 85 | _AL_ | &rarr; | _AJ_ `.` | `.` |
-| 86 | _AM_ | &rarr; | `[` _Z_ `]` | |
-| 87 | _AN_ | &rarr; | `[` `intNum` `]` | |
-| 88 | _AO_ | &rarr; | _AQ_ _AO_ | `,` |
-| 89 | _AO_ | &rarr; | &epsilon; | `)` |
-| 90 | _AP_ | &rarr; | _AR_ _AP_ | `,` |
-| 91 | _AP_ | &rarr; | &epsilon; | `)` |
-| 92 | _AQ_ | &rarr; | `,` _J_ `id` _Q_ | `,` |
-| 93 | _AR_ | &rarr; | `,` _U_ | `,` |
-| 94 | _AS_ | &rarr; | _Q_ `;` _AG_ | `;` |
-| 95 | _AT_ | &rarr; | _AI_ | `(` |S
-| 96 | _AT_ | &rarr; | _AS_ | `;`, `]` |
-| 97 | _AU_ | &rarr; | `id` _AW_ | `id` |
-| 98 | _AV_ | &rarr; | _AX_ | `for`, `get`, `if`, `put`, `return`, `}` |
-| 99 | _AV_ | &rarr; | _AU_ | `id` |
-| 100 | _AW_ | &rarr; | _T_ _AV_ | `(`, `.` |
-| 101 | _AX_ | &rarr; | _R_ _AV_ | `for`, `get`, `if`, `put`, `return` |
-| 102 | _AX_ | &rarr; | &epsilon; | `}` |
-| 103 | _AY_ | &rarr; | _AW_ | `(`, `.` |
-| 104 | _AY_ | &rarr; | _G_ | `id` |
-| 105 | _AZ_ | &rarr; | _AA_ _Z_ | `<`, `<=`, `<>`, `==`, `>`, `>=` |
-| 106 | _AZ_ | &rarr; | &epsilon; | `,`, `;`, `)`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| 107 | _BA_ | &rarr; | `::` `id` | `::` |
-| 108 | _BA_ | &rarr; | &epsilon; | `(` |
-| 109 | _BB_ | &rarr; | _I_ _BC_ | `(`, `.` |
-| 110 | _BC_ | &rarr; | `(` _AK_ `)` | `(` |
-| 111 | _BC_ | &rarr; | _AJ_ | |
-| 112 | _BD_ | &rarr; | _AE_ _AF_ _BD_ | `&&`, `*`, `/`, `and` |
-| 113 | _BD_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| 114 | _BE_ | &rarr; | _AB_ _AC_ _BE_ | `+`, `-`, `or`, `¦¦` |
-| 115 | _BE_ | &rarr; | &epsilon; | `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `for`, `get`, `if`, `put`, `return`, `id`, `}` |
-| 116 | _BB_ | &rarr; | &epsilon; | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<`, `<=`, `<>`, `==`, `>`, `>=`, `;`, `,`, `id`, `for`, `get`, `if`, `put`, `return`, `}` |
-| 117 | _Y_ | &rarr; | &epsilon; | `=`, `)` |
-| 118 | POP error | POP error | POP error | POP error |
-| 119 | SCAN error | SCAN error | SCAN error | SCAN error |
+| 1 | _Program_ | &rarr; | _ClassDeclarationRecursion_ _FunctionDefinitionRecursion_ `program` _FunctionBody_ `;` | `class`, `id`, `float`, `int`, `program` |
+| 2 | _AdditiveOperator_ | &rarr; | `+` | `+` |
+| 3 | _AdditiveOperator_ | &rarr; | `-` | `-` |
+| 4 | _AdditiveOperator_ | &rarr; | `or` | `or` |
+| 5 | _AdditiveOperator_ | &rarr; | `¦¦` | `¦¦` |
+| 6 | _ArithmeticExpression_ | &rarr; | _Term_ _ArithmeticExpressionTail_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| 7 | _ArithmeticExpressionTail_ | &rarr; | _AdditiveOperator_ _Term_ _ArithmeticExpressionTail_ | `+`, `-`, `or`, `¦¦` |
+| 8 | _ArithmeticExpressionTail_ | &rarr; | &epsilon; | `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 9 | _ArithmeticOrRelationalExpression_ | &rarr; | _RelationalOperator_ _ArithmeticExpression_ | `<>`, `<`, `=`, `==`, `>`, `>=` |
+| 10 | _ArithmeticOrRelationalExpression_ | &rarr; | &epsilon; | `;`, `)`, `,` |
+| 11 | _ArraySize_ | &rarr; | `[` `intNum` `]` | `[` |
+| 12 | _ArraySizeRecursion_ | &rarr; | _ArraySize_ _ArraySizeRecursion_ | `[` |
+| 13 | _ArraySizeRecursion_ | &rarr; | &epsilon; | `;`, `,`, `)` |
+| 14 | _AssignmentStatement_ | &rarr; | _Variable_ `=` _Expression_ | `id` |
+| 15 | _ClassDeclaration_ | &rarr; | `class` `id` _OptionalInheritanceList_ `{` _VariableThenFunctionDeclarationRecursion_ `}` `;` | `class` |
+| 16 | _ClassDeclarationRecursion_ | &rarr; | _ClassDeclaration_ _ClassDeclarationRecursion_ | `class` |
+| 17 | _ClassDeclarationRecursion_ | &rarr; | &epsilon; | `program`, `id`, `float`, `int` |
+| 18 | _Expression_ | &rarr; | _ArithmeticExpression_ _ArithmeticOrRelationalExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| 19 | _Factor_ | &rarr; | `(` ArithmeticExpression `)` | `(` |
+| 20 | _Factor_ | &rarr; | _FunctionCallOrVariable_ | `id` |
+| 21 | _Factor_ | &rarr; | _NegationOperator_ _Factor_ | `!`, `not` |
+| 22 | _Factor_ | &rarr; | _NumberSign_ _Factor_ | `+`, `-` |
+| 23 | _Factor_ | &rarr; | `floatNum` | `floatNum` |
+| 24 | _Factor_ | &rarr; | `intNum` | `intNum` |
+| 25 | _FunctionArguments_ | &rarr; | _Expression_ _FunctionArgumentsTailRecursion_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| 26 | _FunctionArguments_ | &rarr; | &epsilon; | `)` |
+| 27 | _FunctionArgumentsTail_ | &rarr; | `,` _Expression_ | `,` |
+| 28 | _FunctionArgumentsTailRecursion_ | &rarr; | _FunctionArgumentsTail_ _FunctionArgumentsTailRecursion_ | `,` |
+| 29 | _FunctionArgumentsTailRecursion_ | &rarr; | &epsilon; | `)` |
+| 30 | _FunctionBody_ | &rarr; | `{` _VariableDeclarationRecursionThenStatementRecursionA_ `}` | `{` |
+| 31 | _FunctionCallOrVariable_ | &rarr; | `id` _FunctionCallOrVariableTail_ | `id` |
+| 32 | _FunctionCallOrVariableTail_ | &rarr; | _FunctionCallParensOrIndexing_ _FunctionCallOrVariableTailRecursion_ | `(`, `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| 33 | _FunctionCallOrVariableTailRecursion_ | &rarr; | `.` `id` _FunctionCallOrVariableTail_ | `.` |
+| 34 | _FunctionCallOrVariableTailRecursion_ | &rarr; | &epsilon; | `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 35 | _FunctionCallParensOrIndexing_ | &rarr; | `(` _FunctionArguments_ `)` | `(` |
+| 36 | _FunctionCallParensOrIndexing_ | &rarr; | _IndexingRecursion_ | `[`, `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,`|
+| 37 | _FunctionDeclarationRecursionStart_ | &rarr; | _Type_ `id` _FunctionDeclarationRecursionTail_ | `id`, `float`, `int` |
+| 38 | _FunctionDeclarationRecursionStart_ | &rarr; | &epsilon; | `}` |
+| 39 | _FunctionDeclarationRecursionTail_ | &rarr; | `(` _FunctionParameters_ `)` `;` _FunctionDeclarationRecursionStart_ | `(` |
+| 40 | _FunctionDefinition_ | &rarr; | _FunctionHeader_ _FunctionBody_ `;` | `id`, `float`, `int` |
+| 41 | _FunctionDefinitionRecursion_ | &rarr; | _FunctionDefinition_ _FunctionDefinitionRecursion_ | `id`, `float`, `int` |
+| 42 | _FunctionDefinitionRecursion_ | &rarr; | &epsilon; | `program` |
+| 43 | _FunctionHeader_ | &rarr; | _Type_ _OptionalNamespacing_ `(` _FunctionParameters_ `)` | `id`, `float`, `int` |
+| 44 | _FunctionParameters_ | &rarr; | _Type_ `id` _ArraySizeRecursion_ _FunctionParametersTailRecursion_ | `id`, `float`, `int` |
+| 45 | _FunctionParameters_ | &rarr; | &epsilon; | `)` |
+| 46 | _FunctionParametersTail_ | &rarr; | `,` _Type_ `id` _ArraySizeRecursion_ | `,` |
+| 47 | _FunctionParametersTailRecursion_ | &rarr; | _FunctionParametersTail_ _FunctionParametersTailRecursion_ | `,` |
+| 48 | _FunctionParametersTailRecursion_ | &rarr; | &epsilon; | `)` |
+| 49 | _IdListRecursion_ | &rarr; | `,` `id` _IdListRecursion_ | `,` |
+| 50 | _IdListRecursion_ | &rarr; | &epsilon; | `{` |
+| 51 | _Indexing_ | &rarr; | `[` _ArithmeticExpression_ `]` | `[` |
+| 52 | _IndexingRecursion_ | &rarr; | _Indexing_ _IndexingRecursion_ | `[` |
+| 53 | _IndexingRecursion_ | &rarr; | &epsilon; | `.`, `=`, `&&`, `*`, `/`, `and`, `+`, `-`, `or`, `¦¦`, `)`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `;`, `,` |
+| 54 | _MultiplicativeOperator_ | &rarr; | `&&` | `&&` |
+| 55 | _MultiplicativeOperator_ | &rarr; | `*` | `*` |
+| 56 | _MultiplicativeOperator_ | &rarr; | `/` | `/` |
+| 57 | _MultiplicativeOperator_ | &rarr; | `and` | `and` |
+| 58 | _NegationOperator_ | &rarr; | `!` | `!` |
+| 59 | _NegationOperator_ | &rarr; | `not` | `not` |
+| 60 | _NumberSign_ | &rarr; | `+` | `+` |
+| 61 | _NumberSign_ | &rarr; | `-` | `-` |
+| 62 | _NumberType_ | &rarr; | `float` | `float` |
+| 63 | _NumberType_ | &rarr; | `int` | `int` |
+| 64 | _OptionalInheritanceList_ | &rarr; | `:` `id` _IdListRecursion_ | `:` |
+| 65 | _OptionalInheritanceList_ | &rarr; | &epsilon; | `{` |
+| 66 | _OptionalNamespacing_ | &rarr; | `id` _OptionalNamespacingTail_ | `id` |
+| 67 | _OptionalNamespacingTail_ | &rarr; | `::` `id` | `::` |
+| 68 | _OptionalNamespacingTail_ | &rarr; | &epsilon; | `(` |
+| 69 | _RelationalExpression_ | &rarr; | _ArithmeticExpression_ _RelationalOperator_ _ArithmeticExpression_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| 70 | _RelationalOperator_ | &rarr; | `<>` | `<>` |
+| 71 | _RelationalOperator_ | &rarr; | `<` | `<` |
+| 72 | _RelationalOperator_ | &rarr; | `<=` | `<=` |
+| 73 | _RelationalOperator_ | &rarr; | `==` | `==` |
+| 74 | _RelationalOperator_ | &rarr; | `>` | `>` |
+| 75 | _RelationalOperator_ | &rarr; | `>=` | `>=` |
+| 76 | _Statement_ | &rarr; | _AssignmentStatement_ `;` | `id` |
+| 77 | _Statement_ | &rarr; | _StatementWithoutAssignment_ | `for`, `get`, `if`, `put`, `return` |
+| 78 | _StatementBlock_ | &rarr; | _Statement_ | `id`, `for`, `get`, `if`, `put`, `return` |
+| 79 | _StatementBlock_ | &rarr; | &epsilon; | `;`, `else` |
+| 80 | _StatementBlock_ | &rarr; | `{` _StatementRecursion_ `}` | `{` |
+| 81 | _StatementRecursion_ | &rarr; | _Statement_ _StatementRecursion_ | `id`, `for`, `get`, `if`, `put`, `return` |
+| 82 | _StatementRecursion_ | &rarr; | &epsilon; | `}` |
+| 83 | _StatementWithoutAssignment_ | &rarr; | `for` `(` _Type_ `id` `=` _Expression_ `;` _RelationalExpression_ `;` _AssignmentStatement_ `)` _StatementBlock_ `;` | `for` |
+| 84 | _StatementWithoutAssignment_ | &rarr; | `get` `(` _Variable_ `)` `;` | `get` |
+| 85 | _StatementWithoutAssignment_ | &rarr; | `if` `(` _Expression_ `)` `then` _StatementBlock_ `else` _StatementBlock_ `;` | `if` |
+| 86 | _StatementWithoutAssignment_ | &rarr; | `put` `(` _Expression_ `)` `;` | `put` |
+| 87 | _StatementWithoutAssignment_ | &rarr; | `return` `(` _Expression_ `)` `;` | `return` |
+| 88 | _Term_ | &rarr; | _Factor_ _TermRecursion_ | `(`, `floatNum`, `intNum`, `id`, `+`, `-`, `!`, `not` |
+| 89 | _TermRecursion_ | &rarr; | _MultiplicativeOperator_ _Factor_ _TermRecursion_ | `&&`, `*`, `/`, `and` |
+| 90 | _TermRecursion_ | &rarr; | &epsilon; | `+`, `-`, `or`, `¦¦`, `<>`, `<`, `<=`, `==`, `>`, `>=`, `]`, `)`, `;`, `,` |
+| 91 | _Type_ | &rarr; | _NumberType_ | `float`, `int` |
+| 92 | _Type_ | &rarr; | `id` | `id` |
+| 93 | _Variable_ | &rarr; | `id` _VariableTail_ | `id` |
+| 94 | _VariableDeclarationRecursionThenStatementRecursionA_ | &rarr; | _NumberType_ `id` _ArraySizeRecursion_ `;` _VariableDeclarationRecursionThenStatementRecursionA_ | `float`, `int` |
+| 95 | _VariableDeclarationRecursionThenStatementRecursionA_ | &rarr; | &epsilon; | `}` |
+| 96 | _VariableDeclarationRecursionThenStatementRecursionA_ | &rarr; | _StatementWithoutAssignment_ _StatementRecursion_ | `for`, `get`, `if`, `put`, `return` |
+| 97 | _VariableDeclarationRecursionThenStatementRecursionA_ | &rarr; | `id` _VariableDeclarationRecursionThenStatementRecursionB_ | `id` |
+| 98 | _VariableDeclarationRecursionThenStatementRecursionB_ | &rarr; | _VariableTail_ `=` _Expression_ `;` _StatementRecursion_ | `(`, `[`, `.`, `=` |
+| 99 | _VariableDeclarationRecursionThenStatementRecursionB_ | &rarr; | `id` _ArraySizeRecursion_ `;` _VariableDeclarationRecursionThenStatementRecursionA_ | `id` |
+| 100 | _VariableTail_ | &rarr; | `(` _FunctionArguments_ `)` `.` `id` _VariableTail_ | `(` |
+| 101 | _VariableTail_ | &rarr; | _IndexingRecursion_ _VariableTailTail_ | `[`, `.`, `=`, `)` |
+| 102 | _VariableTailTail_ | &rarr; | `.` `id` _VariableTail_ | `.` |
+| 103 | _VariableTailTail_ | &rarr; | &epsilon; | `=`, `)` |
+| 104 | _VariableThenFunctionDeclarationRecursion_ | &rarr; | _Type_ `id` _VariableThenFunctionDeclarationRecursionTail_ | `id`, `float`, `int` |
+| 105 | _VariableThenFunctionDeclarationRecursion_ | &rarr; | &epsilon; | `}` |
+| 106 | _VariableThenFunctionDeclarationRecursionTail_ | &rarr; | _ArraySizeRecursion_ `;` _VariableThenFunctionDeclarationRecursion_ | `[`, `;` |
+| 107 | _VariableThenFunctionDeclarationRecursionTail_ | &rarr; | _FunctionDeclarationRecursionTail_ | `(` |
+| 108 | POP ERROR | POP ERROR | POP ERROR | POP ERROR |
+| 109 | SCAN ERROR | SCAN ERROR | SCAN ERROR | SCAN ERROR |
 
 ### LL(1) Parsing Table
 
@@ -639,65 +573,63 @@ The rows represent the current leftmost nonterminal in the parse tree.
 
 Every table cell maps the indicates how the current non-terminal should be expanded based on the next input token. The numbers correspond to the rows of entries in the above prediction table, where the production right-hand side expression would be used to expand the current non-terminal.
 
-| |`program` | `;` | `{` | `}` | `class` | `id` | `:` | `,` | `float` | `int` | `(` | `)` | `for` | `=` | `get` | `if` | `then` | `put` | `return` | `<` | `<=` | `<>` | `==` | `>` | `>=` | `+` | `-` | `or` | `¦¦` | `&&` | `*` | `/` | `and` | `floatNum` | `intNum` | `!` | `not` | `.` | `[` | `]` | `::` | `$` |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `S` | 1 | 119 | 119 | 119 | 1 | 1 | 119 | 119 | 1 | 1 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 118 |
-| `A` | 3 | 119 | 119 | 119 | 2 | 3 | 119 | 119 | 3 | 3 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `B` | 5 | 119 | 119 | 119 | 119 | 4 | 119 | 119 | 4 | 4 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `C` | 119 | 118 | 6 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `D` | 118 | 119 | 119 | 119 | 7 | 118 | 119 | 119 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `E` | 119 | 119 | 9 | 119 | 119 | 119 | 8 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `F` | 119 | 119 | 119 | 118 | 119 | 10 | 119 | 119 | 12 | 12 | 119 | 119 | 11 | 119 | 11 | 11 | 119 | 11 | 11 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `G` | 119 | 119 | 119 | 118 | 119 | 13 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `H` | 119 | 119 | 15 | 119 | 119 | 119 | 119 | 14 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `I` | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 119 | 16 | 118 | 118 | 118 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 16 | 16 | 118 | 119 | 119 |
-| `J` | 119 | 119 | 119 | 119 | 119 | 18 | 119 | 119 | 17 | 19 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `K` | 119 | 119 | 119 | 119 | 119 | 20 | 119 | 119 | 20 | 20 | 119 | 21 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `L` | 119 | 119 | 118 | 119 | 119 | 22 | 119 | 119 | 22 | 22 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `M` | 119 | 119 | 119 | 119 | 119 | 23 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `N` | 118 | 119 | 119 | 119 | 119 | 24 | 119 | 119 | 24 | 24 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `O` | 119 | 119 | 119 | 27 | 119 | 25 | 119 | 119 | 119 | 119 | 119 | 119 | 26 | 119 | 26 | 26 | 119 | 26 | 26 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `P` | 119 | 119 | 119 | 118 | 119 | 118 | 119 | 119 | 28 | 29 | 119 | 119 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `Q` | 119 | 31 | 119 | 119 | 119 | 119 | 119 | 31 | 119 | 119 | 119 | 31 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 30 | 119 | 119 | 119 |
-| `R` | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 32 | 119 | 33 | 34 | 119 | 35 | 36 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `T` | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 119 | 119 | 119 | 37 | 118 | 118 | 37 | 118 | 118 | 119 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 37 | 37 | 119 | 119 | 119 |
-| `U` | 119 | 118 | 119 | 118 | 119 | 38 | 119 | 118 | 119 | 119 | 38 | 118 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 38 | 38 | 119 | 119 | 119 | 119 | 119 | 119 | 38 | 38 | 38 | 38 | 119 | 119 | 119 | 119 | 119 |
-| `V` | 119 | 42 | 39 | 119 | 119 | 40 | 119 | 119 | 119 | 119 | 119 | 119 | 41 | 119 | 41 | 41 | 119 | 41 | 41 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `W` | 119 | 119 | 119 | 46 | 119 | 44 | 119 | 119 | 43 | 45 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `X` | 119 | 118 | 119 | 119 | 119 | 47 | 119 | 119 | 119 | 119 | 47 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 47 | 47 | 119 | 119 | 119 | 119 | 119 | 119 | 47 | 47 | 47 | 47 | 119 | 119 | 119 | 119 | 119 |
-| `Y` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 48 | 117 | 119 | 117 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 48 | 48 | 119 | 119 | 119 |
-| `Z` | 119 | 118 | 119 | 118 | 119 | 49 | 119 | 118 | 119 | 119 | 49 | 118 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 49 | 49 | 119 | 119 | 119 | 119 | 119 | 119 | 49 | 49 | 49 | 49 | 119 | 119 | 118 | 119 | 119 |
-| `AA` | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 50 | 51 | 52 | 53 | 54 | 55 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 119 |
-| `AB` | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 56 | 57 | 58 | 59 | 119 | 119 | 119 | 119 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 119 |
-| `AC` | 119 | 118 | 119 | 118 | 119 | 60 | 119 | 118 | 119 | 119 | 60 | 118 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 60 | 60 | 118 | 118 | 119 | 119 | 119 | 119 | 60 | 60 | 60 | 60 | 119 | 119 | 118 | 119 | 119 |
-| `AD` | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 61 | 62 | 119 | 119 | 119 | 119 | 119 | 119 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 119 |
-| `AE` | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 118 | 118 | 119 | 119 | 63 | 64 | 65 | 66 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 119 |
-| `AF` | 119 | 118 | 119 | 118 | 119 | 69 | 119 | 118 | 119 | 119 | 67 | 118 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 71 | 71 | 118 | 118 | 118 | 118 | 118 | 118 | 68 | 70 | 72 | 72 | 119 | 119 | 118 | 119 | 119 |
-| `AG` | 119 | 119 | 119 | 76 | 119 | 74 | 119 | 119 | 73 | 75 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AH` | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 118 | 118 | 77 | 78 | 119 | 119 | 119 | 119 | 119 |
-| `AI` | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 79 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AJ` | 119 | 81 | 119 | 81 | 119 | 81 | 119 | 81 | 119 | 119 | 119 | 81 | 81 | 81 | 81 | 81 | 119 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 81 | 119 | 119 | 119 | 119 | 81 | 80 | 81 | 119 | 119 |
-| `AK` | 119 | 119 | 119 | 119 | 119 | 82 | 119 | 119 | 119 | 119 | 82 | 83 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 82 | 82 | 119 | 119 | 119 | 119 | 119 | 119 | 82 | 82 | 82 | 82 | 119 | 119 | 119 | 119 | 119 |
-| `AL` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 84 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 85 | 85 | 119 | 119 | 119 |
-| `AM` | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 119 | 119 | 118 | 118 | 118 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 118 | 86 | 118 | 119 | 119 |
-| `AN` | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 87 | 119 | 119 | 119 |
-| `AO` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 88 | 119 | 119 | 119 | 89 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AP` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 90 | 119 | 119 | 119 | 91 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AQ` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 92 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AR` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 93 | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AS` | 119 | 94 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 94 | 119 | 119 | 119 |
-| `AT` | 119 | 96 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 95 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 96 | 119 | 119 | 119 |
-| `AU` | 119 | 119 | 119 | 118 | 119 | 97 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AV` | 119 | 119 | 119 | 98 | 119 | 99 | 119 | 119 | 119 | 119 | 119 | 119 | 98 | 119 | 98 | 98 | 119 | 98 | 98 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AW` | 119 | 119 | 119 | 118 | 119 | 119 | 119 | 119 | 119 | 119 | 100 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 100 | 100 | 119 | 119 | 119 |
-| `AX` | 119 | 119 | 119 | 102 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 101 | 119 | 101 | 101 | 119 | 101 | 101 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `AY` | 119 | 119 | 119 | 118 | 119 | 103 | 119 | 119 | 119 | 119 | 104 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 104 | 104 | 119 | 119 | 119 |
-| `AZ` | 119 | 106 | 119 | 106 | 119 | 106 | 119 | 106 | 119 | 119 | 119 | 106 | 106 | 119 | 106 | 106 | 119 | 106 | 106 | 105 | 105 | 105 | 105 | 105 | 105 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 |
-| `BA` | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 108 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 107 | 119 |
-| `BB` | 118 | 116 | 118 | 116 | 118 | 116 | 118 | 116 | 118 | 118 | 109 | 116 | 116 | 118 | 116 | 116 | 118 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 116 | 118 | 118 | 118 | 118 | 109 | 109 | 116 | 118 | 118]
-| `BC` | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 118 | 119 | 119 | 110 | 118 | 118 | 119 | 118 | 118 | 119 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 118 | 119 | 119 | 119 | 119 | 119 | 111 | 118 | 119 | 119 |
-| `BD` | 119 | 113 | 119 | 113 | 119 | 113 | 119 | 113 | 119 | 119 | 119 | 113 | 113 | 119 | 113 | 113 | 119 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 113 | 112 | 112 | 112 | 112 | 119 | 119 | 119 | 119 | 119 | 119 | 113 | 119 | 119 |
-| `BE` | 119 | 115 | 119 | 115 | 119 | 115 | 119 | 115 | 119 | 119 | 119 | 115 | 115 | 119 | 115 | 115 | 119 | 115 | 115 | 115 | 115 | 115 | 115 | 115 | 115 | 114 | 114 | 114 | 114 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 119 | 115 | 119 | 119 |
+|  | `program` | `;` | `+` | `-` | `or` | `¦¦` | `[` | `intNum` | `]` | `=` | `class` | `id` | `{` | `}` | `(` | `)` | `floatNum` | `,` | `.` | `&&` | `*` | `/` | `and` | `!` | `not` | `float` | `int` | `:` | `::` | `<>` | `<` | `<=` | `==` | `>` | `>=` | `for` | `get` | `if` | `then` | `else` | `put` | `return` | `$` |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| `Program` | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 1 | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 1 | 1 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 |
+| `AdditiveOperator` | 109 | 109 | 2 | 3 | 4 | 5 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ArithmeticExpression` | 109 | 108 | 6 | 6 | 109 | 109 | 109 | 6 | 108 | 109 | 109 | 6 | 109 | 109 | 6 | 108 | 6 | 108 | 109 | 109 | 109 | 109 | 109 | 6 | 6 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ArithmeticExpressionTail` | 109 | 8 | 7 | 7 | 7 | 7 | 109 | 109 | 8 | 109 | 109 | 109 | 109 | 109 | 109 | 8 | 109 | 8 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 8 | 8 | 8 | 8 | 8 | 8 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ArithmeticOrRelationalExpression` | 109 | 10 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 10 | 109 | 10 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 9 | 9 | 9 | 9 | 9 | 9 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ArraySize` | 109 | 108 | 109 | 109 | 109 | 109 | 11 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ArraySizeRecursion` | 109 | 13 | 109 | 109 | 109 | 109 | 12 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 13 | 109 | 13 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `AssignmentStatement` | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 14 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ClassDeclaration` | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 15 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `ClassDeclarationRecursion` | 17 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 16 | 17 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 17 | 17 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Expression` | 109 | 108 | 18 | 18 | 109 | 109 | 109 | 18 | 109 | 109 | 109 | 18 | 109 | 109 | 18 | 108 | 18 | 108 | 109 | 109 | 109 | 109 | 109 | 18 | 18 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Factor` | 109 | 108 | 22 | 22 | 108 | 108 | 109 | 24 | 108 | 109 | 109 | 20 | 109 | 109 | 19 | 108 | 23 | 108 | 109 | 108 | 108 | 108 | 108 | 21 | 21 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionArguments` | 109 | 109 | 25 | 25 | 109 | 109 | 109 | 25 | 109 | 109 | 109 | 25 | 109 | 109 | 25 | 26 | 25 | 109 | 109 | 109 | 109 | 109 | 109 | 25 | 25 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionArgumentsTail` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 27 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionArgumentsTailRecursion` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 29 | 109 | 28 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionBody` | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 30 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionCallOrVariable` | 109 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 108 | 109 | 109 | 31 | 109 | 109 | 109 | 108 | 109 | 108 | 109 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionCallOrVariableTail` | 109 | 108 | 108 | 108 | 108 | 108 | 32 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 32 | 108 | 109 | 108 | 32 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionCallOrVariableTailRecursion` | 109 | 34 | 34 | 34 | 34 | 34 | 109 | 109 | 34 | 109 | 109 | 109 | 109 | 109 | 109 | 34 | 109 | 34 | 33 | 34 | 34 | 34 | 34 | 109 | 109 | 109 | 109 | 109 | 109 | 34 | 34 | 34 | 34 | 34 | 34 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionCallParensOrIndexing` | 109 | 108 | 108 | 108 | 108 | 108 | 36 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 35 | 108 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionDeclarationRecursionStart` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 37 | 109 | 38 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 37 | 37 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionDeclarationRecursionTail` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 39 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionDefinition` | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 40 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 40 | 40 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionDefinitionRecursion` | 42 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 41 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 41 | 41 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionHeader` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 43 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 43 | 43 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionParameters` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 44 | 109 | 109 | 109 | 45 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 44 | 44 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionParametersTail` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 46 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `FunctionParametersTailRecursion` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 48 | 109 | 47 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `IdListRecursion` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 50 | 109 | 109 | 109 | 109 | 49 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Indexing` | 109 | 108 | 108 | 108 | 108 | 108 | 51 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `IndexingRecursion` | 109 | 53 | 53 | 53 | 53 | 53 | 52 | 109 | 53 | 53 | 109 | 109 | 109 | 109 | 109 | 53 | 109 | 53 | 53 | 53 | 53 | 53 | 53 | 109 | 109 | 109 | 109 | 109 | 109 | 53 | 53 | 53 | 53 | 53 | 53 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `MultiplicativeOperator` | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 54 | 55 | 56 | 57 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `NegationOperator` | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 58 | 59 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `NumberSign` | 109 | 109 | 60 | 61 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `NumberType` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 62 | 63 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `OptionalInheritanceList` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 65 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 64 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `OptionalNamespacing` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 66 | 109 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `OptionalNamespacingTail` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 68 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 67 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `RelationalExpression` | 109 | 108 | 69 | 69 | 109 | 109 | 109 | 69 | 109 | 109 | 109 | 69 | 109 | 109 | 69 | 109 | 69 | 109 | 109 | 109 | 109 | 109 | 109 | 69 | 69 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `RelationalOperator` | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 108 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 108 | 109 | 109 | 109 | 109 | 70 | 71 | 72 | 73 | 74 | 75 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Statement` | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 76 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 77 | 77 | 77 | 109 | 108 | 77 | 77 | 109 |
+| `StatementBlock` | 109 | 79 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 78 | 80 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 78 | 78 | 78 | 109 | 79 | 78 | 78 | 109 |
+| `StatementRecursion` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 81 | 109 | 82 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 81 | 81 | 81 | 109 | 109 | 81 | 81 | 109 |
+| `StatementWithoutAssignment` | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 83 | 84 | 85 | 109 | 108 | 86 | 87 | 109 |
+| `Term` | 109 | 108 | 88 | 88 | 108 | 108 | 109 | 88 | 108 | 109 | 109 | 88 | 109 | 109 | 88 | 108 | 88 | 108 | 109 | 109 | 109 | 109 | 109 | 88 | 88 | 109 | 109 | 109 | 109 | 108 | 108 | 108 | 108 | 108 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `TermRecursion` | 109 | 90 | 90 | 90 | 90 | 90 | 109 | 109 | 90 | 109 | 109 | 109 | 109 | 109 | 109 | 90 | 109 | 90 | 109 | 89 | 89 | 89 | 89 | 109 | 109 | 109 | 109 | 109 | 109 | 90 | 90 | 90 | 90 | 90 | 90 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Type` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 92 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 91 | 91 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `Variable` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 109 | 93 | 109 | 109 | 109 | 108 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `VariableDeclarationRecursionThenStatementRecursionA` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 97 | 109 | 95 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 94 | 94 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 96 | 96 | 96 | 109 | 109 | 96 | 96 | 109 |
+| `VariableDeclarationRecursionThenStatementRecursionB` | 109 | 109 | 109 | 109 | 109 | 109 | 98 | 109 | 109 | 98 | 109 | 99 | 109 | 108 | 98 | 109 | 109 | 109 | 98 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `VariableTail` | 109 | 109 | 109 | 109 | 109 | 109 | 101 | 109 | 109 | 108 | 109 | 109 | 109 | 109 | 100 | 108 | 109 | 109 | 101 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `VariableTailTail` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 103 | 109 | 109 | 109 | 109 | 109 | 103 | 109 | 109 | 102 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `VariableThenFunctionDeclarationRecursion` | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 104 | 109 | 105 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 104 | 104 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+| `VariableThenFunctionDeclarationRecursionTail` | 109 | 106 | 109 | 109 | 109 | 109 | 106 | 109 | 109 | 109 | 109 | 109 | 109 | 108 | 107 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 | 109 |
+
 
 ## List of Terminal Symbols (Tokens)
 
