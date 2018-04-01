@@ -2,73 +2,8 @@ use std::collections::HashMap;
 use std::collections::VecDeque;
 
 use lexer::{ Token, TokenClass };
-
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
-enum NonterminalLabel {
-    Program,
-    AdditiveOperator,
-    ArithmeticExpression,
-    ArithmeticExpressionTail,
-    ArithmeticOrRelationalExpression,
-    ArraySize,
-    ArraySizeRecursion,
-    AssignmentStatement,
-    ClassDeclaration,
-    ClassDeclarationRecursion,
-    Expression,
-    Factor,
-    FunctionArguments,
-    FunctionArgumentsTail,
-    FunctionArgumentsTailRecursion,
-    FunctionBody,
-    FunctionCallOrVariable,
-    FunctionCallOrVariableTail,
-    FunctionCallOrVariableTailRecursion,
-    FunctionCallParensOrIndexing,
-    FunctionDeclarationRecursionStart,
-    FunctionDeclarationRecursionTail,
-    FunctionDefinition,
-    FunctionDefinitionRecursion,
-    FunctionHeader,
-    FunctionParameters,
-    FunctionParametersTail,
-    FunctionParametersTailRecursion,
-    IdListRecursion,
-    Indexing,
-    IndexingRecursion,
-    MultiplicativeOperator,
-    NegationOperator,
-    NumberSign,
-    NumberType,
-    OptionalInheritanceList,
-    OptionalNamespacing,
-    OptionalNamespacingTail,
-    RelationalExpression,
-    RelationalOperator,
-    Statement,
-    StatementBlock,
-    StatementRecursion,
-    StatementWithoutAssignment,
-    Term,
-    TermRecursion,
-    Type,
-    Variable,
-    VariableDeclarationRecursionThenStatementRecursionA,
-    VariableDeclarationRecursionThenStatementRecursionB,
-    VariableTail,
-    VariableTailTail,
-    VariableThenFunctionDeclarationRecursion,
-    VariableThenFunctionDeclarationRecursionTail,
-}
-
-#[derive(Debug, Clone)]
-enum ParseSymbol {
-    Epsilon,
-    Terminal(Token),
-    Nonterminal(NonterminalLabel),
-    PopError,
-    ScanError
-}
+use parser::symbol::{ ParseSymbol, NonterminalLabel};
+use semantic::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
 
 pub struct Ast;
 
@@ -648,6 +583,7 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id")))
         ));
         m.insert(93, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::VariableId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableTail)
         ));
@@ -721,6 +657,7 @@ lazy_static! {
 
 pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
     let mut parsing_stack: Vec<ParseSymbol> = vec!();
+    let mut semantic_stack: Vec<usize> = vec!();
 
     // Initial conditions
     parsing_stack.push(
@@ -766,6 +703,11 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
                     unimplemented!(); // TODO
                 }
                 print_parser_state(&next_input_token, &parsing_stack)
+            },
+            ParseSymbol::SemanticAction(semantic_action_type) => {
+                println!(">>> We found a semantic action! It's type is {:?}", semantic_action_type);
+                SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](next_input_token.clone(), &mut semantic_stack);
+                parsing_stack.pop();
             },
             ParseSymbol::Epsilon => {
                 parsing_stack.pop();

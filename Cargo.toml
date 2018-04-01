@@ -9,6 +9,7 @@ ropey = "0.6.2"
 quicli = "0.2"
 colored = "1.6.0"
 lazy_static = "0.1.16"
+petgraph = "0.4.12"
 
 [profile.release]
 opt-level = 3
