@@ -2,8 +2,11 @@
 #[macro_use] extern crate quicli;
 extern crate colored;
 extern crate ropey;
+extern crate petgraph;
 
 pub mod output;
+pub mod semantic;
+pub mod ast;
 pub mod lexer;
 pub mod parser;
 pub mod args;
