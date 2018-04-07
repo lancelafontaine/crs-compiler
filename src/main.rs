@@ -5,6 +5,7 @@ extern crate ropey;
 extern crate petgraph;
 
 pub mod output;
+pub mod util;
 pub mod semantic;
 pub mod ast;
 pub mod lexer;
