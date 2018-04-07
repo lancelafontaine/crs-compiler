@@ -1,9 +1,10 @@
-use std::collections::HashMap;
-use std::collections::VecDeque;
+use std::collections::{ HashMap, VecDeque};
 
 use lexer::{ Token, TokenClass };
 use parser::symbol::{ ParseSymbol, NonterminalLabel};
 use semantic::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
+use util::Stack;
+use ast::GENERATED_AST;
 
 pub struct Ast;
 
@@ -230,10 +231,14 @@ lazy_static! {
         let mut m = HashMap::new();
         m.insert(1, vec!(
             ParseSymbol::Nonterminal(NonterminalLabel::ClassDeclarationRecursion),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassDeclarationList),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDefinitionRecursion),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionDefinitionList),
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("program"))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionBody),
-            ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
+            ParseSymbol::SemanticAction(SemanticActionType::ProgramMainFunction),
+            ParseSymbol::SemanticAction(SemanticActionType::ProgramFamily),
+            ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
         ));
         m.insert(2, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::MathOperator, String::from("+")))
@@ -264,6 +269,7 @@ lazy_static! {
         m.insert(10, vec!(ParseSymbol::Epsilon));
         m.insert(11, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::OpenSquareBracket, String::from("["))),
+            ParseSymbol::SemanticAction(SemanticActionType::ArrayIndexing),
             ParseSymbol::Terminal(Token::new(TokenClass::Integer, String::from("1"))),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseSquareBracket, String::from("]"))),
         ));
@@ -279,10 +285,14 @@ lazy_static! {
         ));
         m.insert(15, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("class"))),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::OptionalInheritanceList),
+            ParseSymbol::SemanticAction(SemanticActionType::InheritanceList),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenCurlyBrace, String::from("{"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableThenFunctionDeclarationRecursion),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationList),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassDeclaration),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseCurlyBrace, String::from("}"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
@@ -363,7 +373,9 @@ lazy_static! {
             ParseSymbol::Nonterminal(NonterminalLabel::IndexingRecursion),
         ));
         m.insert(37, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationType),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDeclarationRecursionTail),
         ));
@@ -371,6 +383,8 @@ lazy_static! {
         m.insert(39, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionParameters),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionParameterList),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberFunctionDeclaration),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDeclarationRecursionStart),
@@ -393,9 +407,13 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
         ));
         m.insert(44, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionParameterType),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionParameterId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::ArraySizeRecursion),
+            ParseSymbol::SemanticAction(SemanticActionType::ArrayIndexingList),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionParameterDeclaration),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionParametersTailRecursion)
         ));
         m.insert(45, vec!(ParseSymbol::Epsilon));
@@ -412,6 +430,7 @@ lazy_static! {
         m.insert(48, vec!(ParseSymbol::Epsilon));
         m.insert(49, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Comma, String::from(","))),
+            ParseSymbol::SemanticAction(SemanticActionType::InheritanceClass),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::IdListRecursion)
         ));
@@ -458,6 +477,8 @@ lazy_static! {
         ));
         m.insert(64, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::InheritanceOperator, String::from(":"))),
+            ParseSymbol::SemanticAction(SemanticActionType::InheritanceClass),
+
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::IdListRecursion)
         ));
@@ -583,7 +604,7 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id")))
         ));
         m.insert(93, vec!(
-            ParseSymbol::SemanticAction(SemanticActionType::VariableId),
+            //ParseSymbol::SemanticAction(SemanticActionType::VariableId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableTail)
         ));
@@ -636,14 +657,18 @@ lazy_static! {
         ));
         m.insert(103, vec!(ParseSymbol::Epsilon));
         m.insert(104, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationType),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
+            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationId),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableThenFunctionDeclarationRecursionTail)
         ));
         m.insert(105, vec!(ParseSymbol::Epsilon));
         m.insert(106, vec!(
             ParseSymbol::Nonterminal(NonterminalLabel::ArraySizeRecursion),
+            ParseSymbol::SemanticAction(SemanticActionType::ArrayIndexingList),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
+            ParseSymbol::SemanticAction(SemanticActionType::VariableDeclaration),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableThenFunctionDeclarationRecursion)
         ));
         m.insert(107, vec!(
@@ -656,8 +681,8 @@ lazy_static! {
 }
 
 pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
-    let mut parsing_stack: Vec<ParseSymbol> = vec!();
-    let mut semantic_stack: Vec<usize> = vec!();
+    let mut parsing_stack = Stack::new();
+    let mut semantic_stack = Stack::new();
 
     // Initial conditions
     parsing_stack.push(
@@ -674,7 +699,7 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
         let parsing_stack_length = parsing_stack.len();
 
         if parsing_stack_length > 0 {
-            current_parse_symbol = parsing_stack[parsing_stack_length - 1].clone();
+            current_parse_symbol = parsing_stack.top().unwrap();
         } else {
             // TODO: EndOfInput token was popped off! Error here
             unimplemented!();
@@ -705,8 +730,8 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
                 print_parser_state(&next_input_token, &parsing_stack)
             },
             ParseSymbol::SemanticAction(semantic_action_type) => {
-                println!(">>> We found a semantic action! It's type is {:?}", semantic_action_type);
-                SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](next_input_token.clone(), &mut semantic_stack);
+                SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](semantic_action_type, next_input_token.clone(), &mut semantic_stack);
+                println!(">> semantic stack: {:?}", semantic_stack);
                 parsing_stack.pop();
             },
             ParseSymbol::Epsilon => {
@@ -725,9 +750,11 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
     }
     // Checking final conditions for parsing
     if parsing_stack.len() == 1 {
-        if let ParseSymbol::Terminal(last_token) = parsing_stack[0].clone() {
+        if let ParseSymbol::Terminal(last_token) = parsing_stack.top().unwrap() {
             if last_token.class == TokenClass::EndOfInput {
                 let _ast = Ast;
+                GENERATED_AST.lock().unwrap().print_graph();
+                println!("Rest of semantic stack: {:?}", semantic_stack);
                 return Some(_ast)
             }
         }
@@ -757,7 +784,7 @@ fn reverse_parse_symbols(vec: Vec<ParseSymbol>) -> Vec<ParseSymbol> {
         .collect::<Vec<ParseSymbol>>()
 }
 
-fn print_parser_state(next_input_token: &Token, parsing_stack: &Vec<ParseSymbol>) {
-    println!(">>> INPUT TOKEN: {:?} <<<", next_input_token);
-    println!(">>> PARSING_STACK: {:#?} <<<", parsing_stack);
+fn print_parser_state(next_input_token: &Token, parsing_stack: &Stack<ParseSymbol>) {
+    //println!(">>> INPUT TOKEN: {:?} <<<", next_input_token);
+    //println!(">>> PARSING_STACK: {:#?} <<<", parsing_stack);
 }
