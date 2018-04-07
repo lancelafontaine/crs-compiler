@@ -236,7 +236,6 @@ lazy_static! {
             ParseSymbol::SemanticAction(SemanticActionType::FunctionDefinitionList),
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("program"))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionBody),
-            ParseSymbol::SemanticAction(SemanticActionType::ProgramMainFunction),
             ParseSymbol::SemanticAction(SemanticActionType::ProgramFamily),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
         ));
@@ -348,6 +347,7 @@ lazy_static! {
         m.insert(30, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::OpenCurlyBrace, String::from("{"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableDeclarationRecursionThenStatementRecursionA),
+            ParseSymbol::SemanticAction(SemanticActionType::StatementBlock),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseCurlyBrace, String::from("}")))
         ));
         m.insert(31, vec!(
@@ -373,9 +373,9 @@ lazy_static! {
             ParseSymbol::Nonterminal(NonterminalLabel::IndexingRecursion),
         ));
         m.insert(37, vec!(
-            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationType),
+            ParseSymbol::SemanticAction(SemanticActionType::Type),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
-            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationId),
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDeclarationRecursionTail),
         ));
@@ -396,14 +396,17 @@ lazy_static! {
         ));
         m.insert(41, vec!(
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDefinition),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionDefinition),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionDefinitionRecursion)
         ));
         m.insert(42, vec!(ParseSymbol::Epsilon));
         m.insert(43, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::Type),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
             ParseSymbol::Nonterminal(NonterminalLabel::OptionalNamespacing),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::FunctionParameters),
+            ParseSymbol::SemanticAction(SemanticActionType::FunctionParameterList),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
         ));
         m.insert(44, vec!(
@@ -484,11 +487,13 @@ lazy_static! {
         ));
         m.insert(65, vec!(ParseSymbol::Epsilon));
         m.insert(66, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::OptionalNamespacingTail)
         ));
         m.insert(67, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::ScopeResolutionOperator, String::from("::"))),
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
         ));
         m.insert(68, vec!(ParseSymbol::Epsilon));
@@ -657,9 +662,9 @@ lazy_static! {
         ));
         m.insert(103, vec!(ParseSymbol::Epsilon));
         m.insert(104, vec!(
-            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationType),
+            ParseSymbol::SemanticAction(SemanticActionType::Type),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
-            ParseSymbol::SemanticAction(SemanticActionType::ClassMemberDeclarationId),
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableThenFunctionDeclarationRecursionTail)
         ));
