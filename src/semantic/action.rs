@@ -48,6 +48,7 @@ pub enum SemanticActionType {
     StatementBlock,
     IfStatement,
     AssignmentStatement,
+    ForLoopAssignmentStatement,
     ForLoopStatement,
     GetStatement,
     PutStatement,
@@ -172,6 +173,10 @@ lazy_static! {
         m.insert(
             SemanticActionType::IfStatement,
             semantic_action_if_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
+        );
+        m.insert(
+            SemanticActionType::ForLoopAssignmentStatement,
+            semantic_action_assignment_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
         );
         m.insert(
             SemanticActionType::AssignmentStatement,
@@ -454,11 +459,33 @@ fn semantic_action_factor(action_type: SemanticActionType, token: Token, mut sem
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-
-
-fn semantic_action_if_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {}
-fn semantic_action_for_loop_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {}
-fn semantic_action_get_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {}
-fn semantic_action_put_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {}
-fn semantic_action_return_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {}
+fn semantic_action_get_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![SemanticActionType::Variable];
+    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
+}
+fn semantic_action_put_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![SemanticActionType::Expression];
+    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
+}
+fn semantic_action_return_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![SemanticActionType::Expression];
+    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
+}
+fn semantic_action_if_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![
+        SemanticActionType::RelationalExpression,
+        SemanticActionType::StatementBlock
+    ];
+    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
+}
+fn semantic_action_for_loop_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![
+        SemanticActionType::VariableDeclaration,
+        SemanticActionType::Expression,
+        SemanticActionType::RelationalExpression,
+        SemanticActionType::ForLoopAssignmentStatement,
+        SemanticActionType::StatementBlock
+    ];
+    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
+}
 
