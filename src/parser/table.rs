@@ -285,8 +285,10 @@ lazy_static! {
         m.insert(13, vec!(ParseSymbol::Epsilon));
         m.insert(14, vec!(
             ParseSymbol::Nonterminal(NonterminalLabel::Variable),
+            ParseSymbol::SemanticAction(SemanticActionType::Variable),
             ParseSymbol::Terminal(Token::new(TokenClass::AssignmentOperator, String::from("="))),
-            ParseSymbol::Nonterminal(NonterminalLabel::Expression)
+            ParseSymbol::Nonterminal(NonterminalLabel::Expression),
+            ParseSymbol::SemanticAction(SemanticActionType::Expression),
         ));
         m.insert(15, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("class"))),
@@ -546,6 +548,7 @@ lazy_static! {
         ));
         m.insert(76, vec!(
             ParseSymbol::Nonterminal(NonterminalLabel::AssignmentStatement),
+            ParseSymbol::SemanticAction(SemanticActionType::AssignmentStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
         m.insert(77, vec!(
@@ -568,23 +571,32 @@ lazy_static! {
         m.insert(83, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("for"))),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
+            ParseSymbol::SemanticAction(SemanticActionType::Type),
             ParseSymbol::Nonterminal(NonterminalLabel::Type),
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
+            ParseSymbol::SemanticAction(SemanticActionType::ArraySizeList),
+            ParseSymbol::SemanticAction(SemanticActionType::VariableDeclaration),
             ParseSymbol::Terminal(Token::new(TokenClass::AssignmentOperator, String::from("="))),
             ParseSymbol::Nonterminal(NonterminalLabel::Expression),
+            ParseSymbol::SemanticAction(SemanticActionType::Expression),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
             ParseSymbol::Nonterminal(NonterminalLabel::RelationalExpression),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";"))),
             ParseSymbol::Nonterminal(NonterminalLabel::AssignmentStatement),
+            ParseSymbol::SemanticAction(SemanticActionType::ForLoopAssignmentStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Nonterminal(NonterminalLabel::StatementBlock),
+            ParseSymbol::SemanticAction(SemanticActionType::StatementBlock),
+            ParseSymbol::SemanticAction(SemanticActionType::ForLoopStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
         m.insert(84, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("get"))),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::Variable),
-
+            ParseSymbol::SemanticAction(SemanticActionType::Variable),
+            ParseSymbol::SemanticAction(SemanticActionType::GetStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
@@ -592,19 +604,22 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("if"))),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::Expression),
-
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("then"))),
             ParseSymbol::Nonterminal(NonterminalLabel::StatementBlock),
+            ParseSymbol::SemanticAction(SemanticActionType::StatementBlock),
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("else"))),
             ParseSymbol::Nonterminal(NonterminalLabel::StatementBlock),
+            ParseSymbol::SemanticAction(SemanticActionType::StatementBlock),
+            ParseSymbol::SemanticAction(SemanticActionType::IfStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
         m.insert(86, vec!(
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("put"))),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::Expression),
-
+            ParseSymbol::SemanticAction(SemanticActionType::Expression),
+            ParseSymbol::SemanticAction(SemanticActionType::PutStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
@@ -612,7 +627,8 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::Keyword, String::from("return"))),
             ParseSymbol::Terminal(Token::new(TokenClass::OpenParens, String::from("("))),
             ParseSymbol::Nonterminal(NonterminalLabel::Expression),
-
+            ParseSymbol::SemanticAction(SemanticActionType::Expression),
+            ParseSymbol::SemanticAction(SemanticActionType::ReturnStatement),
             ParseSymbol::Terminal(Token::new(TokenClass::CloseParens, String::from(")"))),
             ParseSymbol::Terminal(Token::new(TokenClass::Semicolon, String::from(";")))
         ));
@@ -636,6 +652,7 @@ lazy_static! {
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id")))
         ));
         m.insert(93, vec!(
+            ParseSymbol::SemanticAction(SemanticActionType::Id),
             ParseSymbol::Terminal(Token::new(TokenClass::Identifier, String::from("id"))),
             ParseSymbol::Nonterminal(NonterminalLabel::VariableTail)
         ));
