@@ -192,7 +192,7 @@ lazy_static! {
         );
         m.insert(
             SemanticActionType::PutStatement,
-            semantic_action_put_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
+            semantic_action_put_or_return_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
         );
         m.insert(
             SemanticActionType::DataMember,
@@ -204,7 +204,7 @@ lazy_static! {
         );
         m.insert(
             SemanticActionType::FactorFunctionCall,
-            semantic_action_factor_function_call as fn(SemanticActionType, Token, &mut Stack<usize>)
+            semantic_action_function_call as fn(SemanticActionType, Token, &mut Stack<usize>)
         );
         m.insert(
             SemanticActionType::FunctionCall,
@@ -232,7 +232,7 @@ lazy_static! {
         );
         m.insert(
             SemanticActionType::ReturnStatement,
-            semantic_action_return_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
+            semantic_action_put_or_return_statement as fn(SemanticActionType, Token, &mut Stack<usize>)
         );
         m.insert(
             SemanticActionType::ArrayIndexingList,
@@ -279,7 +279,7 @@ fn semantic_action_generic_make_family(possible_child_node_types: Vec<SemanticAc
 // AST intermediate nodes //
 ////////////////////////////
 
-fn semantic_action_class_declaration(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_class_declaration(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::ClassId,
         SemanticActionType::InheritanceList,
@@ -287,25 +287,23 @@ fn semantic_action_class_declaration(action_type: SemanticActionType, token: Tok
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_inheritance_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_inheritance_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::InheritanceClass];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_function_parameter_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
-    let possible_child_node_types = vec![
-        SemanticActionType::FunctionParameterDeclaration,
-    ];
+fn semantic_action_function_parameter_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
+    let possible_child_node_types = vec![SemanticActionType::FunctionParameterDeclaration];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_array_size_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_array_size_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::ArraySize];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_class_declaration_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_class_declaration_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::ClassDeclaration];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_program_family(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_program_family(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::ClassDeclarationList,
         SemanticActionType::FunctionDefinitionList,
@@ -313,7 +311,7 @@ fn semantic_action_program_family(action_type: SemanticActionType, token: Token,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_function_definition(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_function_definition(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Type,
         SemanticActionType::Id,
@@ -322,18 +320,18 @@ fn semantic_action_function_definition(action_type: SemanticActionType, token: T
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_function_definition_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_function_definition_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::FunctionDefinition];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_class_member_declaration_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_class_member_declaration_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::VariableDeclaration,
         SemanticActionType::ClassMemberFunctionDeclaration
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_function_parameter_declaration(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_function_parameter_declaration(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::FunctionParameterType,
         SemanticActionType::FunctionParameterId,
@@ -341,7 +339,7 @@ fn semantic_action_function_parameter_declaration(action_type: SemanticActionTyp
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_variable_declaration(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_variable_declaration(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Type,
         SemanticActionType::Id,
@@ -349,7 +347,7 @@ fn semantic_action_variable_declaration(action_type: SemanticActionType, token: 
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_class_member_function_declaration(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_class_member_function_declaration(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Type,
         SemanticActionType::Id,
@@ -357,7 +355,7 @@ fn semantic_action_class_member_function_declaration(action_type: SemanticAction
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_statement_block(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_statement_block(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::IfStatement,
         SemanticActionType::AssignmentStatement,
@@ -369,85 +367,78 @@ fn semantic_action_statement_block(action_type: SemanticActionType, token: Token
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_assignment_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_assignment_statement(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Variable,
         SemanticActionType::Expression,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_expression(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_expression(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::RelationalExpression,
         SemanticActionType::ArithmeticExpression,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_relational_expression(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_relational_expression(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::ArithmeticExpression,
         SemanticActionType::RelationalOperator,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_factor_variable(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_factor_variable(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::DataMember,
         SemanticActionType::FactorFunctionCall,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_variable(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_variable(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::DataMember,
         SemanticActionType::FunctionCall,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_data_member(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_data_member(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Id,
         SemanticActionType::ArrayIndexingList,
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_array_indexing_list(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_array_indexing_list(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::ArithmeticExpression];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_factor_function_call(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_function_call(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::Id,
         SemanticActionType::FunctionArguments
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_function_call(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
-    let possible_child_node_types = vec![
-        SemanticActionType::Id,
-        SemanticActionType::FunctionArguments
-    ];
-    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
-}
-fn semantic_action_function_arguments(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_function_arguments(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::Expression];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_arithmetic_expression(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_arithmetic_expression(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::AdditiveOperator,
         SemanticActionType::Term
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_term(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_term(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::MultiplicativeOperator,
         SemanticActionType::Factor
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_factor(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_factor(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::NegationOperator,
         SemanticActionType::NumberSign,
@@ -459,26 +450,22 @@ fn semantic_action_factor(action_type: SemanticActionType, token: Token, mut sem
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_get_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_get_statement(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::Variable];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_put_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_put_or_return_statement(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![SemanticActionType::Expression];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_return_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
-    let possible_child_node_types = vec![SemanticActionType::Expression];
-    semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
-}
-fn semantic_action_if_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_if_statement(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::RelationalExpression,
         SemanticActionType::StatementBlock
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-fn semantic_action_for_loop_statement(action_type: SemanticActionType, token: Token, mut semantic_stack: &mut Stack<usize>) {
+fn semantic_action_for_loop_statement(action_type: SemanticActionType, _token: Token, mut semantic_stack: &mut Stack<usize>) {
     let possible_child_node_types = vec![
         SemanticActionType::VariableDeclaration,
         SemanticActionType::Expression,
@@ -488,4 +475,3 @@ fn semantic_action_for_loop_statement(action_type: SemanticActionType, token: To
     ];
     semantic_action_generic_make_family(possible_child_node_types, action_type, &mut semantic_stack);
 }
-
