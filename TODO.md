@@ -32,8 +32,11 @@
 - [ ] Implement error reporting mechanism for the syntax-driven translation and final AST, including source location display. It must report all errors present in the source code.
 - [ ] Unit tests
 - [ ] Integration tests
+- [ ] Option to export a GraphViz file from petgraph for the AST
 
 # SEMANTIC ANALYSIS
+
+- [ ] Option to export a GraphViz file from petgraph for the symbol tables.
 
 TBD
 

@@ -2,7 +2,7 @@ use std::collections::{ HashMap, VecDeque};
 
 use lexer::{ Token, TokenClass };
 use parser::symbol::{ ParseSymbol, NonterminalLabel};
-use semantic::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
+use ast::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
 use util::Stack;
 use ast::GENERATED_AST;
 

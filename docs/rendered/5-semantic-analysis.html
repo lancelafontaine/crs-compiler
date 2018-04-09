@@ -3,12 +3,13 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Compiler Overview - crs compiler documentation</title>
+        <title>Semantic Analysis - crs compiler documentation</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        <base href="">
 
         <link rel="stylesheet" href="book.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
@@ -84,7 +85,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="1-overview.html" class="active"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li><li><a href="3-parser.html"><strong aria-hidden="true">3.</strong> Syntactic Analysis</a></li><li><a href="4-sdt-and-ast-generation.html"><strong aria-hidden="true">4.</strong> Syntax-Driven Translation and AST Generation</a></li><li><a href="5-semantic-analysis.html"><strong aria-hidden="true">5.</strong> Semantic Analysis</a></li></ol>
+            <ol class="chapter"><li><a href="1-overview.html"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li><li><a href="3-parser.html"><strong aria-hidden="true">3.</strong> Syntactic Analysis</a></li><li><a href="4-sdt-and-ast-generation.html"><strong aria-hidden="true">4.</strong> Syntax-Driven Translation and AST Generation</a></li><li><a href="5-semantic-analysis.html" class="active"><strong aria-hidden="true">5.</strong> Semantic Analysis</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -146,65 +147,34 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="1-overview.html#the-crs-compiler" id="the-crs-compiler"><h1>The <code>crs</code> Compiler</h1></a>
-<p><code>crs</code> is a compiler implemented in Rust for a C++-like language, built for the <code>COMP 422 - Compiler Design</code> course at Concordia University. <a href="source_example.crs">Here</a>'s a sample program.</p>
-<a class="header" href="1-overview.html#getting-started" id="getting-started"><h2>Getting Started</h2></a>
-<p>The nightly build of the Rust programming language is required to compile this project.</p>
-<p>First, install <a href="https://www.rust-lang.org/en-US/install.html"><code>rustup</code></a> and then run <code>rustup default nightly</code>.</p>
-<p>You can compile and run the entire project with the following command:</p>
-<pre><code class="language-bash">cargo run -- tests/lexer/source_example.crs
-</code></pre>
-<a class="header" href="1-overview.html#documentation" id="documentation"><h2>Documentation</h2></a>
-<p>The compiler documentation can be read as <a href="/docs/src/SUMMARY.md">Markdown parsed by GitHub</a> or as <a href="https://lancelafontaine.com/crs-compiler/docs/rendered/">HTML rendered by mdBook</a>.</p>
-<p>All documentation is written in markdown in <code>/docs/src</code>. The HTML version can be generated with <a href="https://github.com/rust-lang-nursery/mdBook"><code>mdbook</code></a> by running <code>mdbook build</code> in the root directory.</p>
-<a class="header" href="1-overview.html#testing" id="testing"><h2>Testing</h2></a>
-<a class="header" href="1-overview.html#unit-tests" id="unit-tests"><h3>Unit Tests</h3></a>
-<p>Unit tests for the compiler application can be run with:</p>
-<pre><code class="language-bash">cargo test
-</code></pre>
-<p><img src="assets/images/lexer_unit_tests.png" alt="Example output of unit tests" /></p>
-<a class="header" href="1-overview.html#integration-tests" id="integration-tests"><h3>Integration Tests</h3></a>
-<p>Integration tests can be run using a simple bash script to query the output of commands:</p>
-<pre><code class="language-bash">./tests/lexer/lexer_integration_test.sh
-</code></pre>
-<p>These provide appropriate test cases that test for a wide variety of valid and invalid cases in the language.</p>
-<p><img src="assets/images/lexer_integration_tests.png" alt="Example output of integration tests" /></p>
-<a class="header" href="1-overview.html#component-implementation-and-architecture-overview" id="component-implementation-and-architecture-overview"><h2>Component Implementation and Architecture Overview</h2></a>
-<p>The lexer is designed in a modular fashion in order to a clean separation of concerns.</p>
-<a class="header" href="1-overview.html#main-function" id="main-function"><h3>Main Function</h3></a>
-<p>The main function's current responsibilities are to parse the command-line application's required arguments (the path to the source code file), ensure that the provided path exists, instantiate a single lexer for the entire duration of the lexical analysis, and call the <code>nextToken</code> function until the entire source code have been tokenized.</p>
-<a class="header" href="1-overview.html#lexer" id="lexer"><h3>Lexer</h3></a>
-<p>The lexer's responsibility is to manage the progress of the lexical analysis of the source code. It buffers and streams the source code to be analyzed as tokens are extracted. It maintains state about the current index of the source code being accessed, and is effectively a data structure that is passed to the state transition functions. Every call to <code>nextToken</code> results in the instantiation of a new <code>StateTransition</code> object which handles all transitions between FSM states on character input until a valid token is identified.</p>
-<a class="header" href="1-overview.html#state-transitions" id="state-transitions"><h3>State Transitions</h3></a>
-<p>The <code>StateTransition</code> module contains all information relating to transition internal state of the FSM on character input. It manages it's own internal state (the current and next states) as well as the lexer's state (which characters are being read at which index of the source code).</p>
-<p>The state transition table is a static two-dimensional array that encodes all possible transitions between all valid states. This is referred to when new characters are being read, which ultimately updates the current state and the position in the source code. The table also encodes information as to whether the current state is an error, final, or backtrack state, and the module is responsible for taking the appropriate action in these cases, which could include generating a token, modifying the buffer for the extracted lexeme, and reporting encountered error states.</p>
-<a class="header" href="1-overview.html#token" id="token"><h3>Token</h3></a>
-<p>The token is a simple data structure that stores the token's class and extracted lexeme as strings in a struct. Further improvements would be to restrict the token's class to a set of defined <code>TokenClass</code> <code>enum</code> structures which encode peculiarities about certain classes (for example, comment and newline tokens), as opposed to arbitrary text input.</p>
-<a class="header" href="1-overview.html#error-output" id="error-output"><h3>Error Output</h3></a>
-<p>An <code>ErrorType</code> enumeration is defined in the <code>output::error</code> module to differentiate between recoverable and unrecoverable errors. It is also responsible for defining all possible sorts of errors, as well as outputting basic error information to standard output.</p>
-<a class="header" href="1-overview.html#source-line-output" id="source-line-output"><h3>Source Line Output</h3></a>
-<p>The <code>output::source_line</code> module is able to analyze the information in the lexer data structure containing the source code and the current point of analysis, and print relevant lines and characters to standard output when errors occur.</p>
-<a class="header" href="1-overview.html#toolslibrariestechniques-chosen" id="toolslibrariestechniques-chosen"><h2>Tools/Libraries/Techniques Chosen</h2></a>
+                        <a class="header" href="5-semantic-analysis.html#crs-semantic-analysis" id="crs-semantic-analysis"><h1><code>crs</code> Semantic Analysis</h1></a>
+<a class="header" href="5-semantic-analysis.html#semantic-analysis" id="semantic-analysis"><h2>Semantic Analysis</h2></a>
+<p>Symbol tables are a tool used during compilation for performing semantic checks on your program. These involve verifications that can only be expressed in a context-sentive grammar, such as type inteference, type checking, and much more</p>
+<p>This compiler generates symbol tables by performing semantic actions when traversing the AST previously generated.</p>
+<p>The implementation of a symbol table was done with a graph data structure. Some assumptions about the system are listed below:</p>
 <ul>
-<li>The <a href="http://atocc.de">AtoCC</a> RegExp and kfG Editor applications were used for converting the regular expressions identified as part of the lexical specification into DFAs, as well as ensuring the syntax CFG was converted to LL(1) for predictive parsing. Althought the tool was used in the constructed of the DFA shown above, the current application <em>does not</em> output the generated tokens as a file in the AtoCC format.</li>
-<li>The <a href="http://ivanzuzak.info/noam/webapps/fsm_simulator/">FSM simulator</a> website was used for a quick but less vigorous validation of the conversion of regular expressions to DFAs.</li>
-<li>The <a href="https://docs.rs/lazy_static/1.0.0/lazy_static/">lazy_static</a> Rust library was used in order to statically store the large state transition table with values known at compile-time.</li>
-<li>The <a href="https://docs.rs/ropey/0.6.3/ropey/">Ropey</a> library was used as a Rust library to buffer the source code using the rope data structure as it is being lexically analyzed, as well as keep track of lines and line numbers for when outputting errors. I was not able to find any other data structure that modeled the lexical analysis use case so appropriately.</li>
-<li>The <a href="https://clap.rs/">clap</a> Rust library was used for simple command-line argument parsing. It was chosen given that it is mature and well-regarded in the Rust ecosystem.</li>
-<li>The <a href="https://docs.rs/colored/1.6.0/colored/">colored</a> Rust library was used for prettier output during error reporting. It was chosen for it's ease of use and minimalism.</li>
+<li>Every node can have either a <code>Table</code> or a <code>Record</code> type.</li>
+<li>A <code>Table</code> node can only have <code>Record</code> nodes as children.</li>
+<li>A <code>Record</code> node can only have <code>Table</code> nodes as children.</li>
 </ul>
-<p><img src="assets/images/fsa_simulator.png" alt="Example of using the FSM simulator website" /></p>
+<p>Imposing these restrictions on our graph results in some nice properties.</p>
+<ul>
+<li>Visiting all records in a table is done by visiting all of a <code>Table</code> node's immediate children (with a tree depth of 1).</li>
+<li>Viewing all smallers scopes (nested symbol tables) can be done by ignoring all nodes that are leaves at 1 tree depth and visiting all tables that are at 2 tree depths.</li>
+<li>Visiting a parent scope (symbol table) is done at any point by traversing 2 nodes up the tree from any <code>Table</code> node.</li>
+<li>If a <code>Table</code> node is a leaf node, this necessarily represents an empty scope.</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-
-                        
-                            <a rel="next" href="2-lexer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                            <a rel="prev" href="4-sdt-and-ast-generation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
                             </a>
+                        
+
                         
 
                         <div style="clear: both"></div>
@@ -214,11 +184,11 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-
-                
-                    <a href="2-lexer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                    <a href="4-sdt-and-ast-generation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
                     </a>
+                
+
                 
             </nav>
 

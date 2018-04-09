@@ -1,5 +1,5 @@
 use lexer::Token;
-use semantic::SemanticActionType;
+use ast::SemanticActionType;
 
 #[derive(Debug, Clone)]
 pub enum ParseSymbol {

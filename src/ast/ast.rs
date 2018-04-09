@@ -1,12 +1,12 @@
 use petgraph::{ Graph, Direction };
-use petgraph::graph::{ Node, Edge };
+use petgraph::graph::{ Node, Edge, WalkNeighbors };
 use petgraph::prelude::NodeIndex;
 use lexer::Token;
 use std::sync::Mutex;
-use semantic::SemanticActionType;
+use ast::SemanticActionType;
 
 lazy_static! {
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub static ref GENERATED_AST: Mutex<Ast> = Mutex::new(Ast::new());
 }
 
@@ -59,18 +59,16 @@ impl Ast {
         ).index()
     }
 
-/*
-    pub fn make_family() {
-
+    pub fn get_node_children(&self, index: usize) -> Vec<usize> {
+        self.root.neighbors_directed(NodeIndex::new(index), Direction::Outgoing)
+            .map(|x| x.index())
+            .collect()
     }
-    pub fn makeSibling(){
 
-    };
-
-    pub fn adoptChildren(){
-
-    };
-*/
+    /* pub fn get_node_parent(&self, index: usize) -> () {
+        self.root.neighbors(NodeIndex::new(index))
+    }
+    */
 }
 
 // Node is not aware of parent / neighbors / children

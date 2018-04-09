@@ -33,5 +33,10 @@ main!(|args: args::Args| {
 
     // Syntactic Analysis
     parser::parse(token_queue);
+
+    // AST is built at this point
+    // But no semantic checks have occurred
+    semantic::build_symbol_tables()
+
 });
 
