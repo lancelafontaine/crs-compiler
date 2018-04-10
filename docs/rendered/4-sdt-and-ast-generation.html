@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Semantic Analysis - crs compiler documentation</title>
+        <title>Syntax-Driven Translation and AST Generation - crs compiler documentation</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,7 +85,7 @@
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <ol class="chapter"><li><a href="1-overview.html"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li><li><a href="3-parser.html"><strong aria-hidden="true">3.</strong> Syntactic Analysis</a></li><li><a href="4-semantic-analysis.html" class="active"><strong aria-hidden="true">4.</strong> Semantic Analysis</a></li></ol>
+            <ol class="chapter"><li><a href="1-overview.html"><strong aria-hidden="true">1.</strong> Compiler Overview</a></li><li><a href="2-lexer.html"><strong aria-hidden="true">2.</strong> Lexical Analysis</a></li><li><a href="3-parser.html"><strong aria-hidden="true">3.</strong> Syntactic Analysis</a></li><li><a href="4-sdt-and-ast-generation.html" class="active"><strong aria-hidden="true">4.</strong> Syntax-Driven Translation and AST Generation</a></li><li><a href="5-semantic-analysis.html"><strong aria-hidden="true">5.</strong> Semantic Analysis</a></li></ol>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
@@ -147,8 +147,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <a class="header" href="4-semantic-analysis.html#crs-semantic-analysis" id="crs-semantic-analysis"><h1><code>crs</code> Semantic Analysis</h1></a>
-<a class="header" href="4-semantic-analysis.html#syntax-directed-translation" id="syntax-directed-translation"><h2>Syntax-Directed Translation</h2></a>
+                        <a class="header" href="4-sdt-and-ast-generation.html#crs-semantic-analysis" id="crs-semantic-analysis"><h1><code>crs</code> Semantic Analysis</h1></a>
+<a class="header" href="4-sdt-and-ast-generation.html#syntax-directed-translation" id="syntax-directed-translation"><h2>Syntax-Directed Translation</h2></a>
 <p>In order to perform semantic analysis of our code as well as ultimately generate an abstract syntax tree (AST), the LL(1) context-free grammar derived during the parsing stage was transformed into an attribute grammar. This involved the addition of semantic actions to the right-hand sides of our grammar's productions, which ultimately represent the execution of a subroutine to accumulate and process semantic values or semantic attributes about the program being parsed. These values can have properties such as type, value, memory size or location, translated code, correctness, or more.</p>
 <p>Semantic values are accumulated in semantic records until they can be processed by further semantic actions. However, <em>attribute migration</em> will be required given that these semantic rules and values will need to be available throughout the parsing step.</p>
 <p>Semantic actions are associated with nodes within the parse tree:</p>
@@ -157,7 +157,7 @@
 <li>Semantic actions at intermediate nodes ultimately use and validate these semantic values and pass the information up the tree through attribute migration.</li>
 </ul>
 <p>In table-driven parsers, semantic action symbols are inserted into the RHS of productions and pushed onto their own <em>semantic stack</em>. Executing a semantic action typically pops a semantic record from the semantic stack, does some processing, then pushes a semantic record back onto the stack.</p>
-<a class="header" href="4-semantic-analysis.html#ast-generation" id="ast-generation"><h2>AST Generation</h2></a>
+<a class="header" href="4-sdt-and-ast-generation.html#ast-generation" id="ast-generation"><h2>AST Generation</h2></a>
 <p>The method for generating an AST was modified slightly...</p>
 <ol>
 <li>Undergo parsing until a semantic action is discovered as a PARSE symbol</li>
@@ -199,6 +199,10 @@
                         
 
                         
+                            <a rel="next" href="5-semantic-analysis.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -212,6 +216,10 @@
                     </a>
                 
 
+                
+                    <a href="5-semantic-analysis.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 

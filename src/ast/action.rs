@@ -5,7 +5,7 @@ use util::Stack;
 
 type Callback = fn(SemanticActionType, Token, &mut Stack<usize>);
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, Copy)]
 pub enum SemanticActionType {
     ProgramFamily,
     InheritanceList,
