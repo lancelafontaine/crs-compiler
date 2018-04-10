@@ -149,6 +149,7 @@
                     <main>
                         <a class="header" href="5-semantic-analysis.html#crs-semantic-analysis" id="crs-semantic-analysis"><h1><code>crs</code> Semantic Analysis</h1></a>
 <a class="header" href="5-semantic-analysis.html#semantic-analysis" id="semantic-analysis"><h2>Semantic Analysis</h2></a>
+<a class="header" href="5-semantic-analysis.html#symbol-tables" id="symbol-tables"><h3>Symbol Tables</h3></a>
 <p>Symbol tables are a tool used during compilation for performing semantic checks on your program. These involve verifications that can only be expressed in a context-sentive grammar, such as type inteference, type checking, and much more</p>
 <p>This compiler generates symbol tables by performing semantic actions when traversing the AST previously generated.</p>
 <p>The implementation of a symbol table was done with a graph data structure. Some assumptions about the system are listed below:</p>
@@ -164,6 +165,10 @@
 <li>Visiting a parent scope (symbol table) is done at any point by traversing 2 nodes up the tree from any <code>Table</code> node.</li>
 <li>If a <code>Table</code> node is a leaf node, this necessarily represents an empty scope.</li>
 </ul>
+<a class="header" href="5-semantic-analysis.html#ast-tree-traversal-with-the-visitor-pattern" id="ast-tree-traversal-with-the-visitor-pattern"><h3>AST tree traversal with the Visitor pattern</h3></a>
+<p>The Visitor is a useful design pattern during AST tree traversal, in order to group semantic actions into one component during a specific phase of semantic analysis.</p>
+<p>A more funcitonal approach to the Visitor pattern was used in this program, but the core premise remains the same.</p>
+<p>A &quot;visitor&quot; in the form of a function callback was passed to the DFS tree-traversal algorith. This callback was executed at every node. Once the callback was executed, it executed specific visit functions based on the node type.</p>
 
                     </main>
 

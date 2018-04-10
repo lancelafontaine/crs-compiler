@@ -3,8 +3,8 @@ use petgraph::visit::Dfs;
 use petgraph::prelude::NodeIndex;
 use std::sync::Mutex;
 use lexer::Token;
-use ast::{ GENERATED_AST, SemanticActionType, AstNode };
-use std::ops::Deref;
+use ast::{ GENERATED_AST, SemanticActionType, Ast, AstNode };
+use semantic::symbol_table_visitor;
 
 lazy_static! {
     pub static ref GENERATED_SYMBOL_TABLE_GRAPH: Mutex<SymbolTableGraph> = Mutex::new(SymbolTableGraph::new());
@@ -67,11 +67,11 @@ pub struct SymbolTableRecord {
 }
 
 pub fn build_symbol_tables() {
-    let graph = GENERATED_AST.lock().unwrap();
-    let ast_root_node_index = graph.root.node_count() - 1;
+    // TODO: Refactor to prevent having to perform clone of GENERATED_AST
+    let mut graph = GENERATED_AST.lock().unwrap().clone();
 
     // Some sanity checks
-    let some_ast_root_node = graph.get_node(ast_root_node_index);
+    let some_ast_root_node = graph.get_most_recently_added_node();
     if let Some(ast_root_node) = some_ast_root_node {
         if ast_root_node.node_type != SemanticActionType::ProgramFamily {
             unimplemented!();
@@ -80,30 +80,8 @@ pub fn build_symbol_tables() {
         unimplemented!();
     }
 
-    // TODO: Optimize this DFS tree traversal
-    let mut ast_graph = graph.deref().root.map(
-        |node_index, node| node.clone(),
-        |edge_index, edge| edge.clone()
-    );
-    let mut dfs_graph = graph.deref().root.map(
-        |node_index, node| node_index.index(),
-        |edge_index, edge| edge_index.index()
-    );
-
-    let mut visited = vec![];
-    dfs(&dfs_graph, &ast_graph, ast_root_node_index, &mut visited);
-    println!("{:?}", visited)
+    // Perform DFS tree traversal with a visitor
+    let ast_root_node_index = graph.get_most_recently_added_node_index();
+    Ast::dfs(&graph, ast_root_node_index, &mut vec![], &symbol_table_visitor::visitor);
 }
 
-// TODO: Optimize this DFS tree traversal
-pub fn dfs(dfs_graph: &Graph<usize, usize>, ast_graph: &Graph<AstNode, Option<usize>>, node_index: usize, visited: &mut Vec<usize>) {
-    if !visited.contains(&node_index) {
-        visited.push(node_index);
-        println!("{}", node_index);
-        let node = ast_graph.node_weight(NodeIndex::new(node_index)).unwrap();
-        println!("{:?}", node);
-        for child_node_index in dfs_graph.neighbors(NodeIndex::new(node_index)){
-            dfs(dfs_graph, ast_graph, child_node_index.index(), visited);
-        }
-    }
-}

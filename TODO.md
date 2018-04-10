@@ -37,8 +37,8 @@
 # SEMANTIC ANALYSIS
 
 - [ ] Option to export a GraphViz file from petgraph for the symbol tables.
-
-TBD
+- [ ] Errors should be reported in synchronized order, even if different phases are implemented and errors are found in different phases.
+- [ ] Log the symbol table to a file
 
 # CODE GENERATION
 
