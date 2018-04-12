@@ -1,10 +1,10 @@
-use std::collections::{ HashMap, VecDeque};
+use std::collections::{HashMap, VecDeque};
 
-use lexer::{ Token, TokenClass };
-use parser::symbol::{ ParseSymbol, NonterminalLabel};
-use ast::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
+use ast::{SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE};
+use lexer::{Token, TokenClass};
+use parser::symbol::{NonterminalLabel, ParseSymbol};
 use util::Stack;
-use ast::GENERATED_AST;
+// use ast::GENERATED_AST;
 
 lazy_static! {
     static ref PARSE_TABLE:  [[usize; 43]; 54] = [
@@ -749,17 +749,16 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
     let mut semantic_stack = Stack::new();
 
     // Initial conditions
-    parsing_stack.push(
-        ParseSymbol::Terminal(Token::new(TokenClass::EndOfInput, String::new()))
-    );
-    parsing_stack.push(
-        ParseSymbol::Nonterminal(NonterminalLabel::Program)
-    );
+    parsing_stack.push(ParseSymbol::Terminal(Token::new(
+        TokenClass::EndOfInput,
+        String::new(),
+    )));
+    parsing_stack.push(ParseSymbol::Nonterminal(NonterminalLabel::Program));
 
     while token_queue.len() > 0 {
         let next_input_token = token_queue[0].clone();
 
-        let mut current_parse_symbol : ParseSymbol;
+        let mut current_parse_symbol: ParseSymbol;
         let parsing_stack_length = parsing_stack.len();
 
         if parsing_stack_length > 0 {
@@ -775,38 +774,46 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
                 // table lookup
                 let parse_table_row_index = NON_TERMINAL_LABELS_BY_ROW[&nonterminal_label];
                 let parse_table_column_index = PARSE_TABLE_TOKEN_BY_COLUMN[&next_input_token];
-                let production_rhs_index = PARSE_TABLE[parse_table_row_index][parse_table_column_index];
-                let mut production_rhs_expansion = &PRODUCTION_EXPANSION_BY_CELL_VALUE[&production_rhs_index].to_vec();
-                let mut rev_production_rhs_expansion = reverse_parse_symbols(production_rhs_expansion.to_vec());
+                let production_rhs_index =
+                    PARSE_TABLE[parse_table_row_index][parse_table_column_index];
+                let mut production_rhs_expansion =
+                    &PRODUCTION_EXPANSION_BY_CELL_VALUE[&production_rhs_index].to_vec();
+                let mut rev_production_rhs_expansion =
+                    reverse_parse_symbols(production_rhs_expansion.to_vec());
                 parsing_stack.pop();
                 parsing_stack.append(&mut rev_production_rhs_expansion);
                 print_parser_state(&next_input_token, &parsing_stack)
-            },
+            }
             ParseSymbol::Terminal(stack_token) => {
-                if (should_ignore_lexeme(&next_input_token) &&
-                        next_input_token.class == stack_token.class) ||
-                        stack_token == next_input_token {
+                if (should_ignore_lexeme(&next_input_token)
+                    && next_input_token.class == stack_token.class)
+                    || stack_token == next_input_token
+                {
                     parsing_stack.pop();
                     token_queue.pop_front();
                 } else {
                     unimplemented!(); // TODO
                 }
                 print_parser_state(&next_input_token, &parsing_stack)
-            },
+            }
             ParseSymbol::SemanticAction(semantic_action_type) => {
                 //println!(">> semantic_action_type: {:?}", semantic_action_type);
-                SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](semantic_action_type, next_input_token.clone(), &mut semantic_stack);
+                SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](
+                    semantic_action_type,
+                    next_input_token.clone(),
+                    &mut semantic_stack,
+                );
                 //println!(">> semantic stack: {:?}", semantic_stack);
                 parsing_stack.pop();
-            },
+            }
             ParseSymbol::Epsilon => {
                 parsing_stack.pop();
                 print_parser_state(&next_input_token, &parsing_stack)
-            },
+            }
             ParseSymbol::PopError => {
                 println!("POP ERROR");
                 unimplemented!(); // TODO
-            },
+            }
             ParseSymbol::ScanError => {
                 println!("SCAN ERROR");
                 unimplemented!(); // TODO
@@ -825,10 +832,8 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
 }
 
 fn should_ignore_lexeme(token: &Token) -> bool {
-    token.class == TokenClass::Identifier ||
-        token.class == TokenClass::Float ||
-        token.class == TokenClass::Integer ||
-        token.class == TokenClass::EndOfInput
+    token.class == TokenClass::Identifier || token.class == TokenClass::Float
+        || token.class == TokenClass::Integer || token.class == TokenClass::EndOfInput
 }
 
 fn empty_lexeme_if_insignificant(next_input_token: Token) -> Token {
@@ -846,7 +851,7 @@ fn reverse_parse_symbols(vec: Vec<ParseSymbol>) -> Vec<ParseSymbol> {
         .collect::<Vec<ParseSymbol>>()
 }
 
-fn print_parser_state(next_input_token: &Token, parsing_stack: &Stack<ParseSymbol>) {
-    //println!(">>> INPUT TOKEN: {:?} <<<", next_input_token);
-    //println!(">>> PARSING_STACK: {:#?} <<<", parsing_stack);
+fn print_parser_state(_next_input_token: &Token, _parsing_stack: &Stack<ParseSymbol>) {
+    //println!(">>> INPUT TOKEN: {:?} <<<", _next_input_token);
+    //println!(">>> PARSING_STACK: {:#?} <<<", _parsing_stack);
 }

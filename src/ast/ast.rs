@@ -1,9 +1,8 @@
-use petgraph::{ Graph, Direction };
-use petgraph::graph::{ Node, Edge, WalkNeighbors };
-use petgraph::prelude::NodeIndex;
-use lexer::Token;
-use std::sync::Mutex;
 use ast::SemanticActionType;
+use lexer::Token;
+use petgraph::prelude::NodeIndex;
+use petgraph::{Direction, Graph};
+use std::sync::Mutex;
 
 lazy_static! {
     #[derive(Debug, Clone)]
@@ -14,43 +13,56 @@ lazy_static! {
 // their parents / neighbors / children through node and edges manipulation
 #[derive(Debug, Clone)]
 pub struct Ast {
-    pub root: Graph<AstNode, Option<usize>>
+    pub root: Graph<AstNode, Option<usize>>,
 }
 impl Ast {
     pub fn new() -> Ast {
         Ast {
-            root: Graph::<AstNode, Option<usize>>::new()
+            root: Graph::<AstNode, Option<usize>>::new(),
         }
     }
 
-    pub fn dfs(ast: &Ast, node_index: usize, visited: &mut Vec<usize>, visitor: &Fn(usize, &AstNode)) {
+    pub fn dfs(ast: &Ast, node_index: usize, visited: &mut Vec<usize>, visitor: &Fn(&AstNode)) {
         if !visited.contains(&node_index) {
             visited.push(node_index);
-            visitor(node_index, ast.get_node(node_index).unwrap());
+            visitor(ast.get_node(node_index).unwrap());
             for child_node_index in ast.get_node_children(node_index) {
                 Ast::dfs(ast, child_node_index, visited, visitor);
             }
         }
     }
 
-    pub fn make_node(&mut self, node_type: SemanticActionType, maybe_token: Option<Token>) -> usize {
-        self.root.add_node(AstNode::new(node_type, maybe_token)).index()
+    pub fn make_node(
+        &mut self,
+        node_type: SemanticActionType,
+        maybe_token: Option<Token>,
+    ) -> usize {
+        self.root
+            .add_node(AstNode::new(node_type, maybe_token))
+            .index()
     }
 
     pub fn get_node(&self, index: usize) -> Option<&AstNode> {
         self.root.node_weight(NodeIndex::new(index))
     }
 
-    pub fn get_node_mut(&mut self, index: usize) -> Option<&mut AstNode>{
+    pub fn get_node_mut(&mut self, index: usize) -> Option<&mut AstNode> {
         self.root.node_weight_mut(NodeIndex::new(index))
     }
 
-    pub fn make_edge(&mut self, parent_index: usize, child_index: usize, possible_order: Option<usize>) -> usize {
-        self.root.add_edge(
-            NodeIndex::new(parent_index),
-            NodeIndex::new(child_index),
-            possible_order
-        ).index()
+    pub fn make_edge(
+        &mut self,
+        parent_index: usize,
+        child_index: usize,
+        possible_order: Option<usize>,
+    ) -> usize {
+        self.root
+            .add_edge(
+                NodeIndex::new(parent_index),
+                NodeIndex::new(child_index),
+                possible_order,
+            )
+            .index()
     }
 
     pub fn get_most_recently_added_node_index(&self) -> usize {
@@ -62,7 +74,8 @@ impl Ast {
     }
 
     pub fn get_node_children(&self, index: usize) -> Vec<usize> {
-        self.root.neighbors_directed(NodeIndex::new(index), Direction::Outgoing)
+        self.root
+            .neighbors_directed(NodeIndex::new(index), Direction::Outgoing)
             .map(|x| x.index())
             .collect()
     }
@@ -70,7 +83,11 @@ impl Ast {
     pub fn print_graph(&self) {
         println!("##########################################################################################");
         for index in self.root.node_indices() {
-            println!("{:?} : {:?}", index.index(), self.root.node_weight(index).unwrap());
+            println!(
+                "{:?} : {:?}",
+                index.index(),
+                self.root.node_weight(index).unwrap()
+            );
             let incoming_edges = self.root.neighbors_directed(index, Direction::Incoming);
             for incoming_edge in incoming_edges {
                 println!("        Incoming edge: {} -> self", incoming_edge.index());
@@ -95,7 +112,7 @@ impl AstNode {
     pub fn new(node_type: SemanticActionType, node_token: Option<Token>) -> AstNode {
         AstNode {
             node_type,
-            node_token
+            node_token,
         }
     }
 }

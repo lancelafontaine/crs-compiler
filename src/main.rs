@@ -1,22 +1,24 @@
-#[macro_use] extern crate lazy_static;
-#[macro_use] extern crate quicli;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate quicli;
 extern crate colored;
-extern crate ropey;
 extern crate petgraph;
+extern crate ropey;
 
-pub mod output;
-pub mod util;
-pub mod semantic;
+pub mod args;
 pub mod ast;
 pub mod lexer;
+pub mod output;
 pub mod parser;
-pub mod args;
+pub mod semantic;
+pub mod util;
 
-use std::path::Path;
 use lexer::{Lexer, Token};
 use output::error;
 use quicli::prelude::*;
 use std::collections::VecDeque;
+use std::path::Path;
 
 main!(|args: args::Args| {
     if !Path::new(&args.input_file).exists() {
@@ -37,6 +39,4 @@ main!(|args: args::Args| {
     // AST is built at this point
     // But no semantic checks have occurred
     semantic::build_symbol_tables()
-
 });
-

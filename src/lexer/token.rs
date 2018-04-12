@@ -1,5 +1,5 @@
-use std::fmt;
 use std::cmp::PartialEq;
+use std::fmt;
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub enum TokenClass {
@@ -28,26 +28,27 @@ pub enum TokenClass {
     AccessorOperator,
     Comma,
     EndOfInput,
-    UndefinedTokenClass
+    UndefinedTokenClass,
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
 pub struct Token {
     pub class: TokenClass,
-    pub lexeme: String
+    pub lexeme: String,
 }
 
 impl Token {
     pub fn new(class: TokenClass, lexeme: String) -> Token {
-        Token {
-            class,
-            lexeme
-        }
+        Token { class, lexeme }
     }
 }
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Token {{ class: '{:?}', lexeme: '{}' }}", self.class, self.lexeme)
+        write!(
+            f,
+            "Token {{ class: '{:?}', lexeme: '{}' }}",
+            self.class, self.lexeme
+        )
     }
 }

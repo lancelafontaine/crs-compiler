@@ -2,14 +2,12 @@ use std::fmt::Debug;
 
 #[derive(Debug, Clone)]
 pub struct Stack<T> {
-    stack: Vec<T>
+    stack: Vec<T>,
 }
 
 impl<T: Debug + Clone> Stack<T> {
     pub fn new() -> Stack<T> {
-        Stack {
-            stack: vec!()
-        }
+        Stack { stack: vec![] }
     }
 
     pub fn push(&mut self, semantic_symbol: T) {
@@ -31,5 +29,4 @@ impl<T: Debug + Clone> Stack<T> {
     pub fn len(&self) -> usize {
         self.stack.len()
     }
-
 }

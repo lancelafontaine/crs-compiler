@@ -1,32 +1,29 @@
-use ropey::Rope;
-use std::fs::File;
-use std::io::{BufReader};
+use lexer::StateTransition;
 use lexer::Token;
 use lexer::TokenClass;
-use lexer::StateTransition;
-
+use ropey::Rope;
+use std::fs::File;
+use std::io::BufReader;
 
 pub struct Lexer {
     pub source_buffer: Rope,
     pub source_buffer_length: usize,
-    pub current_index: usize
+    pub current_index: usize,
 }
 
 impl Lexer {
     pub fn new(path: &str) -> Lexer {
-        let source_buffer = Rope::from_reader(
-                BufReader::new(File::open(path).unwrap())
-            ).unwrap();
+        let source_buffer = Rope::from_reader(BufReader::new(File::open(path).unwrap())).unwrap();
         let source_buffer_length = source_buffer.clone().chars().count();
         Lexer {
             source_buffer: source_buffer,
             source_buffer_length: source_buffer_length,
-            current_index: 0
+            current_index: 0,
         }
     }
 
     pub fn next_token(&mut self) -> Option<Token> {
-        let mut token_generator = || -> Option<Token>{
+        let mut token_generator = || -> Option<Token> {
             let mut state_transition = StateTransition::new();
             if let Some(token) = state_transition.generate_token(self) {
                 Some(token)
@@ -40,11 +37,11 @@ impl Lexer {
         loop {
             let some_token = token_generator();
             if let None = some_token {
-                return None
+                return None;
             }
             if let Some(token) = some_token {
                 if token.class != TokenClass::NewLine {
-                    return Some(token)
+                    return Some(token);
                 }
             }
         }
