@@ -6,4 +6,3 @@ pub struct Args {
     /// Path to the input source file
     pub input_file: String,
 }
-

@@ -1,5 +1,5 @@
-use lexer::Token;
 use ast::SemanticActionType;
+use lexer::Token;
 
 #[derive(Debug, Clone)]
 pub enum ParseSymbol {
@@ -8,7 +8,7 @@ pub enum ParseSymbol {
     Nonterminal(NonterminalLabel),
     SemanticAction(SemanticActionType),
     PopError,
-    ScanError
+    ScanError,
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone)]
@@ -68,4 +68,3 @@ pub enum NonterminalLabel {
     VariableThenFunctionDeclarationRecursion,
     VariableThenFunctionDeclarationRecursionTail,
 }
-

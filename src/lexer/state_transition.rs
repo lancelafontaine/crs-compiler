@@ -1,97 +1,259 @@
-use std::collections::HashMap;
+use lexer::Lexer;
 use lexer::Token;
 use lexer::TokenClass;
-use lexer::Lexer;
 use output;
+use std::collections::HashMap;
 
 lazy_static! {
-    static ref STATE_TRANSITION_TABLE:  [[usize; 31]; 52] = [
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,8,2,2,45,35,12,13,14,15,20,21,9,4,22,27,23,25,19,28,31,16,0,51,46,49,50,0,0,0],
-        [2,3,3,2,2,2,2,3,3,3,3,3,3,3,3,3,0,3,3,3,3,3,3,2,3,3,3,3,0,0,0],
-        [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [4,5,5,5,5,5,5,5,0,0,0,0,5,6,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [7,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [9,11,11,11,11,11,11,11,0,0,0,0,11,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [12,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [13,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [14,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [15,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [16,18,18,18,18,18,18,18,0,0,0,0,18,0,18,0,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0],
-        [17,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [18,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [19,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [20,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [21,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [22,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [23,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [24,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,0],
-        [26,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [27,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [28,29,29,29,29,29,29,29,0,0,0,0,29,0,29,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0],
-        [29,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [30,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [31,34,34,34,34,34,34,34,0,0,0,0,34,0,34,0,0,0,0,0,32,0,33,0,0,0,0,0,0,0,0],
-        [32,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [33,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [34,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [35,44,44,0,0,0,0,0,44,44,44,44,44,44,44,44,0,44,44,44,44,44,44,0,36,0,0,44,0,0,0],
-        [36,0,0,0,0,37,37,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [37,43,43,0,39,37,38,0,43,43,43,43,43,43,43,43,0,43,43,43,43,43,43,0,0,0,0,43,0,0,0],
-        [38,0,0,0,0,37,38,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [39,0,0,0,0,42,41,0,0,0,0,40,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [40,0,0,0,0,42,41,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [41,43,43,0,0,0,0,0,43,43,43,43,43,43,43,43,0,43,43,43,43,43,43,0,0,0,0,43,0,0,0],
-        [42,43,43,0,0,42,42,0,43,43,43,43,43,43,43,43,0,43,43,43,43,43,43,0,0,0,0,43,0,0,0],
-        [43,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [44,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [45,44,44,0,0,45,45,0,44,44,44,44,44,44,44,44,0,44,44,44,44,44,44,0,36,0,0,44,0,0,0],
-        [46,48,48,48,0,0,0,0,0,0,0,0,0,0,48,0,0,0,0,0,0,0,0,0,0,47,0,0,0,0,0],
-        [47,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [48,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [49,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [50,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-        [51,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0]
+    static ref STATE_TRANSITION_TABLE: [[usize; 31]; 52] = [
+        [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1,
+        ],
+        [
+            1, 1, 8, 2, 2, 45, 35, 12, 13, 14, 15, 20, 21, 9, 4, 22, 27, 23, 25, 19, 28, 31, 16, 0,
+            51, 46, 49, 50, 0, 0, 0,
+        ],
+        [
+            2, 3, 3, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 0,
+            0, 0,
+        ],
+        [
+            3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            4, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0,
+        ],
+        [
+            5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            9, 11, 11, 11, 11, 11, 11, 11, 0, 0, 0, 0, 11, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0,
+        ],
+        [
+            10, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            15, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            16, 18, 18, 18, 18, 18, 18, 18, 0, 0, 0, 0, 18, 0, 18, 0, 0, 0, 0, 0, 0, 0, 17, 0, 0,
+            0, 0, 0, 0, 0, 0,
+        ],
+        [
+            17, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            18, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            19, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            20, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            21, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            22, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0,
+        ],
+        [
+            24, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0,
+        ],
+        [
+            26, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            27, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            28, 29, 29, 29, 29, 29, 29, 29, 0, 0, 0, 0, 29, 0, 29, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0,
+            0, 0, 0, 0, 0, 0,
+        ],
+        [
+            29, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            30, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            31, 34, 34, 34, 34, 34, 34, 34, 0, 0, 0, 0, 34, 0, 34, 0, 0, 0, 0, 0, 32, 0, 33, 0, 0,
+            0, 0, 0, 0, 0, 0,
+        ],
+        [
+            32, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            33, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            34, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            35, 44, 44, 0, 0, 0, 0, 0, 44, 44, 44, 44, 44, 44, 44, 44, 0, 44, 44, 44, 44, 44, 44,
+            0, 36, 0, 0, 44, 0, 0, 0,
+        ],
+        [
+            36, 0, 0, 0, 0, 37, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0,
+        ],
+        [
+            37, 43, 43, 0, 39, 37, 38, 0, 43, 43, 43, 43, 43, 43, 43, 43, 0, 43, 43, 43, 43, 43,
+            43, 0, 0, 0, 0, 43, 0, 0, 0,
+        ],
+        [
+            38, 0, 0, 0, 0, 37, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0,
+        ],
+        [
+            39, 0, 0, 0, 0, 42, 41, 0, 0, 0, 0, 40, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0,
+        ],
+        [
+            40, 0, 0, 0, 0, 42, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0,
+        ],
+        [
+            41, 43, 43, 0, 0, 0, 0, 0, 43, 43, 43, 43, 43, 43, 43, 43, 0, 43, 43, 43, 43, 43, 43,
+            0, 0, 0, 0, 43, 0, 0, 0,
+        ],
+        [
+            42, 43, 43, 0, 0, 42, 42, 0, 43, 43, 43, 43, 43, 43, 43, 43, 0, 43, 43, 43, 43, 43, 43,
+            0, 0, 0, 0, 43, 0, 0, 0,
+        ],
+        [
+            43, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            44, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            45, 44, 44, 0, 0, 45, 45, 0, 44, 44, 44, 44, 44, 44, 44, 44, 0, 44, 44, 44, 44, 44, 44,
+            0, 36, 0, 0, 44, 0, 0, 0,
+        ],
+        [
+            46, 48, 48, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 0,
+            0, 0, 0, 0,
+        ],
+        [
+            47, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            48, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 0,
+        ],
+        [
+            49, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            50, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ],
+        [
+            51, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            0, 0,
+        ]
     ];
-
     static ref STATE_TRANSITION_CHARS_BY_COLUMN: HashMap<Vec<char>, usize> = {
         let mut m = HashMap::new();
-        m.insert(vec!(' ', '\t', '\r'), 1);
-        m.insert(vec!('\n'), 2);
-        m.insert(vec!('a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 3);
-        m.insert(vec!('e'), 4);
-        m.insert(vec!('1','2','3','4','5','6','7','8','9'), 5);
-        m.insert(vec!('0'), 6);
-        m.insert(vec!('('), 7);
-        m.insert(vec!(')'), 8);
-        m.insert(vec!('{'), 9);
-        m.insert(vec!('}'), 10);
-        m.insert(vec!('+'), 11);
-        m.insert(vec!('-'), 12);
-        m.insert(vec!('*'), 13);
-        m.insert(vec!('/'), 14);
-        m.insert(vec!('%'), 15);
-        m.insert(vec!('!'), 16);
-        m.insert(vec!('&'), 17);
-        m.insert(vec!('|'), 18);
-        m.insert(vec!(';'), 19);
-        m.insert(vec!('>'), 20);
-        m.insert(vec!('<'), 21);
-        m.insert(vec!('='), 22);
-        m.insert(vec!('_'), 23);
-        m.insert(vec!('.'), 24);
-        m.insert(vec!(':'), 25);
-        m.insert(vec!('['), 26);
-        m.insert(vec!(']'), 27);
+        m.insert(vec![' ', '\t', '\r'], 1);
+        m.insert(vec!['\n'], 2);
+        m.insert(
+            vec![
+                'a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+                'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+                'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+                'X', 'Y', 'Z',
+            ],
+            3,
+        );
+        m.insert(vec!['e'], 4);
+        m.insert(vec!['1', '2', '3', '4', '5', '6', '7', '8', '9'], 5);
+        m.insert(vec!['0'], 6);
+        m.insert(vec!['('], 7);
+        m.insert(vec![')'], 8);
+        m.insert(vec!['{'], 9);
+        m.insert(vec!['}'], 10);
+        m.insert(vec!['+'], 11);
+        m.insert(vec!['-'], 12);
+        m.insert(vec!['*'], 13);
+        m.insert(vec!['/'], 14);
+        m.insert(vec!['%'], 15);
+        m.insert(vec!['!'], 16);
+        m.insert(vec!['&'], 17);
+        m.insert(vec!['|'], 18);
+        m.insert(vec![';'], 19);
+        m.insert(vec!['>'], 20);
+        m.insert(vec!['<'], 21);
+        m.insert(vec!['='], 22);
+        m.insert(vec!['_'], 23);
+        m.insert(vec!['.'], 24);
+        m.insert(vec![':'], 25);
+        m.insert(vec!['['], 26);
+        m.insert(vec![']'], 27);
         m
     };
-
     static ref STATE_TRANSITION_LABELS_BY_COLUMN: HashMap<&'static str, usize> = {
         let mut m = HashMap::new();
         m.insert("states", 0);
@@ -100,7 +262,6 @@ lazy_static! {
         m.insert("error", 30);
         m
     };
-
     static ref TOKEN_BY_FINAL_STATE: HashMap<usize, TokenClass> = {
         let mut m = HashMap::new();
         m.insert(3, TokenClass::Identifier);
@@ -137,34 +298,21 @@ lazy_static! {
         m.insert(51, TokenClass::AccessorOperator);
         m
     };
-
     static ref LANGUAGE_KEYWORDS: Vec<&'static str> = {
-        vec!(
-            "if",
-            "then",
-            "else",
-            "for",
-            "class",
-            "get",
-            "put",
-            "return",
-            "program",
-            "int",
-            "float",
-            "bool"
-        )
+        vec![
+            "if", "then", "else", "for", "class", "get", "put", "return", "program", "int",
+            "float", "bool",
+        ]
     };
 }
 
 pub struct StateTransition {
-    current_state: usize
+    current_state: usize,
 }
 
 impl StateTransition {
     pub fn new() -> StateTransition {
-        StateTransition {
-            current_state: 1
-        }
+        StateTransition { current_state: 1 }
     }
 
     pub fn generate_token(&mut self, lexer: &mut Lexer) -> Option<Token> {
@@ -176,7 +324,6 @@ impl StateTransition {
 
         loop {
             if let Some(token) = self.transition(&mut token_buffer, lexer) {
-
                 if lexer.current_index >= lexer.source_buffer_length {
                     some_token = None;
                     break;
@@ -184,7 +331,7 @@ impl StateTransition {
 
                 if token.class == TokenClass::SingleLineComment {
                     in_single_line_comment = true;
-                    continue
+                    continue;
                 }
 
                 if token.class == TokenClass::NewLine {
@@ -194,23 +341,23 @@ impl StateTransition {
 
                 if token.class == TokenClass::OpenMultiLineComment {
                     in_multi_line_comment = true;
-                    continue
+                    continue;
                 }
 
                 if token.class == TokenClass::CloseMultiLineComment {
                     in_multi_line_comment = false;
-                    continue
+                    continue;
                 }
 
                 if in_multi_line_comment || in_single_line_comment {
-                    continue
+                    continue;
                 }
 
                 some_token = Some(token);
                 break;
             }
         }
-        some_token
+        return some_token;
     }
 
     pub fn transition(&mut self, token_buffer: &mut String, lexer: &mut Lexer) -> Option<Token> {
@@ -244,7 +391,7 @@ impl StateTransition {
         // Look at the next character for the next transition
         if !self.is_backtrack_state() {
             lexer.current_index += 1;
-            if !c.is_whitespace(){
+            if !c.is_whitespace() {
                 token_buffer.push(c);
             }
         }
@@ -266,7 +413,7 @@ impl StateTransition {
         }
         if column_index == 0 {
             output::error(2); //recoverable
-            return None
+            return None;
         }
         Some(column_index)
     }
@@ -276,19 +423,24 @@ impl StateTransition {
     }
 
     pub fn is_backtrack_state(&self) -> bool {
-        STATE_TRANSITION_TABLE[self.current_state][STATE_TRANSITION_LABELS_BY_COLUMN["backtrack"]] == 1
+        STATE_TRANSITION_TABLE[self.current_state][STATE_TRANSITION_LABELS_BY_COLUMN["backtrack"]]
+            == 1
     }
 
     pub fn is_error_state(&self) -> bool {
         STATE_TRANSITION_TABLE[self.current_state][STATE_TRANSITION_LABELS_BY_COLUMN["error"]] == 1
     }
 
-    pub fn update_token_class_by_edge_case(&self, token_class: TokenClass, token_buffer: &str) -> TokenClass {
+    pub fn update_token_class_by_edge_case(
+        &self,
+        token_class: TokenClass,
+        token_buffer: &str,
+    ) -> TokenClass {
         if token_class == TokenClass::Identifier {
             if LANGUAGE_KEYWORDS.contains(&token_buffer) {
                 return TokenClass::Keyword;
             }
-            if token_buffer == "and"  || token_buffer == "or" {
+            if token_buffer == "and" || token_buffer == "or" {
                 return TokenClass::BinaryLogicalOperator;
             }
             if token_buffer == "not" {
@@ -303,10 +455,8 @@ impl StateTransition {
         match TOKEN_BY_FINAL_STATE.get(&self.current_state) {
             Some(class) => {
                 token_class = class.clone();
-            },
-            None => {
-                return None
             }
+            None => return None,
         };
         token_class = self.update_token_class_by_edge_case(token_class, token_buffer);
         Some(Token::new(token_class, String::from(token_buffer)))
@@ -315,9 +465,9 @@ impl StateTransition {
 
 #[cfg(test)]
 mod tests {
-    use lexer::state_transition::StateTransition as st;
-    use lexer::lexer::Lexer;
     use lexer::TokenClass;
+    use lexer::lexer::Lexer;
+    use lexer::state_transition::StateTransition as st;
 
     #[test]
     fn test_get_token_by_state_non_final_has_no_token() {
@@ -328,7 +478,7 @@ mod tests {
     #[test]
     fn test_get_token_by_state_final_has_token() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let some_token = state_transition.get_token_by_state("a");
         assert_eq!(some_token.is_some(), true);
@@ -340,7 +490,7 @@ mod tests {
     #[test]
     fn test_get_token_by_state_final_has_token_is_keyword() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let some_token = state_transition.get_token_by_state("if");
         assert_eq!(some_token.is_some(), true);
@@ -352,7 +502,7 @@ mod tests {
     #[test]
     fn test_get_token_by_state_final_has_token_is_logical_keyword_and() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let some_token = state_transition.get_token_by_state("and");
         assert_eq!(some_token.is_some(), true);
@@ -364,7 +514,7 @@ mod tests {
     #[test]
     fn test_get_token_by_state_final_has_token_is_logical_keyword_or() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let some_token = state_transition.get_token_by_state("or");
         assert_eq!(some_token.is_some(), true);
@@ -376,7 +526,7 @@ mod tests {
     #[test]
     fn test_get_token_by_state_final_has_token_is_logical_keyword_not() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let some_token = state_transition.get_token_by_state("not");
         assert_eq!(some_token.is_some(), true);
@@ -388,7 +538,7 @@ mod tests {
     #[test]
     fn test_is_error_state_valid() {
         let state_transition = st {
-            current_state: 0 // error state
+            current_state: 0, // error state
         };
         let is_error = state_transition.is_error_state();
         assert_eq!(is_error, true);
@@ -396,7 +546,7 @@ mod tests {
     #[test]
     fn test_is_error_state_invalid() {
         let state_transition = st {
-            current_state: 1 // initial state
+            current_state: 1, // initial state
         };
         let is_error = state_transition.is_error_state();
         assert_eq!(is_error, false);
@@ -404,7 +554,7 @@ mod tests {
     #[test]
     fn test_is_final_state_valid() {
         let state_transition = st {
-            current_state: 3 // identifier - final state
+            current_state: 3, // identifier - final state
         };
         let is_final = state_transition.is_final_state();
         assert_eq!(is_final, true);
@@ -412,7 +562,7 @@ mod tests {
     #[test]
     fn test_is_final_state_invalid() {
         let state_transition = st {
-            current_state: 1 // initial state
+            current_state: 1, // initial state
         };
         let is_final = state_transition.is_final_state();
         assert_eq!(is_final, false);
@@ -420,7 +570,7 @@ mod tests {
     #[test]
     fn test_is_backtrack_state_valid() {
         let state_transition = st {
-            current_state: 3 // identifier - backtrack state
+            current_state: 3, // identifier - backtrack state
         };
         let is_backtrack = state_transition.is_backtrack_state();
         assert_eq!(is_backtrack, true);
@@ -428,7 +578,7 @@ mod tests {
     #[test]
     fn test_is_backtrack_state_invalid() {
         let state_transition = st {
-            current_state: 1 // initial state
+            current_state: 1, // initial state
         };
         let is_backtrack = state_transition.is_backtrack_state();
         assert_eq!(is_backtrack, false);
