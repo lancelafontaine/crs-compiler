@@ -6,8 +6,6 @@ use ast::{ SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE };
 use util::Stack;
 use ast::GENERATED_AST;
 
-pub struct Ast;
-
 lazy_static! {
     static ref PARSE_TABLE:  [[usize; 43]; 54] = [
         // Program
@@ -746,7 +744,7 @@ lazy_static! {
     };
 }
 
-pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
+pub fn parse(mut token_queue: VecDeque<Token>) {
     let mut parsing_stack = Stack::new();
     let mut semantic_stack = Stack::new();
 
@@ -796,9 +794,9 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
                 print_parser_state(&next_input_token, &parsing_stack)
             },
             ParseSymbol::SemanticAction(semantic_action_type) => {
-                println!(">> semantic_action_type: {:?}", semantic_action_type);
+                //println!(">> semantic_action_type: {:?}", semantic_action_type);
                 SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](semantic_action_type, next_input_token.clone(), &mut semantic_stack);
-                println!(">> semantic stack: {:?}", semantic_stack);
+                //println!(">> semantic stack: {:?}", semantic_stack);
                 parsing_stack.pop();
             },
             ParseSymbol::Epsilon => {
@@ -819,14 +817,11 @@ pub fn parse(mut token_queue: VecDeque<Token>) -> Option<Ast> {
     if parsing_stack.len() == 1 {
         if let ParseSymbol::Terminal(last_token) = parsing_stack.top().unwrap() {
             if last_token.class == TokenClass::EndOfInput {
-                let _ast = Ast;
-                GENERATED_AST.lock().unwrap().print_graph();
-                println!("Rest of semantic stack: {:?}", semantic_stack);
-                return Some(_ast)
+                // GENERATED_AST.lock().unwrap().print_graph();
+                // println!("Rest of semantic stack: {:?}", semantic_stack);
             }
         }
     }
-    None
 }
 
 fn should_ignore_lexeme(token: &Token) -> bool {
