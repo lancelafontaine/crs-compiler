@@ -1,5 +1,5 @@
 use ast::{AstNode, SemanticActionType};
-use semantic::symbol_table::{SymbolTableRecordType, GENERATED_SYMBOL_TABLE_GRAPH};
+use semantic::symbol_table::{STRecordType, GENERATED_SYMBOL_TABLE_GRAPH};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use util::Stack;
@@ -65,22 +65,23 @@ lazy_static! {
 }
 
 pub fn visit_program_family(_: &AstNode) {
-    // Sanity check: global scope should have been been created with SymbolTableGraph::new()
+    // Sanity check: global scope should have been been created with STGraph::new()
     let global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
     assert!(0 == global_table_graph.current_table_index);
     assert!(0 == global_table_graph.get_most_recently_added_node_index());
 }
 pub fn visit_class_id(ast_node: &AstNode) {
     let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
-    let mut current_table_node = global_table_graph.get_current_table_mut().unwrap();
+    let mut current_table_index = global_table_graph.current_table_index;
     let new_table_label = ast_node.clone().node_token.unwrap().lexeme;
-    current_table_node.set_table_label(new_table_label);
+    global_table_graph.set_table_identifier(current_table_index, new_table_label);
 }
 pub fn visit_class_declaration(_: &AstNode) {
     let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
     global_table_graph.current_table_index = 0; // Class definitions always extend from root
     let current_table_index = global_table_graph.current_table_index;
-    global_table_graph.add_empty_table_to_table(current_table_index);
+    let new_table_index = global_table_graph.add_class_to_table(current_table_index);
+    global_table_graph.enter_table_scope(new_table_index);
 }
 pub fn visit_inheritance_class(ast_node: &AstNode) {
     let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
@@ -103,7 +104,7 @@ pub fn visit_variable_declaration(_: &AstNode) {
     // Make a new record node in the current table/scope
     let current_table_index = global_table_graph.current_table_index;
     let new_record_index = global_table_graph
-        .add_empty_record_with_type_to_table(SymbolTableRecordType::Variable, current_table_index);
+        .add_empty_record_with_type_to_table(STRecordType::Variable, current_table_index);
 
     // Push this new record's index onto the symbol table stack so that this record can be
     // pointed to and modified once the variable declaration's children in the AST are reached
@@ -123,7 +124,7 @@ pub fn visit_class_member_function_declaration(_: &AstNode) {
     // Make a new record node in the current table/scope
     let current_table_index = global_table_graph.current_table_index;
     let new_record_index = global_table_graph
-        .add_empty_record_with_type_to_table(SymbolTableRecordType::Function, current_table_index);
+        .add_empty_record_with_type_to_table(STRecordType::Function, current_table_index);
 
     // Push this new record's index onto the symbol table stack so that this record can be
     // pointed to and modified once the variable declaration's children in the AST are reached
