@@ -1,0 +1,6 @@
+WARNING CODE 2
+Input character is unrecognized.
+---------------------------------------------
+On line 5:
+  int findMin(int dog, int array[100]);
+---------------------------------------------

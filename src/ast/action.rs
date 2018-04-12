@@ -253,7 +253,7 @@ lazy_static! {
 
 fn semantic_action_generic_make_node(action_type: SemanticActionType, token: Token, semantic_stack: &mut Stack<usize>) {
     let node_index = GENERATED_AST.lock().unwrap().make_node(action_type, Some(token));
-    println!(">>> Created node: {:?}", GENERATED_AST.lock().unwrap().get_node(node_index));
+    //println!(">>> Created node: {:?}", GENERATED_AST.lock().unwrap().get_node(node_index));
     semantic_stack.push(node_index);
 }
 

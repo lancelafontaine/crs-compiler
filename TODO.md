@@ -30,6 +30,7 @@
 - [ ] Throw an error if there are AST nodes other than the start node that are node pointed to.
 - [ ] Throw an error for some nodes if it has more/less children than is expected for that particular node type.
 - [ ] Implement error reporting mechanism for the syntax-driven translation and final AST, including source location display. It must report all errors present in the source code.
+- [ ] Throw an error if there is more than one node index in the semantic stack at the end of AST generation.
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Option to export a GraphViz file from petgraph for the AST
