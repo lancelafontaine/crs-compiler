@@ -3,25 +3,23 @@ use petgraph::prelude::NodeIndex;
 use petgraph::{Direction, Graph};
 use semantic::symbol_table_visitor;
 use std::sync::Mutex;
+use std::collections::HashMap;
 
 lazy_static! {
-    pub static ref GENERATED_SYMBOL_TABLE_GRAPH: Mutex<SymbolTableGraph> =
-        Mutex::new(SymbolTableGraph::new());
+    pub static ref GENERATED_SYMBOL_TABLE_GRAPH: Mutex<STGraph> = Mutex::new(STGraph::new());
 }
 
-// SymbolTableGraph
-pub struct SymbolTableGraph {
-    pub global_table_graph: Graph<SymbolTableNode, Option<usize>>,
+// STGraph
+pub struct STGraph {
+    pub global_table_graph: Graph<STNode, Option<usize>>,
     pub current_table_index: usize,
 }
-impl SymbolTableGraph {
+impl STGraph {
     // Constructor
-    pub fn new() -> SymbolTableGraph {
-        let mut graph = Graph::<SymbolTableNode, Option<usize>>::new();
-        let global_table_graph_index = graph.add_node(
-            SymbolTableNode::new_empty_table_node_with_label("global".to_string()),
-        );
-        SymbolTableGraph {
+    pub fn new() -> STGraph {
+        let mut graph = Graph::<STNode, Option<usize>>::new();
+        let global_table_graph_index = graph.add_node(STNode::new_empty_table_node());
+        STGraph {
             global_table_graph: graph,
             current_table_index: global_table_graph_index.index(),
         }
@@ -31,61 +29,200 @@ impl SymbolTableGraph {
     pub fn get_most_recently_added_node_index(&self) -> usize {
         self.global_table_graph.node_count() - 1
     }
-    pub fn get_most_recently_added_node(&self) -> Option<&SymbolTableNode> {
+    pub fn get_most_recently_added_node(&self) -> Option<&STNode> {
         self.get_node(self.get_most_recently_added_node_index())
     }
-    pub fn get_node(&self, index: usize) -> Option<&SymbolTableNode> {
+    pub fn get_node(&self, index: usize) -> Option<&STNode> {
         self.global_table_graph.node_weight(NodeIndex::new(index))
     }
-    pub fn get_node_mut(&mut self, index: usize) -> Option<&mut SymbolTableNode> {
+    pub fn get_node_mut(&mut self, index: usize) -> Option<&mut STNode> {
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(index))
     }
-    pub fn get_current_table(&self) -> Option<&SymbolTableNode> {
+    pub fn get_current_table(&self) -> Option<&STNode> {
         self.global_table_graph
             .node_weight(NodeIndex::new(self.current_table_index))
     }
-    pub fn get_current_table_mut(&mut self) -> Option<&mut SymbolTableNode> {
+    pub fn get_current_table_mut(&mut self) -> Option<&mut STNode> {
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(self.current_table_index))
     }
+    pub fn get_parent_node_index(&self, node_index: usize) -> Option<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(node_index), Direction::Incoming)
+            .next()
+            .clone()
+            .map(|n| n.index())
+    }
+    pub fn get_child_node_indices(&self, node_index: usize) -> Vec<usize> {
+        self.ensure_node_is_record(node_index);
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(node_index), Direction::Outgoing)
+            .map(|n| n.index())
+            .collect()
+    }
+    pub fn get_child_node_index(&self, node_index: usize) -> Option<usize> {
+        self.ensure_node_is_record(node_index);
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(node_index), Direction::Outgoing)
+            .next()
+            .clone()
+            .map(|n| n.index())
+    }
+    pub fn get_table_identifier(&mut self, table_index: usize) -> Option<String> {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .get_record_identifier()
+    }
+    pub fn get_all_class_table_indices(&self) -> Vec<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing)
+            .map(|n| n.index())
+            .filter(|i| self.get_node(*i).unwrap().is_class_record())
+            .filter_map(|i| self.get_child_node_index(i))
+            .collect()
+    }
+    pub fn get_all_table_record_indices(&self, table_index: usize) -> Vec<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(table_index), Direction::Outgoing)
+            .map(|n| n.index())
+            .collect()
+    }
+    pub fn get_all_class_identifiers(&self) -> Vec<String> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing)
+            .filter_map(|n| self.get_node(n.index()))
+            .filter(|n| n.is_class_record())
+            .filter_map(|n| n.get_record_identifier())
+            .collect()
+    }
+    pub fn get_class_table_index_by_identifier(&self, label: String) -> Option<usize> {
+        let global_table_record_indices = self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing);
+        for record_index in global_table_record_indices {
+            let node = self.get_node(record_index.index()).unwrap();
+            if node.is_class_record() {
+                if let Some(record_identifier) = node.get_record_identifier() {
+                    if record_identifier == label {
+                        return self.get_child_node_index(record_index.index()).clone()
+                    }
+                }
+            }
+        }
+        None
+    }
 
     // Setters
-    pub fn add_empty_table_to_table(&mut self, node_index: usize) -> usize {
+    pub fn add_table_to_table(&mut self, record_type: STRecordType, node_index: usize) -> usize {
         self.ensure_node_is_table(node_index);
         let previous_table_index = self.current_table_index;
-        let new_table_index = self._make_node(SymbolTableNode::new_empty_table_node());
-        self._make_edge(previous_table_index, new_table_index, None);
-        self._enter_table_scope(new_table_index);
-        new_table_index
-    }
-    pub fn add_empty_table_with_label_to_table(
-        &mut self,
-        label: String,
-        node_index: usize,
-    ) -> usize {
-        self.ensure_node_is_table(node_index);
-        let previous_table_index = self.current_table_index;
-        let new_table_index =
-            self._make_node(SymbolTableNode::new_empty_table_node_with_label(label));
-        self._make_edge(previous_table_index, new_table_index, None);
-        self._enter_table_scope(new_table_index);
+
+        let new_record_index =
+            self._make_node(STNode::new_empty_record_node_with_type(record_type));
+        self._make_edge(previous_table_index, new_record_index, None);
+
+        let new_table_index = self._make_node(STNode::new_empty_table_node());
+        self._make_edge(new_record_index, new_table_index, None);
         new_table_index
     }
     pub fn add_empty_record_with_type_to_table(
         &mut self,
-        record_type: SymbolTableRecordType,
+        record_type: STRecordType,
         node_index: usize,
     ) -> usize {
         self.ensure_node_is_table(node_index);
         let table_index = self.current_table_index;
-        let new_record_index = self._make_node(SymbolTableNode::new_empty_record_node_with_type(
-            record_type,
-        ));
+        let new_record_index =
+            self._make_node(STNode::new_empty_record_node_with_type(record_type));
         self._make_edge(table_index, new_record_index, Some(new_record_index));
         new_record_index
     }
-    fn _make_node(&mut self, node: SymbolTableNode) -> usize {
+    pub fn move_table_scope(&mut self, index_of_table_to_be_moved: usize, index_of_table_to_move_to: usize) {
+        let record_index = self.get_parent_node_index(index_of_table_to_be_moved).unwrap();
+        let parent_record_index = self.get_parent_node_index(record_index).unwrap();
+
+        let edge_index_to_remove = self.global_table_graph.find_edge(
+            NodeIndex::new(parent_record_index),
+            NodeIndex::new(record_index)
+        ).unwrap();
+        self.global_table_graph.remove_edge(edge_index_to_remove);
+        self._make_edge(index_of_table_to_move_to, record_index, None);
+    }
+    pub fn set_table_value_type(&mut self, table_index: usize, value_type: String) {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight_mut(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .set_record_value_type(value_type);
+    }
+    pub fn initialize_table_function_parameters(&mut self, table_index: usize) {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight_mut(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .initialize_record_function_parameters();
+    }
+    pub fn set_table_identifier(&mut self, table_index: usize, label: String) {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight_mut(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .set_record_identifier(label);
+    }
+    pub fn increment_table_array_size(&mut self, table_index: usize) {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight_mut(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .increment_record_array_size();
+    }
+    pub fn add_function_parameter_fragment_to_table(
+        &mut self,
+        table_index: usize,
+        function_parameter_fragment: String,
+    ) {
+        let mut parent_record_index: usize;
+        if let Some(index) = self.get_parent_node_index(table_index) {
+            parent_record_index = index;
+        } else {
+            unimplemented!("We're trying to set the table identifier for the global/root table.")
+        }
+        self.global_table_graph
+            .node_weight_mut(NodeIndex::new(parent_record_index))
+            .unwrap()
+            .add_function_parameter_fragment_to_record(function_parameter_fragment);
+    }
+    pub fn remove_node(&mut self, node_index: usize) {
+        self.global_table_graph.remove_node(NodeIndex::new(node_index));
+    }
+    fn _make_node(&mut self, node: STNode) -> usize {
         self.global_table_graph.add_node(node).index()
     }
     fn _make_edge(
@@ -103,7 +240,7 @@ impl SymbolTableGraph {
             .index()
     }
 
-    fn _enter_table_scope(&mut self, new_table_index: usize) {
+    pub fn enter_table_scope(&mut self, new_table_index: usize) {
         self.current_table_index = new_table_index;
     }
 
@@ -112,6 +249,16 @@ impl SymbolTableGraph {
         if let None = self.get_node(node_index) {
             unimplemented!();
         }
+    }
+    pub fn is_node_record(&self, node_index: usize) -> bool {
+        self.ensure_node_exists(node_index);
+        let node = self.get_node(node_index).unwrap();
+        node.is_record()
+    }
+    pub fn is_node_table(&self, node_index: usize) -> bool {
+        self.ensure_node_exists(node_index);
+        let node = self.get_node(node_index).unwrap();
+        node.is_table()
     }
     pub fn ensure_node_is_record(&self, node_index: usize) {
         self.ensure_node_exists(node_index);
@@ -152,53 +299,64 @@ impl SymbolTableGraph {
     }
 }
 
-// SymbolTableNode
-#[derive(Debug, PartialEq)]
-pub enum SymbolTableNodeType {
-    Table(Option<String>, Vec<String>), // label, inheritance labels
-    Record(Option<SymbolTableRecord>),
+// STNode
+#[derive(Debug, PartialEq, Clone)]
+pub enum STNodeType {
+    Table(Vec<String>), // inheritance labels
+    Record(Option<STRecord>),
 }
-#[derive(Debug, PartialEq)]
-pub struct SymbolTableNode {
-    pub node_type: SymbolTableNodeType,
+#[derive(Debug, PartialEq, Clone)]
+pub struct STNode {
+    pub node_type: STNodeType,
 }
-impl SymbolTableNode {
-    pub fn new_empty_table_node() -> SymbolTableNode {
-        SymbolTableNode {
-            node_type: SymbolTableNodeType::Table(None, vec![]),
+impl STNode {
+    pub fn new_empty_table_node() -> STNode {
+        STNode {
+            node_type: STNodeType::Table(vec![]),
         }
     }
-    pub fn new_empty_table_node_with_label(label: String) -> SymbolTableNode {
-        SymbolTableNode {
-            node_type: SymbolTableNodeType::Table(Some(label), vec![]),
+    pub fn new_empty_record_node() -> STNode {
+        STNode {
+            node_type: STNodeType::Record(None),
         }
     }
-    pub fn new_empty_record_node() -> SymbolTableNode {
-        SymbolTableNode {
-            node_type: SymbolTableNodeType::Record(None),
+    pub fn new_empty_record_node_with_type(record_type: STRecordType) -> STNode {
+        STNode {
+            node_type: STNodeType::Record(Some(STRecord::new_empty_record(record_type))),
         }
     }
-    pub fn new_empty_record_node_with_type(record_type: SymbolTableRecordType) -> SymbolTableNode {
-        SymbolTableNode {
-            node_type: SymbolTableNodeType::Record(Some(SymbolTableRecord::new_empty_record(
-                record_type,
-            ))),
-        }
-    }
-    pub fn set_table_label(&mut self, label: String) {
-        let mut inheritance_list: Vec<String>;
+    pub fn get_record_identifier(&self) -> Option<String> {
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Table(_, ref existing_list) => {
-                inheritance_list = existing_list.clone();
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
             }
-            _ => unimplemented!(),
+            _ => {
+                unimplemented!("Can't get record identifier on a non-record node");
+            }
         }
-        self.node_type = SymbolTableNodeType::Table(Some(label), inheritance_list);
+        if let Some(mut record) = some_record {
+            record.get_identifier()
+        } else {
+            None
+        }
+    }
+    pub fn get_record_type(&self) -> STRecordType {
+        let mut some_record: Option<STRecord>;
+        match self.node_type {
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
+            }
+            _ => {
+                unimplemented!("Can't get record identifier on a non-record node");
+            }
+        }
+        some_record.unwrap().get_record_type()
     }
     pub fn set_record_identifier(&mut self, identifier: String) {
-        let mut some_record: Option<SymbolTableRecord>;
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Record(ref some_existing_record) => {
+            STNodeType::Record(ref some_existing_record) => {
                 some_record = some_existing_record.clone()
             }
             _ => {
@@ -207,15 +365,15 @@ impl SymbolTableNode {
         }
         if let Some(mut record) = some_record {
             record.set_identifier(identifier);
-            self.node_type = SymbolTableNodeType::Record(Some(record));
+            self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record identifier on an empty record node since we don't know what record_type it should be");
         }
     }
     pub fn set_record_value_type(&mut self, value_type: String) {
-        let mut some_record: Option<SymbolTableRecord>;
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Record(ref some_existing_record) => {
+            STNodeType::Record(ref some_existing_record) => {
                 some_record = some_existing_record.clone()
             }
             _ => {
@@ -224,7 +382,7 @@ impl SymbolTableNode {
         }
         if let Some(mut record) = some_record {
             record.set_value_type(value_type);
-            self.node_type = SymbolTableNodeType::Record(Some(record));
+            self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record value type on an empty record node since we don't know what record_type it should be");
         }
@@ -233,9 +391,9 @@ impl SymbolTableNode {
         &mut self,
         function_parameter_fragment: String,
     ) {
-        let mut some_record: Option<SymbolTableRecord>;
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Record(ref some_existing_record) => {
+            STNodeType::Record(ref some_existing_record) => {
                 some_record = some_existing_record.clone()
             }
             _ => {
@@ -244,15 +402,15 @@ impl SymbolTableNode {
         }
         if let Some(mut record) = some_record {
             record.add_function_parameter_fragment(function_parameter_fragment);
-            self.node_type = SymbolTableNodeType::Record(Some(record));
+            self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't add record function parameter on an empty record node since we don't know what record_type it should be");
         }
     }
     pub fn increment_record_array_size(&mut self) {
-        let mut some_record: Option<SymbolTableRecord>;
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Record(ref some_existing_record) => {
+            STNodeType::Record(ref some_existing_record) => {
                 some_record = some_existing_record.clone()
             }
             _ => {
@@ -261,29 +419,27 @@ impl SymbolTableNode {
         }
         if let Some(mut record) = some_record {
             record.increment_array_size();
-            self.node_type = SymbolTableNodeType::Record(Some(record));
+            self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
         }
     }
 
     pub fn add_to_table_inheritance_list(&mut self, new_label: String) {
-        let mut label: String;
         let mut inheritance_list: Vec<String>;
         match self.node_type {
-            SymbolTableNodeType::Table(ref existing_label, ref existing_list) => {
-                label = existing_label.clone().unwrap().clone();
+            STNodeType::Table(ref existing_list) => {
                 inheritance_list = existing_list.clone();
             }
             _ => unimplemented!(),
         }
         inheritance_list.push(new_label);
-        self.node_type = SymbolTableNodeType::Table(Some(label), inheritance_list);
+        self.node_type = STNodeType::Table(inheritance_list);
     }
     pub fn initialize_record_function_parameters(&mut self) {
-        let mut some_record: Option<SymbolTableRecord>;
+        let mut some_record: Option<STRecord>;
         match self.node_type {
-            SymbolTableNodeType::Record(ref some_existing_record) => {
+            STNodeType::Record(ref some_existing_record) => {
                 some_record = some_existing_record.clone()
             }
             _ => {
@@ -292,7 +448,7 @@ impl SymbolTableNode {
         }
         if let Some(mut record) = some_record {
             record.initialize_function_parameters();
-            self.node_type = SymbolTableNodeType::Record(Some(record));
+            self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
         }
@@ -300,43 +456,71 @@ impl SymbolTableNode {
 
     pub fn is_table(&self) -> bool {
         match self.node_type {
-            SymbolTableNodeType::Table(_, _) => true,
+            STNodeType::Table(_) => true,
             _ => false,
         }
     }
     pub fn is_record(&self) -> bool {
         match self.node_type {
-            SymbolTableNodeType::Record(_) => true,
+            STNodeType::Record(_) => true,
+            _ => false,
+        }
+    }
+    pub fn is_function_record(&self) -> bool {
+        match self.node_type {
+            STNodeType::Record(ref record) => {
+                match record.clone().unwrap().record_type {
+                    STRecordType::Function => true,
+                    _ => false
+                }
+            },
+            _ => false,
+        }
+    }
+    pub fn is_class_record(&self) -> bool {
+        match self.node_type {
+            STNodeType::Record(ref record) => {
+                match record.clone().unwrap().record_type {
+                    STRecordType::Class => true,
+                    _ => false
+                }
+            },
             _ => false,
         }
     }
 }
 
-// SymbolTableRecord
+// STRecord
 #[derive(Debug, PartialEq, Clone)]
-pub enum SymbolTableRecordType {
+pub enum STRecordType {
     Class,
     Function,
     Parameter,
     Variable,
 }
 #[derive(Debug, PartialEq, Clone)]
-pub struct SymbolTableRecord {
+pub struct STRecord {
     identifier: Option<String>,
-    record_type: SymbolTableRecordType,
+    record_type: STRecordType,
     value_type: Option<String>,
     array_depth: Option<usize>,
     function_parameters: Option<Vec<String>>,
 }
-impl SymbolTableRecord {
-    pub fn new_empty_record(record_type: SymbolTableRecordType) -> SymbolTableRecord {
-        SymbolTableRecord {
+impl STRecord {
+    pub fn new_empty_record(record_type: STRecordType) -> STRecord {
+        STRecord {
             record_type,
             identifier: None,
             value_type: None,
             array_depth: None,
             function_parameters: None,
         }
+    }
+    pub fn get_identifier(&self) -> Option<String> {
+        self.identifier.clone()
+    }
+    pub fn get_record_type(&self) -> STRecordType {
+        self.record_type.clone()
     }
     pub fn set_identifier(&mut self, identifier: String) {
         self.identifier = Some(identifier);
@@ -390,5 +574,58 @@ pub fn build_symbol_tables() {
         &mut vec![],
         &symbol_table_visitor::visitor,
     );
-    GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap().print_graph();
+}
+
+pub fn prune_symbol_tables() {
+    let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
+
+    // Ensure that class method definitions have 2 records
+    let all_table_indices = global_table_graph.get_all_class_table_indices();
+    for index in all_table_indices {
+        let all_table_record_indices = global_table_graph.get_all_table_record_indices(index);
+        let mut variable_count: HashMap<String, usize> = HashMap::new();
+        let mut function_count: HashMap<String, usize> = HashMap::new();
+        for record_index in all_table_record_indices {
+            let node = global_table_graph.get_node(record_index).unwrap();
+            let identifier = node.get_record_identifier().unwrap();
+            match node.get_record_type() {
+                STRecordType::Variable => {
+                    let has_seen_variable = variable_count.contains_key(&identifier);
+                    if has_seen_variable {
+                        let new_count = variable_count.get(&identifier).unwrap() + 1;
+                        variable_count.insert(identifier, new_count);
+                    } else {
+                        variable_count.insert(identifier, 1);
+                    }
+                },
+                STRecordType::Function => {
+                    let has_seen_function = function_count.contains_key(&identifier);
+                    if  has_seen_function {
+                        let new_count = function_count.get(&identifier).unwrap() + 1;
+                        function_count.insert(identifier, new_count);
+                    } else {
+                        function_count.insert(identifier, 1);
+                    }
+                },
+                _ => unimplemented!("Unexpected record type for a class declaration"),
+
+            }
+        }
+        if !variable_count.values().all(|&x| x == 1) {
+            unimplemented!("a data member of a class has been declared twice")
+        }
+        if !function_count.values().all(|&x| x == 2) {
+            unimplemented!("A class method was defined without being declared")
+        }
+
+        // Now get rid of that extra function definition node
+        let all_table_record_indices = global_table_graph.get_all_table_record_indices(index);
+        for record_index in all_table_record_indices {
+            if global_table_graph.get_node(record_index).unwrap().is_function_record() {
+                if global_table_graph.get_child_node_indices(record_index).len() == 0 {
+                    global_table_graph.remove_node(record_index);
+                }
+            }
+        }
+    }
 }

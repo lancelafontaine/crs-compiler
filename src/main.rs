@@ -19,6 +19,7 @@ use output::error;
 use quicli::prelude::*;
 use std::collections::VecDeque;
 use std::path::Path;
+use semantic::GENERATED_SYMBOL_TABLE_GRAPH;
 
 main!(|args: args::Args| {
     if !Path::new(&args.input_file).exists() {
@@ -38,5 +39,7 @@ main!(|args: args::Args| {
 
     // AST is built at this point
     // But no semantic checks have occurred
-    semantic::build_symbol_tables()
+    semantic::build_symbol_tables();
+    semantic::prune_symbol_tables();
+    GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap().print_graph();
 });

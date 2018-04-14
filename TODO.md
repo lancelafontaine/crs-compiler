@@ -59,35 +59,11 @@ TBD
 
 # Next Steps
 
-FIRST PASS:
-  - Construct symbol tables
-    - identifiers
-    - free functions and scope
-      - the variables declared inside functions or classes are considered local. they can only be used in their current function or class scope.
-    - classes, their dataMembers and methods scoping, their circular dependencies
-    - The symbol table of directly inherited classes should be linked, so that inherited members are considered as members of the class even though they are part of a separate scope.
-      - shadow inherited members!
-
-  - What it should look like
-    - One table per scope.
-        - a class definition
-        - a free function
-        - a member function
-        - global scope
-    - Each symbol table contains an entry for ALL identifiers (including functions, classes and variables).
-
-    - Table's contents:
-      - identifier
-      - kind (class, function, parameter, variable)
-      - Option(value type), None for class/function
-      - Link to new scope represented by a symbol table
-
-    - Some limited checking:
-      - error on multiple declared identifiers in the same scope (also takes care of the 'only one main function' case)
-      - variables must be defined before being used in statements
-      - warnings for shadowed inherited members.
-
 SECOND PASS:
+  - error on multiple declared identifiers in the same scope (also takes care of the 'only one main function' case)
+  - variables must be defined before being used in statements
+  - warnings for shadowed inherited members.
+
   - Type inference in expressions through attribute migration.
     - For now, let's assume we can't do use an operator with different token types.
     - Similarly, both operands of an assignment should be the same type.
