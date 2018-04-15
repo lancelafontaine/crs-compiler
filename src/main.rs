@@ -1,3 +1,5 @@
+#![feature(fs_read_write)]
+
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
@@ -12,6 +14,7 @@ pub mod lexer;
 pub mod output;
 pub mod parser;
 pub mod semantic;
+pub mod codegen;
 pub mod util;
 
 use lexer::{Lexer, Token};
@@ -41,5 +44,8 @@ main!(|args: args::Args| {
     // But no semantic checks have occurred
     semantic::build_symbol_tables();
     semantic::prune_symbol_tables();
+    //semantic::check_types();
+    codegen::compute_memory_size();
     GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap().print_graph();
+    //codegen::generate_code();
 });

@@ -80,8 +80,90 @@ SECOND PASS:
   - Ensure that the function declaration's return type is consistent with the value being returned.
 
 
+### CODE GENERATION
+
+- Add a column to the symbol table to store the unique label.
+  - For each variable memory is allocated for, associate it with a unique tag
+  - For each variable memory is allocated for, associate it with a memory size
+  - Next time, when you want to access this variable (in-memory location) you can just get its address by using that predefined tag in your table.
 
 
+For this code:
+```
+int a;
+int b;
+int c;
+```
 
+int is 32bits, 4 bytes
+Generate:
+```
+% space for variable a
+a   res 4
+% space for variable b
+b   res 4
+% space for variable c
+c   res 4
+```
 
+For this code:
+```
+int a[3][4];
+int b[2];
+int c[2][2][2];
+```
+
+Generate:
+```
+% space for variable a
+a   res 4
+% space for variable b
+b   res 4
+% space for variable c
+c   res 4
+```
+
+For this code:
+```
+class A : B {
+  int a1;
+  int a2[2][2];
+  C a3;
+}
+class B {
+  int b1;
+  int b2;
+}
+class C {
+  int c1;
+  int c2;
+}
+program {
+  A a;
+}
+```
+Generate:
+```
+% space for variable a
+a res 36;
+```
+
+To load or change thje content of an integer variable:
+```
+lw r1,x(r0)
+sw x(r0),r1
+```
+where x is the label of variable x, r1 is the register containing the value of
+variable x and r0 is assumed to contain 0 (offset).
+
+Accessing elements of an array of integers, using offsets:
+```
+x = a[2];
+```
+is
+```
+addi r1,r0,8
+lw r2,a(r1)
+sw x(r0),r2
+```
 

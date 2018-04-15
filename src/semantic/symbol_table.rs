@@ -1,9 +1,6 @@
-use ast::{Ast, SemanticActionType, GENERATED_AST};
 use petgraph::prelude::NodeIndex;
 use petgraph::{Direction, Graph};
-use semantic::symbol_table_visitor;
 use std::sync::Mutex;
-use std::collections::HashMap;
 
 lazy_static! {
     pub static ref GENERATED_SYMBOL_TABLE_GRAPH: Mutex<STGraph> = Mutex::new(STGraph::new());
@@ -118,6 +115,68 @@ impl STGraph {
         }
         None
     }
+    pub fn calculate_table_memory_sizes(&self, table_index: usize) -> Vec<usize> {
+        let mut calculated_sizes = vec![];
+        let all_record_indices = self.get_all_table_record_indices(table_index);
+        for index in all_record_indices {
+            let node = self.get_node(index).unwrap();
+            if node.is_variable_record() {
+                let mut temp_memory_size: usize;
+                let value_type = node.get_record_value_type().unwrap();
+                if value_type == "int" {
+                    temp_memory_size = 4;
+                } else {
+                    // Composed class type / data member
+                    let mut class_table_index: usize;
+                    if let Some(i) = self.get_class_table_index_by_identifier(value_type) {
+                        class_table_index = i;
+                    } else {
+                        unimplemented!("Attempting to instantiate a class that was not declared");
+                    }
+                    temp_memory_size = self.calculate_table_memory_sizes(class_table_index)
+                        .iter()
+                        .fold(0, |x, &y| x + y);
+
+                    // Add size of inherited classes
+                    let inheritance_list = self.get_node(class_table_index).unwrap().get_table_inheritance_list();
+                    for class_label in inheritance_list {
+                        let mut class_table_index: usize;
+                        if let Some(i) = self.get_class_table_index_by_identifier(class_label) {
+                            class_table_index = i;
+                        } else {
+                            unimplemented!("Attempting to instantiate a class that was not declared");
+                        }
+                        temp_memory_size += self.calculate_table_memory_sizes(class_table_index)
+                            .iter()
+                            .fold(0, |x, &y| x + y);
+                    }
+                }
+                let mut temp_memory_multiplier: usize;
+                let array_dimensions = node.get_record_array_dimensions();
+                if array_dimensions.is_some() {
+                    temp_memory_multiplier = array_dimensions
+                        .unwrap()
+                        .iter()
+                        .fold(1, |x, &y| x * y);
+                } else {
+                    temp_memory_multiplier = 1;
+                }
+                calculated_sizes.push(temp_memory_size * temp_memory_multiplier);
+            }
+        }
+        calculated_sizes
+    }
+    pub fn set_table_memory_sizes(&mut self, table_index: usize, calculated_sizes: Vec<usize>) {
+        println!("{:?}", calculated_sizes);
+        let mut calculated_sizes: Vec<&usize> = calculated_sizes.iter().rev().collect();
+        let all_record_indices = self.get_all_table_record_indices(table_index);
+        for index in all_record_indices {
+            let node = self.get_node_mut(index).unwrap();
+            if node.is_variable_record() {
+                node.set_record_memory_size(*calculated_sizes.pop().unwrap())
+            }
+        }
+    }
 
     // Setters
     pub fn add_table_to_table(&mut self, record_type: STRecordType, node_index: usize) -> usize {
@@ -190,18 +249,6 @@ impl STGraph {
             .node_weight_mut(NodeIndex::new(parent_record_index))
             .unwrap()
             .set_record_identifier(label);
-    }
-    pub fn increment_table_array_size(&mut self, table_index: usize) {
-        let mut parent_record_index: usize;
-        if let Some(index) = self.get_parent_node_index(table_index) {
-            parent_record_index = index;
-        } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
-        }
-        self.global_table_graph
-            .node_weight_mut(NodeIndex::new(parent_record_index))
-            .unwrap()
-            .increment_record_array_size();
     }
     pub fn add_function_parameter_fragment_to_table(
         &mut self,
@@ -325,6 +372,16 @@ impl STNode {
             node_type: STNodeType::Record(Some(STRecord::new_empty_record(record_type))),
         }
     }
+    pub fn get_table_inheritance_list(&self) -> Vec<String> {
+        match self.node_type {
+            STNodeType::Table(ref inheritance_list) => {
+                inheritance_list.clone()
+            }
+            _ => {
+                unimplemented!("Can't get table inheritance list on a non-table node");
+            }
+        }
+    }
     pub fn get_record_identifier(&self) -> Option<String> {
         let mut some_record: Option<STRecord>;
         match self.node_type {
@@ -341,6 +398,18 @@ impl STNode {
             None
         }
     }
+    pub fn get_record_value_type(&self) -> Option<String>{
+        let mut some_record: Option<STRecord>;
+        match self.node_type {
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
+            }
+            _ => {
+                unimplemented!("Can't get record identifier on a non-record node");
+            }
+        }
+        some_record.unwrap().get_record_value_type()
+    }
     pub fn get_record_type(&self) -> STRecordType {
         let mut some_record: Option<STRecord>;
         match self.node_type {
@@ -353,6 +422,19 @@ impl STNode {
         }
         some_record.unwrap().get_record_type()
     }
+    pub fn get_record_array_dimensions(&self) -> Option<Vec<usize>> {
+        let mut some_record: Option<STRecord>;
+        match self.node_type {
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
+            }
+            _ => {
+                unimplemented!("Can't get record identifier on a non-record node");
+            }
+        }
+        some_record.unwrap().get_array_dimensions()
+    }
+
     pub fn set_record_identifier(&mut self, identifier: String) {
         let mut some_record: Option<STRecord>;
         match self.node_type {
@@ -387,6 +469,24 @@ impl STNode {
             unimplemented!("Can't set record value type on an empty record node since we don't know what record_type it should be");
         }
     }
+    pub fn set_record_memory_size(&mut self, memory_size: usize) {
+        let mut some_record: Option<STRecord>;
+        match self.node_type {
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
+            }
+            _ => {
+                unimplemented!("Can't set record memory_size on a non-record node");
+            }
+        }
+        if let Some(mut record) = some_record {
+            record.set_memory_size(memory_size);
+            self.node_type = STNodeType::Record(Some(record));
+        } else {
+            unimplemented!("Can't set record value type on an empty record node since we don't know what record_type it should be");
+        }
+    }
+
     pub fn add_function_parameter_fragment_to_record(
         &mut self,
         function_parameter_fragment: String,
@@ -407,7 +507,7 @@ impl STNode {
             unimplemented!("Can't add record function parameter on an empty record node since we don't know what record_type it should be");
         }
     }
-    pub fn increment_record_array_size(&mut self) {
+    pub fn add_record_array_dimension(&mut self, array_dimension: usize) {
         let mut some_record: Option<STRecord>;
         match self.node_type {
             STNodeType::Record(ref some_existing_record) => {
@@ -418,7 +518,7 @@ impl STNode {
             }
         }
         if let Some(mut record) = some_record {
-            record.increment_array_size();
+            record.add_array_dimension(array_dimension);
             self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
@@ -477,6 +577,17 @@ impl STNode {
             _ => false,
         }
     }
+    pub fn is_variable_record(&self) -> bool {
+        match self.node_type {
+            STNodeType::Record(ref record) => {
+                match record.clone().unwrap().record_type {
+                    STRecordType::Variable => true,
+                    _ => false
+                }
+            },
+            _ => false,
+        }
+    }
     pub fn is_class_record(&self) -> bool {
         match self.node_type {
             STNodeType::Record(ref record) => {
@@ -503,8 +614,9 @@ pub struct STRecord {
     identifier: Option<String>,
     record_type: STRecordType,
     value_type: Option<String>,
-    array_depth: Option<usize>,
+    array_dimensions: Option<Vec<usize>>,
     function_parameters: Option<Vec<String>>,
+    memory_size: Option<usize>,
 }
 impl STRecord {
     pub fn new_empty_record(record_type: STRecordType) -> STRecord {
@@ -512,8 +624,9 @@ impl STRecord {
             record_type,
             identifier: None,
             value_type: None,
-            array_depth: None,
+            array_dimensions: None,
             function_parameters: None,
+            memory_size: None,
         }
     }
     pub fn get_identifier(&self) -> Option<String> {
@@ -522,17 +635,29 @@ impl STRecord {
     pub fn get_record_type(&self) -> STRecordType {
         self.record_type.clone()
     }
+    pub fn get_record_value_type(&self) -> Option<String> {
+        self.value_type.clone()
+    }
+    pub fn get_array_dimensions(&self) -> Option<Vec<usize>> {
+        self.array_dimensions.clone()
+    }
     pub fn set_identifier(&mut self, identifier: String) {
         self.identifier = Some(identifier);
     }
     pub fn set_value_type(&mut self, value_type: String) {
         self.value_type = Some(value_type);
     }
-    pub fn increment_array_size(&mut self) {
-        if let Some(mut depth) = self.array_depth {
-            self.array_depth = Some(depth + 1);
+    pub fn set_memory_size(&mut self, memory_size: usize) {
+        self.memory_size = Some(memory_size);
+    }
+    pub fn add_array_dimension(&mut self, array_dimension: usize) {
+        let has_dimensions = self.array_dimensions.is_some();
+        if has_dimensions {
+            let mut dimensions = self.array_dimensions.clone().unwrap().clone();
+            dimensions.push(array_dimension);
+            self.array_dimensions = Some(dimensions);
         } else {
-            self.array_depth = Some(1);
+            self.array_dimensions = Some(vec![array_dimension]);
         }
     }
     pub fn initialize_function_parameters(&mut self) {
@@ -548,84 +673,5 @@ impl STRecord {
         }
         list_of_fragments.push(function_parameter_fragment);
         self.function_parameters = Some(list_of_fragments)
-    }
-}
-
-// Free Functions
-pub fn build_symbol_tables() {
-    // TODO: Refactor to prevent having to perform clone of GENERATED_AST
-    let graph = GENERATED_AST.lock().unwrap().clone();
-
-    // Some sanity checks
-    let some_ast_root_node = graph.get_most_recently_added_node();
-    if let Some(ast_root_node) = some_ast_root_node {
-        if ast_root_node.node_type != SemanticActionType::ProgramFamily {
-            unimplemented!();
-        }
-    } else {
-        unimplemented!();
-    }
-
-    // Perform DFS tree traversal with a visitor
-    let ast_root_node_index = graph.get_most_recently_added_node_index();
-    Ast::dfs(
-        &graph,
-        ast_root_node_index,
-        &mut vec![],
-        &symbol_table_visitor::visitor,
-    );
-}
-
-pub fn prune_symbol_tables() {
-    let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
-
-    // Ensure that class method definitions have 2 records
-    let all_table_indices = global_table_graph.get_all_class_table_indices();
-    for index in all_table_indices {
-        let all_table_record_indices = global_table_graph.get_all_table_record_indices(index);
-        let mut variable_count: HashMap<String, usize> = HashMap::new();
-        let mut function_count: HashMap<String, usize> = HashMap::new();
-        for record_index in all_table_record_indices {
-            let node = global_table_graph.get_node(record_index).unwrap();
-            let identifier = node.get_record_identifier().unwrap();
-            match node.get_record_type() {
-                STRecordType::Variable => {
-                    let has_seen_variable = variable_count.contains_key(&identifier);
-                    if has_seen_variable {
-                        let new_count = variable_count.get(&identifier).unwrap() + 1;
-                        variable_count.insert(identifier, new_count);
-                    } else {
-                        variable_count.insert(identifier, 1);
-                    }
-                },
-                STRecordType::Function => {
-                    let has_seen_function = function_count.contains_key(&identifier);
-                    if  has_seen_function {
-                        let new_count = function_count.get(&identifier).unwrap() + 1;
-                        function_count.insert(identifier, new_count);
-                    } else {
-                        function_count.insert(identifier, 1);
-                    }
-                },
-                _ => unimplemented!("Unexpected record type for a class declaration"),
-
-            }
-        }
-        if !variable_count.values().all(|&x| x == 1) {
-            unimplemented!("a data member of a class has been declared twice")
-        }
-        if !function_count.values().all(|&x| x == 2) {
-            unimplemented!("A class method was defined without being declared")
-        }
-
-        // Now get rid of that extra function definition node
-        let all_table_record_indices = global_table_graph.get_all_table_record_indices(index);
-        for record_index in all_table_record_indices {
-            if global_table_graph.get_node(record_index).unwrap().is_function_record() {
-                if global_table_graph.get_child_node_indices(record_index).len() == 0 {
-                    global_table_graph.remove_node(record_index);
-                }
-            }
-        }
     }
 }
