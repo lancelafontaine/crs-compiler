@@ -249,8 +249,12 @@ pub fn visit_id(ast_node: &AstNode) {
     if global_table_graph.is_node_record(node_index) {
         // variable/function declaration
         let node = global_table_graph.get_node_mut(node_index).unwrap();
+        if node.get_record_identifier().is_some() {
+            // Previously set identifier was actually a class type!
+            let class_type = node.get_record_identifier().unwrap();
+            node.set_record_value_type(class_type);
+        }
         node.set_record_identifier(identifier);
-        return
     } else {
         // class declaration or function definition
         let some_table_identifier = global_table_graph.get_table_identifier(node_index);

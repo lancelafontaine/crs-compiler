@@ -7,9 +7,9 @@ use std::fs;
 static OUTPUT_FILENAME: &'static str = "output.asm";
 
 pub fn compute_memory_size() {
-    println!("COMPUTER MEMORY SIZE");
-    let symbol_table = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
-    let all_table_indices = symbol_table.get_all_table_record_indices(0);
+    let mut symbol_table = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
+    let calculated_sizes = symbol_table.calculate_table_memory_sizes(0);
+    symbol_table.set_table_memory_sizes(0, calculated_sizes);
 }
 
 pub fn generate_code() {
