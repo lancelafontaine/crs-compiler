@@ -46,6 +46,6 @@ main!(|args: args::Args| {
     semantic::prune_symbol_tables();
     GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap().print_graph();
     //semantic::check_types();
-    codegen::computer_memory_size();
-    codegen::generate_code();
+    //codegen::compute_memory_size();
+    //codegen::generate_code();
 });

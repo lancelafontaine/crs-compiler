@@ -296,7 +296,9 @@ pub fn visit_array_size(ast_node: &AstNode) {
         if symbol_table_stack.len() > 1 {
             record_node.add_function_parameter_fragment_to_record(fragment);
         } else {
-            record_node.increment_record_array_size();
+            if let Ok(array_dimension) = fragment.parse::<usize>() {
+                record_node.add_record_array_dimension(array_dimension);
+            }
         }
     } else {
         // Free Function Definition

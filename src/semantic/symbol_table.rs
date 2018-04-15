@@ -188,18 +188,6 @@ impl STGraph {
             .unwrap()
             .set_record_identifier(label);
     }
-    pub fn increment_table_array_size(&mut self, table_index: usize) {
-        let mut parent_record_index: usize;
-        if let Some(index) = self.get_parent_node_index(table_index) {
-            parent_record_index = index;
-        } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
-        }
-        self.global_table_graph
-            .node_weight_mut(NodeIndex::new(parent_record_index))
-            .unwrap()
-            .increment_record_array_size();
-    }
     pub fn add_function_parameter_fragment_to_table(
         &mut self,
         table_index: usize,
@@ -404,7 +392,7 @@ impl STNode {
             unimplemented!("Can't add record function parameter on an empty record node since we don't know what record_type it should be");
         }
     }
-    pub fn increment_record_array_size(&mut self) {
+    pub fn add_record_array_dimension(&mut self, array_dimension: usize) {
         let mut some_record: Option<STRecord>;
         match self.node_type {
             STNodeType::Record(ref some_existing_record) => {
@@ -415,7 +403,7 @@ impl STNode {
             }
         }
         if let Some(mut record) = some_record {
-            record.increment_array_size();
+            record.add_array_dimension(array_dimension);
             self.node_type = STNodeType::Record(Some(record));
         } else {
             unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
@@ -500,7 +488,7 @@ pub struct STRecord {
     identifier: Option<String>,
     record_type: STRecordType,
     value_type: Option<String>,
-    array_depth: Option<usize>,
+    array_dimensions: Option<Vec<usize>>,
     function_parameters: Option<Vec<String>>,
 }
 impl STRecord {
@@ -509,7 +497,7 @@ impl STRecord {
             record_type,
             identifier: None,
             value_type: None,
-            array_depth: None,
+            array_dimensions: None,
             function_parameters: None,
         }
     }
@@ -525,11 +513,14 @@ impl STRecord {
     pub fn set_value_type(&mut self, value_type: String) {
         self.value_type = Some(value_type);
     }
-    pub fn increment_array_size(&mut self) {
-        if let Some(mut depth) = self.array_depth {
-            self.array_depth = Some(depth + 1);
+    pub fn add_array_dimension(&mut self, array_dimension: usize) {
+        let has_dimensions = self.array_dimensions.is_some();
+        if has_dimensions {
+            let mut dimensions = self.array_dimensions.clone().unwrap().clone();
+            dimensions.push(array_dimension);
+            self.array_dimensions = Some(dimensions);
         } else {
-            self.array_depth = Some(1);
+            self.array_dimensions = Some(vec![array_dimension]);
         }
     }
     pub fn initialize_function_parameters(&mut self) {

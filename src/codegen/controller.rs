@@ -1,22 +1,15 @@
 use ast::{Ast, GENERATED_AST};
+use semantic::GENERATED_SYMBOL_TABLE_GRAPH;
 use codegen::{ codegen_visitor, memsize_visitor};
 use codegen::codegen_visitor::{MOON_DATA_CODE, MOON_EXEC_CODE};
 use std::fs;
 
 static OUTPUT_FILENAME: &'static str = "output.asm";
 
-pub fn computer_memory_size() {
-    // TODO: Refactor to prevent having to perform clone of GENERATED_AST
-    let graph = GENERATED_AST.lock().unwrap().clone();
-
-    // Perform DFS tree traversal with a visitor
-    let ast_root_node_index = graph.get_most_recently_added_node_index();
-    Ast::dfs(
-        &graph,
-        ast_root_node_index,
-        &mut vec![],
-        &memsize_visitor::visitor,
-    );
+pub fn compute_memory_size() {
+    println!("COMPUTER MEMORY SIZE");
+    let symbol_table = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
+    let all_table_indices = symbol_table.get_all_table_record_indices(0);
 }
 
 pub fn generate_code() {
