@@ -282,7 +282,6 @@ pub fn visit_id(ast_node: &AstNode) {
 pub fn visit_array_size(ast_node: &AstNode) {
     let mut symbol_table_stack = SYMBOL_TABLE_STACK.lock().unwrap();
     let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
-    let mut program_main_detector = PROGRAM_MAIN_DETECTOR.lock().unwrap();
 
     let mut node_index: usize;
     let fragment = ast_node.clone().node_token.unwrap().lexeme;

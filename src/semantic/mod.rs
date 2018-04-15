@@ -1,3 +1,6 @@
+mod controller;
+pub use self::controller::*;
+
 mod symbol_table;
 pub use self::symbol_table::*;
 
