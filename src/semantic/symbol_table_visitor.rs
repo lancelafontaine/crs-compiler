@@ -142,7 +142,7 @@ pub fn visit_inheritance_class(ast_node: &AstNode) {
     current_table_node.add_to_table_inheritance_list(inheritance_class)
 }
 pub fn visit_print_info(ast_node: &AstNode) {
-    println!("{:?}", ast_node);
+    //println!("{:?}", ast_node);
 }
 
 pub fn visit_variable_declaration(_: &AstNode) {
