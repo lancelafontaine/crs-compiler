@@ -1,5 +1,5 @@
-use ast::{Ast, GENERATED_AST};
-use semantic::GENERATED_SYMBOL_TABLE_GRAPH;
+use ast::{Ast, AstNode, GENERATED_AST, SemanticActionType };
+use semantic::{ GENERATED_SYMBOL_TABLE_GRAPH };
 use codegen::{ codegen_visitor, memsize_visitor};
 use codegen::codegen_visitor::{MOON_DATA_CODE, MOON_EXEC_CODE};
 use std::fs;
@@ -19,8 +19,8 @@ pub fn generate_code() {
     {
         let mut exec_code = MOON_EXEC_CODE.lock().unwrap();
         exec_code.push_str("% create moon program entry point\n");
-        exec_code.push_str("         entry\n");
-        exec_code.push_str("         addi r14,r0,topaddr\n");
+        exec_code.push_str("                    entry\n");
+        exec_code.push_str("                    addi r14,r0,topaddr\n");
     }
 
     // Perform DFS tree traversal with a visitor
@@ -31,10 +31,13 @@ pub fn generate_code() {
         &mut vec![],
         &codegen_visitor::visitor,
     );
+    // Do one last variable declaration invocation
+    // TODO Consider refactoring into a post-order DFS traversal for code generation
+    codegen_visitor::visit_variable_declaration(&AstNode::new(SemanticActionType::ProgramFamily, None));
 
     let mut exec_code = MOON_EXEC_CODE.lock().unwrap().clone();
     let mut data_code = MOON_DATA_CODE.lock().unwrap().clone();
-    exec_code.push_str("         hlt\n");
+    exec_code.push_str("                    hlt\n");
     let mut output_data = format!("{}\n{}", exec_code, data_code);
     if let Err(_) = fs::write(OUTPUT_FILENAME, output_data) {
         unimplemented!("Unable to write generated code to file.")

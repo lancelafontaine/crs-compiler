@@ -167,7 +167,6 @@ impl STGraph {
         calculated_sizes
     }
     pub fn set_table_memory_sizes(&mut self, table_index: usize, calculated_sizes: Vec<usize>) {
-        println!("{:?}", calculated_sizes);
         let mut calculated_sizes: Vec<&usize> = calculated_sizes.iter().rev().collect();
         let all_record_indices = self.get_all_table_record_indices(table_index);
         for index in all_record_indices {
@@ -452,6 +451,24 @@ impl STNode {
             unimplemented!("Can't set record identifier on an empty record node since we don't know what record_type it should be");
         }
     }
+    pub fn set_record_memory_tag(&mut self, tag: String) {
+        let mut some_record: Option<STRecord>;
+        match self.node_type {
+            STNodeType::Record(ref some_existing_record) => {
+                some_record = some_existing_record.clone()
+            }
+            _ => {
+                unimplemented!("Can't set record memory tag on a non-record node");
+            }
+        }
+        if let Some(mut record) = some_record {
+            record.set_memory_tag(tag);
+            self.node_type = STNodeType::Record(Some(record));
+        } else {
+            unimplemented!("Can't set record memory tag on an empty record node since we don't know what record_type it should be");
+        }
+    }
+
     pub fn set_record_value_type(&mut self, value_type: String) {
         let mut some_record: Option<STRecord>;
         match self.node_type {
@@ -617,6 +634,7 @@ pub struct STRecord {
     array_dimensions: Option<Vec<usize>>,
     function_parameters: Option<Vec<String>>,
     memory_size: Option<usize>,
+    memory_tag: Option<String>
 }
 impl STRecord {
     pub fn new_empty_record(record_type: STRecordType) -> STRecord {
@@ -627,6 +645,7 @@ impl STRecord {
             array_dimensions: None,
             function_parameters: None,
             memory_size: None,
+            memory_tag: None,
         }
     }
     pub fn get_identifier(&self) -> Option<String> {
@@ -641,6 +660,9 @@ impl STRecord {
     pub fn get_array_dimensions(&self) -> Option<Vec<usize>> {
         self.array_dimensions.clone()
     }
+    pub fn get_memory_size(&self) -> Option<usize> {
+        self.memory_size.clone()
+    }
     pub fn set_identifier(&mut self, identifier: String) {
         self.identifier = Some(identifier);
     }
@@ -649,6 +671,9 @@ impl STRecord {
     }
     pub fn set_memory_size(&mut self, memory_size: usize) {
         self.memory_size = Some(memory_size);
+    }
+    pub fn set_memory_tag(&mut self, memory_tag: String) {
+        self.memory_tag = Some(memory_tag);
     }
     pub fn add_array_dimension(&mut self, array_dimension: usize) {
         let has_dimensions = self.array_dimensions.is_some();
