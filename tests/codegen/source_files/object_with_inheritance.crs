@@ -1,0 +1,11 @@
+class InheritedUtility {
+  int var1;
+};
+
+class Utility : InheritedUtility {
+  int var1;
+};
+
+program {
+  Utility utility;
+};

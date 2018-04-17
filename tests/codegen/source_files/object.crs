@@ -1,0 +1,7 @@
+class Utility {
+  int var1[4];
+};
+
+program {
+  Utility utility;
+};

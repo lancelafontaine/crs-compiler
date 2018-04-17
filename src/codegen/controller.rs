@@ -1,6 +1,6 @@
 use ast::{Ast, AstNode, GENERATED_AST, SemanticActionType };
 use semantic::{ GENERATED_SYMBOL_TABLE_GRAPH };
-use codegen::{ codegen_visitor, memsize_visitor};
+use codegen::codegen_visitor;
 use codegen::codegen_visitor::{MOON_DATA_CODE, MOON_EXEC_CODE};
 use std::fs;
 

@@ -4,6 +4,7 @@ use lexer::TokenClass;
 use ropey::Rope;
 use std::fs::File;
 use std::io::BufReader;
+use std::collections::VecDeque;
 
 pub struct Lexer {
     pub source_buffer: Rope,
@@ -46,6 +47,16 @@ impl Lexer {
             }
         }
     }
+}
+
+pub fn tokenize(input_file: String) -> VecDeque<Token> {
+    let mut lex = Lexer::new(&input_file);
+    let mut token_queue: VecDeque<Token> = VecDeque::new();
+    while let Some(token) = lex.next_token() {
+        token_queue.push_back(token);
+    }
+    println!("{:?}", token_queue);
+    return token_queue
 }
 
 #[cfg(test)]

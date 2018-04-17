@@ -1,0 +1,11 @@
+class ComposedUtility {
+  int var1;
+};
+
+class Utility {
+  ComposedUtility var2;
+};
+
+program {
+  Utility utility;
+};

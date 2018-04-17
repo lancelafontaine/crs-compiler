@@ -1,0 +1,16 @@
+class ComposedUtility {
+  int var1;
+};
+
+class InheritedUtility {
+  int var1;
+};
+
+class Utility : InheritedUtility {
+  int var1[4][5][7][8][9][1];
+  ComposedUtility var2;
+};
+
+program {
+  int idx[1][2][3][4][5];
+};
