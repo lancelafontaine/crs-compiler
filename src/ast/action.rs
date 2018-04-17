@@ -2,6 +2,7 @@ use ast::GENERATED_AST;
 use lexer::Token;
 use std::collections::HashMap;
 use util::Stack;
+use output::write_to_ast_log;
 
 type Callback = fn(SemanticActionType, Token, &mut Stack<usize>);
 
@@ -273,7 +274,7 @@ fn semantic_action_generic_make_node(
         .lock()
         .unwrap()
         .make_node(action_type, Some(token));
-    //println!(">>> Created node: {:?}", GENERATED_AST.lock().unwrap().get_node(node_index));
+    write_to_ast_log(format!("Created node {}: {:?}", node_index, GENERATED_AST.lock().unwrap().get_node(node_index)));
     semantic_stack.push(node_index);
 }
 
@@ -307,6 +308,7 @@ fn semantic_action_generic_make_family(
             break;
         }
     }
+    write_to_ast_log(format!("Created family {}: {:?}", parent_node_index, GENERATED_AST.lock().unwrap().get_node(parent_node_index)));
     semantic_stack.push(parent_node_index);
 }
 

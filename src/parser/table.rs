@@ -4,7 +4,8 @@ use ast::{SemanticActionType, SEMANTIC_ACTION_CALLBACKS_BY_TYPE};
 use lexer::{Token, TokenClass};
 use parser::symbol::{NonterminalLabel, ParseSymbol};
 use util::Stack;
-// use ast::GENERATED_AST;
+use output;
+use ast::GENERATED_AST;
 
 lazy_static! {
     static ref PARSE_TABLE:  [[usize; 43]; 54] = [
@@ -764,7 +765,7 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
         if parsing_stack_length > 0 {
             current_parse_symbol = parsing_stack.top().unwrap();
         } else {
-            // TODO: EndOfInput token was popped off! Error here
+            output::error(7);
             unimplemented!();
         }
 
@@ -780,8 +781,9 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
                     &PRODUCTION_EXPANSION_BY_CELL_VALUE[&production_rhs_index].to_vec();
                 let mut rev_production_rhs_expansion =
                     reverse_parse_symbols(production_rhs_expansion.to_vec());
-                parsing_stack.pop();
-                parsing_stack.append(&mut rev_production_rhs_expansion);
+                let lhs = parsing_stack.pop().unwrap();
+                parsing_stack.append(&mut rev_production_rhs_expansion.clone());
+                output::write_to_parse_log(format!("Applies production {:?} --> {:?}", lhs, production_rhs_expansion));
                 print_parser_state(&next_input_token, &parsing_stack)
             }
             ParseSymbol::Terminal(stack_token) => {
@@ -791,32 +793,38 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
                 {
                     parsing_stack.pop();
                     token_queue.pop_front();
+                    output::write_to_parse_log(format!("Matched terminal: {:?}, popped off parsing_stack", next_input_token));
+
                 } else {
-                    unimplemented!(); // TODO
+                    output::error(8);
+                    unimplemented!();
                 }
                 print_parser_state(&next_input_token, &parsing_stack)
             }
             ParseSymbol::SemanticAction(semantic_action_type) => {
-                //println!(">> semantic_action_type: {:?}", semantic_action_type);
+                output::write_to_parse_log(format!("Popped semantic action: {:?}", semantic_action_type));
+                output::write_to_ast_log(format!("Applied semantic action: {:?}", semantic_action_type));
                 SEMANTIC_ACTION_CALLBACKS_BY_TYPE[&semantic_action_type](
                     semantic_action_type,
                     next_input_token.clone(),
                     &mut semantic_stack,
                 );
-                //println!(">> semantic stack: {:?}", semantic_stack);
+                output::write_to_ast_log(format!("{:?}", semantic_stack));
                 parsing_stack.pop();
+                print_parser_state(&next_input_token, &parsing_stack);
             }
             ParseSymbol::Epsilon => {
                 parsing_stack.pop();
+                output::write_to_parse_log(String::from("Matched EPSILON, popped off parsing_stack"));
                 print_parser_state(&next_input_token, &parsing_stack)
             }
             ParseSymbol::PopError => {
-                println!("POP ERROR");
-                unimplemented!(); // TODO
+                output::error(5);
+                unimplemented!();
             }
             ParseSymbol::ScanError => {
-                println!("SCAN ERROR");
-                unimplemented!(); // TODO
+                output::error(6);
+                unimplemented!();
             }
         }
     }
@@ -824,8 +832,8 @@ pub fn parse(mut token_queue: VecDeque<Token>) {
     if parsing_stack.len() == 1 {
         if let ParseSymbol::Terminal(last_token) = parsing_stack.top().unwrap() {
             if last_token.class == TokenClass::EndOfInput {
-                // GENERATED_AST.lock().unwrap().print_graph();
-                // println!("Rest of semantic stack: {:?}", semantic_stack);
+                GENERATED_AST.lock().unwrap().print_graph();
+                output::write_to_ast_log(format!("Rest of semantic stack: {:?}", semantic_stack));
             }
         }
     }
@@ -851,7 +859,8 @@ fn reverse_parse_symbols(vec: Vec<ParseSymbol>) -> Vec<ParseSymbol> {
         .collect::<Vec<ParseSymbol>>()
 }
 
-fn print_parser_state(_next_input_token: &Token, _parsing_stack: &Stack<ParseSymbol>) {
-    //println!(">>> INPUT TOKEN: {:?} <<<", _next_input_token);
-    //println!(">>> PARSING_STACK: {:#?} <<<", _parsing_stack);
+fn print_parser_state(next_input_token: &Token, parsing_stack: &Stack<ParseSymbol>) {
+    output::write_to_parse_log(format!("Next input token: {:?}", next_input_token));
+    output::write_to_parse_log(format!("{:?}", parsing_stack));
+    output::write_to_parse_log(String::from("--------------------------------------------------"));
 }

@@ -3,6 +3,7 @@ use lexer::Token;
 use petgraph::prelude::NodeIndex;
 use petgraph::{Direction, Graph};
 use std::sync::Mutex;
+use output::write_to_ast_log;
 
 lazy_static! {
     #[derive(Debug, Clone)]
@@ -81,23 +82,23 @@ impl Ast {
     }
 
     pub fn print_graph(&self) {
-        println!("##########################################################################################");
+        write_to_ast_log(format!("##########################################################################################"));
         for index in self.root.node_indices() {
-            println!(
+           write_to_ast_log(format!(
                 "{:?} : {:?}",
                 index.index(),
                 self.root.node_weight(index).unwrap()
-            );
+            ));
             let incoming_edges = self.root.neighbors_directed(index, Direction::Incoming);
             for incoming_edge in incoming_edges {
-                println!("        Incoming edge: {} -> self", incoming_edge.index());
+                write_to_ast_log(format!("        Incoming edge: {} -> self", incoming_edge.index()));
             }
             let outgoing_edges = self.root.neighbors_directed(index, Direction::Outgoing);
             for outgoing_edge in outgoing_edges {
-                println!("        Outgoing edge: self -> {}", outgoing_edge.index());
+                write_to_ast_log(format!("        Outgoing edge: self -> {}", outgoing_edge.index()));
             }
         }
-        println!("##########################################################################################");
+        write_to_ast_log(format!("##########################################################################################"));
     }
 }
 

@@ -1,11 +1,13 @@
 use ast::{Ast, SemanticActionType, GENERATED_AST};
 use semantic::{
     symbol_table_visitor,
+    type_checker,
     type_checker_visitor,
     STRecordType,
     GENERATED_SYMBOL_TABLE_GRAPH
 };
 use std::collections::HashMap;
+use output::error;
 
 pub fn build_symbol_tables() {
     // TODO: Refactor to prevent having to perform clone of GENERATED_AST
@@ -15,9 +17,11 @@ pub fn build_symbol_tables() {
     let some_ast_root_node = graph.get_most_recently_added_node();
     if let Some(ast_root_node) = some_ast_root_node {
         if ast_root_node.node_type != SemanticActionType::ProgramFamily {
+            error(9);
             unimplemented!();
         }
     } else {
+        error(10);
         unimplemented!();
     }
 
@@ -62,15 +66,20 @@ pub fn prune_symbol_tables() {
                         function_count.insert(identifier, 1);
                     }
                 },
-                _ => unimplemented!("Unexpected record type for a class declaration"),
+                _ => {
+                    error(11);
+                    unimplemented!()
+                },
 
             }
         }
         if !variable_count.values().all(|&x| x == 1) {
-            unimplemented!("a data member of a class has been declared twice")
+            error(12);
+            unimplemented!()
         }
         if !function_count.values().all(|&x| x == 2) {
-            unimplemented!("A class method was defined without being declared")
+            error(13);
+            unimplemented!()
         }
 
         // Now get rid of that extra function definition node
@@ -86,16 +95,18 @@ pub fn prune_symbol_tables() {
 }
 
 pub fn check_types() {
-    // TODO: Refactor to prevent having to perform clone of GENERATED_AST
-    let graph = GENERATED_AST.lock().unwrap().clone();
+    type_checker::check_double_declarations();
+    type_checker::check_circular_class_dependencies();
 
+    // TODO: Refactor to prevent having to perform clone of GENERATED_AST
+    //let graph = GENERATED_AST.lock().unwrap().clone();
     // Perform DFS tree traversal with a visitor
-    let ast_root_node_index = graph.get_most_recently_added_node_index();
-    Ast::dfs(
-        &graph,
-        ast_root_node_index,
-        &mut vec![],
-        &type_checker_visitor::visitor,
-    );
+    //let ast_root_node_index = graph.get_most_recently_added_node_index();
+    //Ast::dfs(
+        //&graph,
+        //ast_root_node_index,
+        //&mut vec![],
+        //&type_checker_visitor::visitor,
+    //);
 }
 

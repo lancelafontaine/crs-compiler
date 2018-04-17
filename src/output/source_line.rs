@@ -2,6 +2,7 @@ use colored::*;
 use lexer::Lexer;
 use std::fs::OpenOptions;
 use std::io::Write;
+use output::write_to_error_log;
 
 pub fn print_line_char_at_invalid_state(lexer: &Lexer) {
     let line_index = lexer.source_buffer.char_to_line(lexer.current_index);
@@ -14,16 +15,11 @@ pub fn print_line_char_at_invalid_state(lexer: &Lexer) {
     let output_line2 = format!("{}", &line[..char_index_in_line]);
     let output_line3 = format!("{}", &line[char_index_in_line..]);
 
-    let mut file = OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open("error.log")
-        .unwrap();
     println!("{}", output_line1.bright_white().on_purple().bold());
-    writeln!(file, "{}", String::from(output_line1)).unwrap();
+    write_to_error_log(String::from(output_line1));
     print!("{}", output_line2.bright_white().on_purple().bold());
-    write!(file, "{}", String::from(output_line2)).unwrap();
+    write_to_error_log(String::from(output_line2));
     println!("{}", output_line3.bright_white().on_purple().bold());
-    writeln!(file, "{}", String::from(output_line3)).unwrap();
-    writeln!(file, "---------------------------------------------").unwrap();
+    write_to_error_log(String::from(output_line3));
+    write_to_error_log(String::from("----------------------------------------------"));
 }

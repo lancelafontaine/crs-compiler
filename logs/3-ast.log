@@ -1,0 +1,6 @@
+Applied semantic action: ClassDeclarationList
+Created family 0: Some(AstNode { node_type: ClassDeclarationList, node_token: None })
+Stack { stack: [0] }
+Applied semantic action: Type
+Created node 1: Some(AstNode { node_type: Type, node_token: Some(Token { class: Identifier, lexeme: "namespace" }) })
+Stack { stack: [0, 1] }

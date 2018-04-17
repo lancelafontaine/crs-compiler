@@ -3,6 +3,7 @@ use semantic::{ GENERATED_SYMBOL_TABLE_GRAPH };
 use codegen::codegen_visitor;
 use codegen::codegen_visitor::{MOON_DATA_CODE, MOON_EXEC_CODE};
 use std::fs;
+use output::error;
 
 static OUTPUT_FILENAME: &'static str = "output.asm";
 
@@ -40,6 +41,6 @@ pub fn generate_code() {
     exec_code.push_str("                    hlt\n");
     let mut output_data = format!("{}\n{}", exec_code, data_code);
     if let Err(_) = fs::write(OUTPUT_FILENAME, output_data) {
-        unimplemented!("Unable to write generated code to file.")
+        error(4);
     }
 }

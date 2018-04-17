@@ -1,6 +1,7 @@
 use petgraph::prelude::NodeIndex;
 use petgraph::{Direction, Graph};
 use std::sync::Mutex;
+use output::{ error, write_to_symbol_table_log };
 
 lazy_static! {
     pub static ref GENERATED_SYMBOL_TABLE_GRAPH: Mutex<STGraph> = Mutex::new(STGraph::new());
@@ -52,7 +53,6 @@ impl STGraph {
             .map(|n| n.index())
     }
     pub fn get_child_node_indices(&self, node_index: usize) -> Vec<usize> {
-        self.ensure_node_is_record(node_index);
         self.global_table_graph
             .neighbors_directed(NodeIndex::new(node_index), Direction::Outgoing)
             .map(|n| n.index())
@@ -71,12 +71,36 @@ impl STGraph {
         if let Some(index) = self.get_parent_node_index(table_index) {
             parent_record_index = index;
         } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
+            error(16);
+            unimplemented!();
         }
         self.global_table_graph
             .node_weight(NodeIndex::new(parent_record_index))
             .unwrap()
             .get_record_identifier()
+    }
+    pub fn get_all_function_record_indices(&self) -> Vec<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing)
+            .map(|n| n.index())
+            .filter(|i| self.get_node(*i).unwrap().is_function_record())
+            .collect()
+    }
+    pub fn get_all_function_table_indices(&self) -> Vec<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing)
+            .map(|n| n.index())
+            .filter(|i| self.get_node(*i).unwrap().is_function_record())
+            .filter_map(|i| self.get_child_node_index(i))
+            .collect()
+    }
+    pub fn get_all_table_indices(&self) -> Vec<usize> {
+        self.global_table_graph
+            .neighbors_directed(NodeIndex::new(0), Direction::Outgoing)
+            .map(|n| n.index())
+            .filter(|i| self.get_node(*i).unwrap().is_class_record() || self.get_node(*i).unwrap().is_function_record())
+            .filter_map(|i| self.get_child_node_index(i))
+            .collect()
     }
     pub fn get_all_class_table_indices(&self) -> Vec<usize> {
         self.global_table_graph
@@ -131,7 +155,8 @@ impl STGraph {
                     if let Some(i) = self.get_class_table_index_by_identifier(value_type) {
                         class_table_index = i;
                     } else {
-                        unimplemented!("Attempting to instantiate a class that was not declared");
+                        error(20);
+                        unimplemented!();
                     }
                     temp_memory_size = self.calculate_table_memory_sizes(class_table_index)
                         .iter()
@@ -144,7 +169,8 @@ impl STGraph {
                         if let Some(i) = self.get_class_table_index_by_identifier(class_label) {
                             class_table_index = i;
                         } else {
-                            unimplemented!("Attempting to instantiate a class that was not declared");
+                            error(20);
+                            unimplemented!();
                         }
                         temp_memory_size += self.calculate_table_memory_sizes(class_table_index)
                             .iter()
@@ -218,7 +244,8 @@ impl STGraph {
         if let Some(index) = self.get_parent_node_index(table_index) {
             parent_record_index = index;
         } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
+            error(16);
+            unimplemented!();
         }
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(parent_record_index))
@@ -230,7 +257,8 @@ impl STGraph {
         if let Some(index) = self.get_parent_node_index(table_index) {
             parent_record_index = index;
         } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
+            error(16);
+            unimplemented!();
         }
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(parent_record_index))
@@ -242,7 +270,8 @@ impl STGraph {
         if let Some(index) = self.get_parent_node_index(table_index) {
             parent_record_index = index;
         } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
+            error(16);
+            unimplemented!();
         }
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(parent_record_index))
@@ -258,7 +287,8 @@ impl STGraph {
         if let Some(index) = self.get_parent_node_index(table_index) {
             parent_record_index = index;
         } else {
-            unimplemented!("We're trying to set the table identifier for the global/root table.")
+            error(16);
+            unimplemented!();
         }
         self.global_table_graph
             .node_weight_mut(NodeIndex::new(parent_record_index))
@@ -293,6 +323,7 @@ impl STGraph {
     // Validate pre/post-conditions
     pub fn ensure_node_exists(&self, node_index: usize) {
         if let None = self.get_node(node_index) {
+            error(17);
             unimplemented!();
         }
     }
@@ -310,6 +341,7 @@ impl STGraph {
         self.ensure_node_exists(node_index);
         let node = self.get_node(node_index).unwrap();
         if !node.is_record() {
+            error(18);
             unimplemented!();
         }
     }
@@ -317,41 +349,42 @@ impl STGraph {
         self.ensure_node_exists(node_index);
         let node = self.get_node(node_index).unwrap();
         if !node.is_table() {
+            error(19);
             unimplemented!();
         }
     }
 
     // Utility / Debugging
     pub fn print_graph(&self) {
-        println!("##########################################################################################");
+        write_to_symbol_table_log(format!("##########################################################################################"));
         for index in self.global_table_graph.node_indices() {
-            println!(
+            write_to_symbol_table_log(format!(
                 "{:?} : {:?}",
                 index.index(),
                 self.global_table_graph.node_weight(index).unwrap()
-            );
+            ));
             let incoming_edges = self.global_table_graph
                 .neighbors_directed(index, Direction::Incoming);
             for incoming_edge in incoming_edges {
-                println!("        Incoming edge: {} -> self", incoming_edge.index());
+                write_to_symbol_table_log(format!("        Incoming edge: {} -> self", incoming_edge.index()));
             }
             let outgoing_edges = self.global_table_graph
                 .neighbors_directed(index, Direction::Outgoing);
             for outgoing_edge in outgoing_edges {
-                println!("        Outgoing edge: self -> {}", outgoing_edge.index());
+                write_to_symbol_table_log(format!("        Outgoing edge: self -> {}", outgoing_edge.index()));
             }
         }
-        println!("##########################################################################################");
+        write_to_symbol_table_log(format!("##########################################################################################"));
     }
 }
 
 // STNode
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub enum STNodeType {
     Table(Vec<String>), // inheritance labels
     Record(Option<STRecord>),
 }
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub struct STNode {
     pub node_type: STNodeType,
 }
@@ -377,7 +410,8 @@ impl STNode {
                 inheritance_list.clone()
             }
             _ => {
-                unimplemented!("Can't get table inheritance list on a non-table node");
+                error(19);
+                unimplemented!();
             }
         }
     }
@@ -388,7 +422,8 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't get record identifier on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
@@ -404,7 +439,8 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't get record identifier on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         some_record.unwrap().get_record_value_type()
@@ -416,7 +452,8 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't get record identifier on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         some_record.unwrap().get_record_type()
@@ -428,7 +465,8 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't get record identifier on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         some_record.unwrap().get_array_dimensions()
@@ -441,14 +479,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record identifier on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.set_identifier(identifier);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record identifier on an empty record node since we don't know what record_type it should be");
         }
     }
     pub fn set_record_memory_tag(&mut self, tag: String) {
@@ -458,14 +495,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record memory tag on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.set_memory_tag(tag);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record memory tag on an empty record node since we don't know what record_type it should be");
         }
     }
 
@@ -476,14 +512,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record value type on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.set_value_type(value_type);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record value type on an empty record node since we don't know what record_type it should be");
         }
     }
     pub fn set_record_memory_size(&mut self, memory_size: usize) {
@@ -493,14 +528,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record memory_size on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.set_memory_size(memory_size);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record value type on an empty record node since we don't know what record_type it should be");
         }
     }
 
@@ -514,14 +548,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't add record function parameter on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.add_function_parameter_fragment(function_parameter_fragment);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't add record function parameter on an empty record node since we don't know what record_type it should be");
         }
     }
     pub fn add_record_array_dimension(&mut self, array_dimension: usize) {
@@ -531,14 +564,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record array size on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.add_array_dimension(array_dimension);
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
         }
     }
 
@@ -548,7 +580,11 @@ impl STNode {
             STNodeType::Table(ref existing_list) => {
                 inheritance_list = existing_list.clone();
             }
-            _ => unimplemented!(),
+            _ => {
+                error(19);
+                unimplemented!()
+            },
+
         }
         inheritance_list.push(new_label);
         self.node_type = STNodeType::Table(inheritance_list);
@@ -560,14 +596,13 @@ impl STNode {
                 some_record = some_existing_record.clone()
             }
             _ => {
-                unimplemented!("Can't set record array size on a non-record node");
+                error(18);
+                unimplemented!();
             }
         }
         if let Some(mut record) = some_record {
             record.initialize_function_parameters();
             self.node_type = STNodeType::Record(Some(record));
-        } else {
-            unimplemented!("Can't set record array on an empty record node since we don't know what record_type it should be");
         }
     }
 
@@ -619,14 +654,14 @@ impl STNode {
 }
 
 // STRecord
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub enum STRecordType {
     Class,
     Function,
     Parameter,
     Variable,
 }
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
 pub struct STRecord {
     identifier: Option<String>,
     record_type: STRecordType,
@@ -694,7 +729,7 @@ impl STRecord {
         if let Some(ref mut existing_list) = self.function_parameters {
             list_of_fragments = existing_list.clone();
         } else {
-            unimplemented!("FunctionParameterList hasn't been seen yet, something wrong with the AST, initialize_function_parameters was never called");
+            list_of_fragments = vec![];
         }
         list_of_fragments.push(function_parameter_fragment);
         self.function_parameters = Some(list_of_fragments)

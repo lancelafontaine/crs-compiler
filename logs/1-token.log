@@ -1,0 +1,5 @@
+"Token { class: Identifier, lexeme: \"namespace\" }"
+"Token { class: ScopeResolutionOperator, lexeme: \"::\" }"
+"Token { class: Identifier, lexeme: \"function\" }"
+"Token { class: OpenParens, lexeme: \"(\" }"
+"Token { class: CloseParens, lexeme: \")\" }"

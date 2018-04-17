@@ -3,6 +3,7 @@ use semantic::symbol_table::{STRecordType, GENERATED_SYMBOL_TABLE_GRAPH};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use util::Stack;
+use output::{ error, write_to_symbol_table_log };
 
 lazy_static! {
     pub static ref SYMBOL_TABLE_STACK: Mutex<Stack<usize>> = Mutex::new(Stack::new());
@@ -14,7 +15,7 @@ pub fn visitor(ast_node: &AstNode) {
         visit_print_info(ast_node);
         func(ast_node);
     } else {
-        visit_print_info(ast_node);
+        no_visit_print_info(ast_node);
     }
 }
 
@@ -142,7 +143,11 @@ pub fn visit_inheritance_class(ast_node: &AstNode) {
     current_table_node.add_to_table_inheritance_list(inheritance_class)
 }
 pub fn visit_print_info(ast_node: &AstNode) {
-    //println!("{:?}", ast_node);
+    write_to_symbol_table_log(format!("Visiting AST node {:?}", ast_node));
+}
+
+pub fn no_visit_print_info(ast_node: &AstNode) {
+    write_to_symbol_table_log(format!("Ignoring AST node {:?}", ast_node));
 }
 
 pub fn visit_variable_declaration(_: &AstNode) {
@@ -199,7 +204,8 @@ pub fn visit_function_parameter(ast_node: &AstNode) {
     if let Some(index) = symbol_table_stack.top() {
         node_index = index;
     } else {
-        unimplemented!("An identifier without any context means something went horribly wrong")
+        error(14);
+        unimplemented!()
     }
 
     if global_table_graph.is_node_record(node_index) {
@@ -220,7 +226,8 @@ pub fn visit_type(ast_node: &AstNode) {
     if let Some(index) = symbol_table_stack.top() {
         node_index = index;
     } else {
-        unimplemented!("An identifier without any context means something went horribly wrong")
+        error(14);
+        unimplemented!()
     }
 
     if global_table_graph.is_node_record(node_index) {
@@ -243,7 +250,8 @@ pub fn visit_id(ast_node: &AstNode) {
     if let Some(index) = symbol_table_stack.top() {
         node_index = index;
     } else {
-        unimplemented!("An identifier without any context means something went horribly wrong")
+        error(14);
+        unimplemented!()
     }
 
     if global_table_graph.is_node_record(node_index) {
@@ -271,10 +279,12 @@ pub fn visit_id(ast_node: &AstNode) {
                     );
                     global_table_graph.set_table_identifier(node_index, identifier);
                 } else {
-                    unimplemented!("Class method defined for a class that does not exist.")
+                    error(15);
+                    unimplemented!()
                 }
             } else {
-                unimplemented!("Class method defined for a class that does not exist.")
+                error(15);
+                unimplemented!()
             }
         } else {
             // this is a free function
@@ -293,7 +303,8 @@ pub fn visit_array_size(ast_node: &AstNode) {
     if let Some(index) = symbol_table_stack.top() {
         node_index = index;
     } else {
-        unimplemented!("An array size without any context means something went horribly wrong")
+        error(14);
+        unimplemented!()
     }
     if global_table_graph.is_node_record(node_index) {
         let record_node = global_table_graph.get_node_mut(node_index).unwrap();
@@ -318,7 +329,8 @@ pub fn visit_function_parameter_list(_: &AstNode) {
     if let Some(index) = symbol_table_stack.top() {
         node_index = index;
     } else {
-        unimplemented!("An identifier without any context means something went horribly wrong")
+        error(14);
+        unimplemented!()
     }
 
     // Push a symbol onto the symbol table stack as an indication
