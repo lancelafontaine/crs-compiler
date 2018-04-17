@@ -36,6 +36,9 @@ lazy_static! {
         m.insert(20, ErrorType::UnrecoverableError(20, "TYPECHECK: Attempting to instantiate a class that was not declared."));
         m.insert(21, ErrorType::UnrecoverableError(21, "TYPECHECK: A variable, function or class was declared twice."));
         m.insert(22, ErrorType::UnrecoverableError(22, "TYPECHECK: There is a cyclic dependency between your class inheritance lists or object members."));
+        m.insert(23, ErrorType::UnrecoverableError(23, "The accessor operator '.' was used one a variable that is not a class type."));
+        m.insert(24, ErrorType::UnrecoverableError(24, "Undeclared function: call to a function or method that was not defined."));
+        m.insert(25, ErrorType::UnrecoverableError(25, "Undeclared variable: use of a variable that was not declared."));
         m
     };
 }

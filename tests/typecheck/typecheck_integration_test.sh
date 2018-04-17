@@ -76,6 +76,21 @@ EXPECTED_OUTPUT='TYPECHECK: There is a cyclic dependency between your class inhe
 LOGFILE='0-error.log'
 run_test
 
+SOURCE_FILE="${SCRIPTPATH}/source_files/accessor_on_non_class.crs"
+EXPECTED_OUTPUT="The accessor operator \\\'.\\\' was used one a variable that is not a class type."
+LOGFILE='0-error.log'
+run_test
+
+SOURCE_FILE="${SCRIPTPATH}/source_files/call_on_undeclared_function.crs"
+EXPECTED_OUTPUT='Undeclared function: call to a function or method that was not defined.'
+LOGFILE='0-error.log'
+run_test
+
+SOURCE_FILE="${SCRIPTPATH}/source_files/call_on_undeclared_method.crs"
+EXPECTED_OUTPUT='Undeclared function: call to a function or method that was not defined.'
+LOGFILE='0-error.log'
+run_test
+
 echo "Number of tests: $NUM_TESTS"
 echo "Number of failed tests: $NUM_FAILING_TESTS"
 if [ "$NUM_FAILING_TESTS" == "0" ]; then

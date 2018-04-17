@@ -1,6 +1,169 @@
-Applied semantic action: ClassDeclarationList
-Created family 0: Some(AstNode { node_type: ClassDeclarationList, node_token: None })
+Applied semantic action: ClassId
+Created node 0: Some(AstNode { node_type: ClassId, node_token: Some(Token { class: Identifier, lexeme: "Test" }) })
 Stack { stack: [0] }
-Applied semantic action: Type
-Created node 1: Some(AstNode { node_type: Type, node_token: Some(Token { class: Identifier, lexeme: "namespace" }) })
+Applied semantic action: InheritanceList
+Created family 1: Some(AstNode { node_type: InheritanceList, node_token: None })
 Stack { stack: [0, 1] }
+Applied semantic action: ClassMemberDeclarationList
+Created family 2: Some(AstNode { node_type: ClassMemberDeclarationList, node_token: None })
+Stack { stack: [0, 1, 2] }
+Applied semantic action: ClassDeclaration
+Created family 3: Some(AstNode { node_type: ClassDeclaration, node_token: None })
+Stack { stack: [3] }
+Applied semantic action: ClassDeclarationList
+Created family 4: Some(AstNode { node_type: ClassDeclarationList, node_token: None })
+Stack { stack: [4] }
+Applied semantic action: FunctionDefinitionList
+Created family 5: Some(AstNode { node_type: FunctionDefinitionList, node_token: None })
+Stack { stack: [4, 5] }
+Applied semantic action: Id
+Created node 6: Some(AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "Test" }) })
+Stack { stack: [4, 5, 6] }
+Applied semantic action: Id
+Created node 7: Some(AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) })
+Stack { stack: [4, 5, 6, 7] }
+Applied semantic action: ArraySizeList
+Created family 8: Some(AstNode { node_type: ArraySizeList, node_token: None })
+Stack { stack: [4, 5, 6, 7, 8] }
+Applied semantic action: VariableDeclaration
+Created family 9: Some(AstNode { node_type: VariableDeclaration, node_token: None })
+Stack { stack: [4, 5, 9] }
+Applied semantic action: Id
+Created node 10: Some(AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) })
+Stack { stack: [4, 5, 9, 10] }
+Applied semantic action: ArrayIndexingList
+Created family 11: Some(AstNode { node_type: ArrayIndexingList, node_token: None })
+Stack { stack: [4, 5, 9, 10, 11] }
+Applied semantic action: DataMember
+Created family 12: Some(AstNode { node_type: DataMember, node_token: None })
+Stack { stack: [4, 5, 9, 12] }
+Applied semantic action: Variable
+Created family 13: Some(AstNode { node_type: Variable, node_token: None })
+Stack { stack: [4, 5, 9, 13] }
+Applied semantic action: Id
+Created node 14: Some(AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) })
+Stack { stack: [4, 5, 9, 13, 14] }
+Applied semantic action: ArrayIndexingList
+Created family 15: Some(AstNode { node_type: ArrayIndexingList, node_token: None })
+Stack { stack: [4, 5, 9, 13, 14, 15] }
+Applied semantic action: DataMember
+Created family 16: Some(AstNode { node_type: DataMember, node_token: None })
+Stack { stack: [4, 5, 9, 13, 16] }
+Applied semantic action: Id
+Created node 17: Some(AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "randomize" }) })
+Stack { stack: [4, 5, 9, 13, 16, 17] }
+Applied semantic action: FunctionArguments
+Created family 18: Some(AstNode { node_type: FunctionArguments, node_token: None })
+Stack { stack: [4, 5, 9, 13, 16, 17, 18] }
+Applied semantic action: FactorFunctionCall
+Created family 19: Some(AstNode { node_type: FactorFunctionCall, node_token: None })
+Stack { stack: [4, 5, 9, 13, 16, 19] }
+Applied semantic action: FactorVariable
+Created family 20: Some(AstNode { node_type: FactorVariable, node_token: None })
+Stack { stack: [4, 5, 9, 13, 20] }
+Applied semantic action: Factor
+Created family 21: Some(AstNode { node_type: Factor, node_token: None })
+Stack { stack: [4, 5, 9, 13, 21] }
+Applied semantic action: Term
+Created family 22: Some(AstNode { node_type: Term, node_token: None })
+Stack { stack: [4, 5, 9, 13, 22] }
+Applied semantic action: ArithmeticExpression
+Created family 23: Some(AstNode { node_type: ArithmeticExpression, node_token: None })
+Stack { stack: [4, 5, 9, 13, 23] }
+Applied semantic action: Expression
+Created family 24: Some(AstNode { node_type: Expression, node_token: None })
+Stack { stack: [4, 5, 9, 13, 24] }
+Applied semantic action: AssignmentStatement
+Created family 25: Some(AstNode { node_type: AssignmentStatement, node_token: None })
+Stack { stack: [4, 5, 9, 25] }
+Applied semantic action: StatementBlock
+Created family 26: Some(AstNode { node_type: StatementBlock, node_token: None })
+Stack { stack: [4, 5, 26] }
+Applied semantic action: ProgramFamily
+Created family 27: Some(AstNode { node_type: ProgramFamily, node_token: None })
+Stack { stack: [27] }
+##########################################################################################
+0 : AstNode { node_type: ClassId, node_token: Some(Token { class: Identifier, lexeme: "Test" }) }
+        Incoming edge: 3 -> self
+1 : AstNode { node_type: InheritanceList, node_token: None }
+        Incoming edge: 3 -> self
+2 : AstNode { node_type: ClassMemberDeclarationList, node_token: None }
+        Incoming edge: 3 -> self
+3 : AstNode { node_type: ClassDeclaration, node_token: None }
+        Incoming edge: 4 -> self
+        Outgoing edge: self -> 0
+        Outgoing edge: self -> 1
+        Outgoing edge: self -> 2
+4 : AstNode { node_type: ClassDeclarationList, node_token: None }
+        Incoming edge: 27 -> self
+        Outgoing edge: self -> 3
+5 : AstNode { node_type: FunctionDefinitionList, node_token: None }
+        Incoming edge: 27 -> self
+6 : AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "Test" }) }
+        Incoming edge: 9 -> self
+7 : AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) }
+        Incoming edge: 9 -> self
+8 : AstNode { node_type: ArraySizeList, node_token: None }
+        Incoming edge: 9 -> self
+9 : AstNode { node_type: VariableDeclaration, node_token: None }
+        Incoming edge: 26 -> self
+        Outgoing edge: self -> 6
+        Outgoing edge: self -> 7
+        Outgoing edge: self -> 8
+10 : AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) }
+        Incoming edge: 12 -> self
+11 : AstNode { node_type: ArrayIndexingList, node_token: None }
+        Incoming edge: 12 -> self
+12 : AstNode { node_type: DataMember, node_token: None }
+        Incoming edge: 13 -> self
+        Outgoing edge: self -> 10
+        Outgoing edge: self -> 11
+13 : AstNode { node_type: Variable, node_token: None }
+        Incoming edge: 25 -> self
+        Outgoing edge: self -> 12
+14 : AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "test" }) }
+        Incoming edge: 16 -> self
+15 : AstNode { node_type: ArrayIndexingList, node_token: None }
+        Incoming edge: 16 -> self
+16 : AstNode { node_type: DataMember, node_token: None }
+        Incoming edge: 20 -> self
+        Outgoing edge: self -> 14
+        Outgoing edge: self -> 15
+17 : AstNode { node_type: Id, node_token: Some(Token { class: Identifier, lexeme: "randomize" }) }
+        Incoming edge: 19 -> self
+18 : AstNode { node_type: FunctionArguments, node_token: None }
+        Incoming edge: 19 -> self
+19 : AstNode { node_type: FactorFunctionCall, node_token: None }
+        Incoming edge: 20 -> self
+        Outgoing edge: self -> 17
+        Outgoing edge: self -> 18
+20 : AstNode { node_type: FactorVariable, node_token: None }
+        Incoming edge: 21 -> self
+        Outgoing edge: self -> 16
+        Outgoing edge: self -> 19
+21 : AstNode { node_type: Factor, node_token: None }
+        Incoming edge: 22 -> self
+        Outgoing edge: self -> 20
+22 : AstNode { node_type: Term, node_token: None }
+        Incoming edge: 23 -> self
+        Outgoing edge: self -> 21
+23 : AstNode { node_type: ArithmeticExpression, node_token: None }
+        Incoming edge: 24 -> self
+        Outgoing edge: self -> 22
+24 : AstNode { node_type: Expression, node_token: None }
+        Incoming edge: 25 -> self
+        Outgoing edge: self -> 23
+25 : AstNode { node_type: AssignmentStatement, node_token: None }
+        Incoming edge: 26 -> self
+        Outgoing edge: self -> 13
+        Outgoing edge: self -> 24
+26 : AstNode { node_type: StatementBlock, node_token: None }
+        Incoming edge: 27 -> self
+        Outgoing edge: self -> 9
+        Outgoing edge: self -> 25
+27 : AstNode { node_type: ProgramFamily, node_token: None }
+        Outgoing edge: self -> 4
+        Outgoing edge: self -> 5
+        Outgoing edge: self -> 26
+##########################################################################################
+Rest of semantic stack: Stack { stack: [27] }

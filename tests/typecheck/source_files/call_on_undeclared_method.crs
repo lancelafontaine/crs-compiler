@@ -1,0 +1,5 @@
+class Test {};
+program {
+  Test test;
+  test = test.randomize();
+};

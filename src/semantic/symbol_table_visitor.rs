@@ -8,6 +8,7 @@ use output::{ error, write_to_symbol_table_log };
 lazy_static! {
     pub static ref SYMBOL_TABLE_STACK: Mutex<Stack<usize>> = Mutex::new(Stack::new());
     pub static ref PROGRAM_MAIN_DETECTOR: Mutex<Stack<usize>> = Mutex::new(Stack::new());
+    pub static ref VARIABLE_DECLARATION_END_DETECTOR: Mutex<Stack<usize>> = Mutex::new(Stack::new());
 }
 
 pub fn visitor(ast_node: &AstNode) {
@@ -73,6 +74,30 @@ lazy_static! {
         m.insert(
             SemanticActionType::FunctionParameterList,
             visit_function_parameter_list as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::GetStatement,
+            visit_variable_declaration_end as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::PutStatement,
+            visit_variable_declaration_end as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::ReturnStatement,
+            visit_variable_declaration_end as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::IfStatement,
+            visit_variable_declaration_end as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::AssignmentStatement,
+            visit_variable_declaration_end as fn(&AstNode),
+        );
+        m.insert(
+            SemanticActionType::ForLoopStatement,
+            visit_variable_declaration_end as fn(&AstNode),
         );
         m
     };
@@ -243,6 +268,11 @@ pub fn visit_type(ast_node: &AstNode) {
 pub fn visit_id(ast_node: &AstNode) {
     let mut symbol_table_stack = SYMBOL_TABLE_STACK.lock().unwrap();
     let mut global_table_graph = GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap();
+    let mut variable_declaration_end_detector = VARIABLE_DECLARATION_END_DETECTOR.lock().unwrap();
+    if variable_declaration_end_detector.len() > 0 {
+        // Variable declarations are now over
+        return
+    }
 
     let mut node_index: usize;
     let identifier = ast_node.clone().node_token.unwrap().lexeme;
@@ -345,3 +375,12 @@ pub fn visit_function_parameter_list(_: &AstNode) {
         global_table_graph.initialize_table_function_parameters(node_index)
     }
 }
+pub fn visit_variable_declaration_end(_: &AstNode) {
+    let mut variable_declaration_end_detector = VARIABLE_DECLARATION_END_DETECTOR.lock().unwrap();
+    if !(variable_declaration_end_detector.len() > 0) {
+        // Variable declarations are now over
+        variable_declaration_end_detector.push(0);
+    }
+}
+
+

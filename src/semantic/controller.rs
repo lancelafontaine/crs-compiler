@@ -96,17 +96,19 @@ pub fn prune_symbol_tables() {
 
 pub fn check_types() {
     type_checker::check_double_declarations();
-    type_checker::check_circular_class_dependencies();
 
     // TODO: Refactor to prevent having to perform clone of GENERATED_AST
-    //let graph = GENERATED_AST.lock().unwrap().clone();
+    let graph = GENERATED_AST.lock().unwrap().clone();
+
     // Perform DFS tree traversal with a visitor
-    //let ast_root_node_index = graph.get_most_recently_added_node_index();
-    //Ast::dfs(
-        //&graph,
-        //ast_root_node_index,
-        //&mut vec![],
-        //&type_checker_visitor::visitor,
-    //);
+    let ast_root_node_index = graph.get_most_recently_added_node_index();
+    Ast::dfs(
+        &graph,
+        ast_root_node_index,
+        &mut vec![],
+        &type_checker_visitor::visitor,
+    );
+
+    type_checker::check_circular_class_dependencies();
 }
 

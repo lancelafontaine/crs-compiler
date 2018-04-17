@@ -38,6 +38,7 @@ main!(|args: args::Args| {
     // But no semantic checks have occurred
     semantic::build_symbol_tables();
     semantic::prune_symbol_tables();
+    GENERATED_SYMBOL_TABLE_GRAPH.lock().unwrap().print_graph();
     semantic::check_types();
     codegen::compute_memory_size();
     codegen::generate_code();
